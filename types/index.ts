@@ -3,4 +3,8 @@ export type Article = {
   title: string;
 };
 
+export type Error = {
+  error: string;
+};
+
 export type History = [string, number][];

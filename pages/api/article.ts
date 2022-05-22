@@ -1,22 +1,24 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Article } from "../../types";
-import { convertToMarkdown, stripArticle } from "../../utils/parsing";
+import { Article, Error } from "../../types";
+import { encode } from "../../utils/encryption";
+import { getArticle } from "../../utils/article";
 
-const handler = async (req: NextApiRequest, res: NextApiResponse<Article>) => {
-  const page = "Charlie_Chaplin";
-  const wikipediaResponse = await fetch(
-    `https://fr.wikipedia.org/w/api.php?action=parse&format=json&page=${page}&prop=text&formatversion=2&origin=*`
-  );
-  const content = await wikipediaResponse.json();
-  const title = content.parse.title;
-  const rawArticle = content.parse.text;
-  const article =
-    `# ${title}\n\n` + convertToMarkdown(stripArticle(rawArticle));
+const handler = async (
+  req: NextApiRequest,
+  res: NextApiResponse<Article | Error>
+) => {
+  const key = req.query.key as string;
+  if (!key || !key.length) {
+    res.status(400).json({ error: "Missing key" });
+    return;
+  }
+
+  const { article, title } = await getArticle();
 
   res.status(200);
   res.json({
-    article,
-    title,
+    article: encode(article, key),
+    title: encode(title, key),
   });
 };
 

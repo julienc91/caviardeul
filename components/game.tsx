@@ -40,6 +40,25 @@ const Game: React.FC = () => {
     [caviardedWordContainers]
   );
 
+  const handleUnselect = useCallback(() => {
+    caviardedWordContainers
+      .filter((container) => container.current?.getSelected())
+      .forEach((ref) => ref.current?.unselect());
+  }, [caviardedWordContainers]);
+
+  const handleSelect = useCallback(() => {
+    const [word, index] = selection;
+    const containers = caviardedWordContainers.filter(
+      (container) => container.current?.getWord().toLocaleLowerCase() === word
+    );
+    if (containers.length) {
+      containers.forEach((ref) => ref.current?.select());
+      containers[index % containers.length].current?.scrollTo();
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [caviardedWordContainers, selection]);
+
   const handleReveal = useCallback(
     (word: string) => {
       word = word.toLocaleLowerCase();
@@ -70,27 +89,16 @@ const Game: React.FC = () => {
         setIsOver(true);
       }
     },
-    [titleWords, revealedWords, article, isOver]
+    [
+      caviardedWordContainers,
+      titleWords,
+      revealedWords,
+      article,
+      isOver,
+      handleSelect,
+      handleUnselect,
+    ]
   );
-
-  const handleUnselect = useCallback(() => {
-    caviardedWordContainers
-      .filter((container) => container.current?.getSelected())
-      .forEach((ref) => ref.current?.unselect());
-  }, [caviardedWordContainers]);
-
-  const handleSelect = useCallback(() => {
-    const [word, index] = selection;
-    const containers = caviardedWordContainers.filter(
-      (container) => container.current?.getWord().toLocaleLowerCase() === word
-    );
-    if (containers.length) {
-      containers.forEach((ref) => ref.current?.select());
-      containers[index % containers.length].current?.scrollTo();
-    } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  }, [caviardedWordContainers, selection]);
 
   const handleChangeSelection = useCallback(
     (word: string) => {
