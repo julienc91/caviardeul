@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { Article, History } from "../types";
+import { History } from "../types";
 import ArticleContainer, { WordContainer } from "./article";
 import Input from "./input";
 import {
@@ -20,6 +20,7 @@ const Game: React.FC = () => {
   const [revealedWords, setRevealedWords] = useState<Set<string>>(
     new Set(Array.from(commonWords))
   );
+  const [selectedWord, setSelectedWord] = useState<string>("");
   const [history, setHistory] = useState<History>([]);
   const [isOver, setIsOver] = useState(false);
   const [caviardedWordContainers] = useState<React.RefObject<WordContainer>[]>(
@@ -42,12 +43,18 @@ const Game: React.FC = () => {
   const handleReveal = useCallback(
     (word: string) => {
       word = word.toLocaleLowerCase();
+      handleUnselect();
+
       if (!word.length || isOver || commonWords.has(word)) {
         return;
       }
+
+      setSelectedWord(word);
       if (revealedWords.has(word)) {
+        handleSelect(word);
         return;
       }
+
       const nbOccurrences = countOccurrences(article, word);
       const newRevealedWords = revealedWords.add(word);
       setRevealedWords(new Set(newRevealedWords));
@@ -66,6 +73,35 @@ const Game: React.FC = () => {
     [titleWords, revealedWords, article, isOver]
   );
 
+  const handleUnselect = useCallback(() => {
+    caviardedWordContainers
+      .filter((container) => container.current?.getSelected())
+      .forEach((ref) => ref.current?.unselect());
+  }, [caviardedWordContainers]);
+
+  const handleSelect = useCallback(
+    (word: string) => {
+      caviardedWordContainers
+        .filter(
+          (container) =>
+            container.current?.getWord().toLocaleLowerCase() === word
+        )
+        .forEach((ref) => ref.current?.select());
+    },
+    [caviardedWordContainers]
+  );
+
+  const handleSelectWord = useCallback(
+    (word: string) => {
+      setSelectedWord(word);
+      handleUnselect();
+      if (word.length) {
+        handleSelect(word);
+      }
+    },
+    [handleUnselect, handleSelect]
+  );
+
   return (
     <main id="game">
       <div className="left-container">
@@ -80,7 +116,11 @@ const Game: React.FC = () => {
         <Input onConfirm={handleReveal} disabled={isOver} />
       </div>
       <div className="right-container">
-        <HistoryContainer history={history} />
+        <HistoryContainer
+          history={history}
+          selectedWord={selectedWord}
+          onSelectionChange={handleSelectWord}
+        />
       </div>
     </main>
   );
