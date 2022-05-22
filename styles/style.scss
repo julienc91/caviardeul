@@ -1,0 +1,232 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: "Segoe UI", "Liberation Sans", sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+// variables
+$dark1: #212529;
+$dark2: #111;
+$grey1: #373b40;
+$light1: #989898;
+$light2: #ccc;
+$light3: #ddd;
+$light4: #eee;
+
+$navbarHeight: 60px;
+$footerHeight: 0;
+$guessInputHeight: 65px;
+$historyWidth: 30%;
+
+// main
+body {
+  background-color: $dark2;
+  color: $light2;
+  height: 100vh;
+  overflow: auto;
+}
+
+// navbar
+nav {
+  align-items: center;
+  background-color: $dark1;
+  color: $light4;
+  display: flex;
+  flex-flow: row wrap;
+  height: $navbarHeight;
+  justify-content: left;
+  padding: 0 20px;
+  position: fixed;
+  width: 100%;
+
+  h1 {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  ul {
+    list-style: none;
+    li {
+      cursor: pointer;
+    }
+  }
+}
+
+// info modal
+.modal-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  .modal-background {
+    top: 0;
+    left: 0;
+    position: absolute;
+    background-color: $dark1;
+    opacity: 0.8;
+    width: 100%;
+    height: 100%;
+  }
+
+  .modal {
+    color: $dark1;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    line-height: 1.5rem;
+    transform: translate(-50%, -50%);
+    background-color: $light4;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 600px;
+    height: auto;
+    max-height: 80%;
+    overflow: auto;
+
+    a {
+      text-decoration: underline;
+    }
+  }
+}
+
+// game
+#game {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+
+  .left-container {
+    width: #{100% - $historyWidth};
+  }
+
+  .right-container {
+    width: $historyWidth;
+  }
+
+  .loader {
+    align-items: center;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      margin: 100px auto;
+      background-color: $light3;
+
+      border-radius: 100%;
+      animation: animation 1.0s infinite ease-in-out;
+    }
+
+    @keyframes animation {
+      0% {
+        transform: scale(0);
+      }
+      100% {
+        transform: scale(1.0);
+        opacity: 0;
+      }
+    }
+  }
+
+  .article-container {
+    color: $light3;
+    font-family: monospace;
+    font-size: 1.3rem;
+    padding: $navbarHeight 20px #{$guessInputHeight + $footerHeight + 10px} 20px;
+
+    .caviarded {
+      background-color: $light3;
+    }
+  }
+
+  .guess-history {
+    background-color: $dark1;
+    color: $light3;
+    height: calc(100vh - #{$navbarHeight + $footerHeight});
+    padding: 0;
+    position: fixed;
+    overflow-y: auto;
+    right: 0;
+    top: $navbarHeight;
+    width: $historyWidth;
+
+    table {
+      border-collapse: collapse;
+      text-align: left;
+      width: 100%;
+
+      thead {
+        font-weight: bold;
+        border-bottom: 3px solid $light3;
+      }
+
+      tbody tr {
+        border-bottom: 1px solid $grey1;
+
+        &:hover, &.selected {
+          background-color: $grey1;
+        }
+      }
+
+      td, th {
+        padding: 10px;
+      }
+    }
+  }
+
+  .guess-input {
+    align-items: center;
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    background-color: $dark1;
+    height: $guessInputHeight;
+    position: fixed;
+    top: calc(100vh - #{$guessInputHeight + $footerHeight});
+    width: inherit;
+
+    input {
+      height: 40px;
+      font-size: 1rem;
+
+      &[type="text"] {
+        border: 0;
+        border-radius: 0;
+        background-color: $light4;
+      }
+      &[type="submit"] {
+        background-color: $dark2;
+        border: 1px solid $light3;
+        border-left: 0;
+        color: $light4;
+        cursor: pointer;
+        padding: 0 20px;
+        transition: background-color 0.2s ease-in-out;
+
+        &:hover {
+          background-color: $grey1;
+        }
+      }
+    }
+  }
+}
+
+// footer
+footer {
+
+}
