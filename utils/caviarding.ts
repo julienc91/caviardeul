@@ -57,16 +57,16 @@ export const commonWords = new Set<string>([
 ]);
 
 export const splitWords = (text: string): string[] => {
-  return text.split(/([^\da-zà-ùœ]+)/i);
+  return text.split(/([^\da-zà-ûœ]+)/i);
 };
 
 export const isWord = (word: string): boolean => {
-  return !!word.match(/^[\da-zà-ùœ]+$/i);
+  return !!word.match(/^[\da-zà-ûœ]+$/i);
 };
 
 export const countOccurrences = (text: string, word: string): number => {
   const regex = new RegExp(
-    `\([^\\da-zà-ùœ]|^)(${word.toLocaleLowerCase()})([^\\da-zà-ùœ]|$)`,
+    `\([^\\da-zà-ûœ]|^)(${word.toLocaleLowerCase()})([^\\da-zà-ûœ]|$)`,
     "gim"
   );
   const matches = Array.from(text.matchAll(regex));

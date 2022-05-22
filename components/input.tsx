@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useCallback, useState } from "react";
+import { isWord, splitWords } from "../utils/caviarding";
 
 const Input: React.FC<{
   disabled: boolean;
@@ -23,7 +24,7 @@ const Input: React.FC<{
   );
 
   const handleSubmit = useCallback(() => {
-    onConfirm(value.replace(/[^a-zà-ùœ]/gi, "").toLocaleLowerCase());
+    onConfirm(splitWords(value).filter(isWord).join().toLocaleLowerCase());
     setValue("");
   }, [onConfirm, value]);
 

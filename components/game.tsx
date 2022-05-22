@@ -20,7 +20,7 @@ const Game: React.FC = () => {
   const [revealedWords, setRevealedWords] = useState<Set<string>>(
     new Set(Array.from(commonWords))
   );
-  const [selectedWord, setSelectedWord] = useState<string>("");
+  const [selection, setSelection] = useState<[string, number]>(["", 0]);
   const [history, setHistory] = useState<History>([]);
   const [isOver, setIsOver] = useState(false);
   const [caviardedWordContainers] = useState<React.RefObject<WordContainer>[]>(
@@ -49,9 +49,9 @@ const Game: React.FC = () => {
         return;
       }
 
-      setSelectedWord(word);
+      setSelection([word, 0]);
       if (revealedWords.has(word)) {
-        handleSelect(word);
+        handleSelect();
         return;
       }
 
@@ -79,27 +79,34 @@ const Game: React.FC = () => {
       .forEach((ref) => ref.current?.unselect());
   }, [caviardedWordContainers]);
 
-  const handleSelect = useCallback(
-    (word: string) => {
-      caviardedWordContainers
-        .filter(
-          (container) =>
-            container.current?.getWord().toLocaleLowerCase() === word
-        )
-        .forEach((ref) => ref.current?.select());
-    },
-    [caviardedWordContainers]
-  );
+  const handleSelect = useCallback(() => {
+    const [word, index] = selection;
+    const containers = caviardedWordContainers.filter(
+      (container) => container.current?.getWord().toLocaleLowerCase() === word
+    );
+    if (containers.length) {
+      containers.forEach((ref) => ref.current?.select());
+      containers[index % containers.length].current?.scrollTo();
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [caviardedWordContainers, selection]);
 
-  const handleSelectWord = useCallback(
+  const handleChangeSelection = useCallback(
     (word: string) => {
-      setSelectedWord(word);
-      handleUnselect();
-      if (word.length) {
-        handleSelect(word);
+      const [selectedWord, index] = selection;
+      if (!word.length) {
+        return;
       }
+      if (word === selectedWord) {
+        setSelection([word, index + 1]);
+      } else {
+        setSelection([word, 0]);
+        handleUnselect();
+      }
+      handleSelect();
     },
-    [handleUnselect, handleSelect]
+    [handleUnselect, handleSelect, selection]
   );
 
   return (
@@ -118,8 +125,8 @@ const Game: React.FC = () => {
       <div className="right-container">
         <HistoryContainer
           history={history}
-          selectedWord={selectedWord}
-          onSelectionChange={handleSelectWord}
+          selectedWord={selection[0]}
+          onSelectionChange={handleChangeSelection}
         />
       </div>
     </main>

@@ -6,13 +6,27 @@ export class WordContainer extends React.PureComponent<
   { node: any },
   { revealed: boolean; selected: boolean }
 > {
+  private readonly ref: React.RefObject<HTMLSpanElement>;
   state = {
     revealed: false,
     selected: false,
   };
 
+  constructor(props: { node: any }) {
+    super(props);
+    this.ref = React.createRef();
+  }
+
   reveal() {
     this.setState({ revealed: true, selected: true });
+  }
+
+  scrollTo() {
+    const y = this.ref.current?.getBoundingClientRect()?.top ?? 0;
+    window.scrollTo({
+      top: Math.max(y + window.scrollY - 100, 0),
+      behavior: "smooth",
+    });
   }
 
   select() {
@@ -39,7 +53,9 @@ export class WordContainer extends React.PureComponent<
     const word = node.children[0].value;
     if (revealed) {
       return (
-        <span className={`word` + (selected ? " selected" : "")}>{word}</span>
+        <span ref={this.ref} className={`word` + (selected ? " selected" : "")}>
+          {word}
+        </span>
       );
     }
     const caviardingStyle = Math.floor(Math.random() * 5) + 1;
@@ -58,7 +74,6 @@ const ArticleContainer: React.FC<{
   reveal: boolean;
   onCaviardedWordContainerAdded: (ref: React.RefObject<WordContainer>) => void;
 }> = ({ article, reveal, onCaviardedWordContainerAdded }) => {
-  console.log("rendering article container");
   return (
     <div className="article-container">
       <MarkdownContainer
@@ -74,7 +89,7 @@ const ArticleContainer: React.FC<{
           ? article
           : splitWords(article).reduce((value, word) => {
               let currentValue;
-              if (!commonWords.has(word) && isWord(word)) {
+              if (!commonWords.has(word.toLocaleLowerCase()) && isWord(word)) {
                 currentValue = `**${word}**`;
               } else {
                 currentValue = word;

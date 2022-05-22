@@ -150,6 +150,7 @@ nav {
     font-size: 1.3rem;
     line-height: 2rem;
     padding: $navbarHeight 20px #{$guessInputHeight + $footerHeight + 10px} 20px;
+    scroll-behavior: smooth;
 
     .word {
       box-sizing: border-box;
