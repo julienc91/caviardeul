@@ -1,8 +1,8 @@
 import { convertToMarkdown, stripArticle } from "./parsing";
 import { Article } from "../types";
+import { encodedPageList, firstGameDate } from "./settings";
 
-export const getArticle = async (): Promise<Article> => {
-  const page = "Charlie_Chaplin";
+export const getArticle = async (page: string): Promise<Article> => {
   const wikipediaResponse = await fetch(
     `https://fr.wikipedia.org/w/api.php?action=parse&format=json&page=${page}&prop=text&formatversion=2&origin=*`
   );
@@ -15,4 +15,11 @@ export const getArticle = async (): Promise<Article> => {
     title,
     article,
   };
+};
+
+export const getCurrentArticlePageName = (): string => {
+  const now = new Date();
+  const diff = now.getTime() - firstGameDate.getTime();
+  const diffInDays = Math.floor(diff / (1000 * 3600 * 24));
+  return encodedPageList[diffInDays % encodedPageList.length];
 };

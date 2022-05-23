@@ -14,13 +14,15 @@ const elementsToRemove = [
   "iframe",
   //
   "#toc",
+  ".API.nowrap", // Phonetical pronunciation
+  ".extiw",
+  ".gallery",
   ".hatnote",
   ".infobox",
-  ".mw-empty-elt",
-  ".noprint",
-  ".API.nowrap", // Phonetical pronunciation
   ".metadata",
   ".mw-editsection",
+  ".mw-empty-elt",
+  ".noprint",
   ".reference",
   ".reference-cadre",
   ".thumb",
