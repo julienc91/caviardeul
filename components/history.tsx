@@ -3,7 +3,7 @@ import { History } from "../types";
 
 const HistoryContainer: React.FC<{
   history: History;
-  selectedWord: string;
+  selectedWord: string | null;
   onSelectionChange: (world: string) => void;
 }> = ({ history, selectedWord, onSelectionChange }) => {
   return (

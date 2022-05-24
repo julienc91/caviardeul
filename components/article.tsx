@@ -1,24 +1,14 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import { commonWords, isWord, splitWords } from "../utils/caviarding";
+import { GameContext } from "../utils/game";
 
-export class WordContainer extends React.PureComponent<
-  { node: any },
-  { revealed: boolean; selected: boolean }
-> {
+export class WordContainer extends React.PureComponent<{ node: any }> {
   private readonly ref: React.RefObject<HTMLSpanElement>;
-  state = {
-    revealed: false,
-    selected: false,
-  };
 
   constructor(props: { node: any }) {
     super(props);
     this.ref = React.createRef();
-  }
-
-  reveal() {
-    this.setState({ revealed: true, selected: true });
   }
 
   scrollTo() {
@@ -29,40 +19,34 @@ export class WordContainer extends React.PureComponent<
     });
   }
 
-  select() {
-    if (this.state.revealed) {
-      this.setState({ selected: true });
-    }
-  }
-
-  unselect() {
-    this.setState({ selected: false });
-  }
-
-  getWord() {
-    return this.props.node.children[0].value;
-  }
-
-  getSelected() {
-    return this.state.selected;
-  }
-
   render() {
     const { node } = this.props;
-    const { revealed, selected } = this.state;
     const word = node.children[0].value;
-    if (revealed) {
-      return (
-        <span ref={this.ref} className={`word` + (selected ? " selected" : "")}>
-          {word}
-        </span>
-      );
-    }
-    const caviardingStyle = Math.floor(Math.random() * 5) + 1;
     return (
-      <span className={`word caviarded v${caviardingStyle}`}>
-        {"█".repeat(word.length)}
-      </span>
+      <GameContext.Consumer>
+        {({ words, selection }) => {
+          const lowercaseWord = word.toLocaleLowerCase();
+          const revealed = words.has(lowercaseWord);
+          const selected = selection && selection[0] === lowercaseWord;
+          if (revealed) {
+            return (
+              <span
+                ref={this.ref}
+                className={`word` + (selected ? " selected" : "")}
+              >
+                {word}
+              </span>
+            );
+          } else {
+            const caviardingStyle = Math.floor(Math.random() * 5) + 1;
+            return (
+              <span className={`word caviarded v${caviardingStyle}`}>
+                {"█".repeat(word.length)}
+              </span>
+            );
+          }
+        }}
+      </GameContext.Consumer>
     );
   }
 }
@@ -72,16 +56,13 @@ const MarkdownContainer = React.memo(ReactMarkdown);
 const ArticleContainer: React.FC<{
   article: string;
   reveal: boolean;
-  onCaviardedWordContainerAdded: (ref: React.RefObject<WordContainer>) => void;
-}> = ({ article, reveal, onCaviardedWordContainerAdded }) => {
+}> = ({ article, reveal }) => {
   return (
     <div className="article-container">
       <MarkdownContainer
         components={{
           strong: ({ node }) => {
-            const ref = React.createRef<WordContainer>();
-            onCaviardedWordContainerAdded(ref);
-            return <WordContainer node={node} ref={ref} />;
+            return <WordContainer node={node} />;
           },
         }}
       >

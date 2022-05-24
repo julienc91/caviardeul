@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { History } from "../types";
-import ArticleContainer, { WordContainer } from "./article";
+import ArticleContainer from "./article";
 import Input from "./input";
 import {
   commonWords,
@@ -11,6 +11,8 @@ import {
 import HistoryContainer from "./history";
 import { useArticle } from "../api/article";
 import Loader from "./loader";
+import SaveManagement from "../utils/save";
+import { GameContext } from "../utils/game";
 
 const Game: React.FC = () => {
   const { data, isLoading, error } = useArticle();
@@ -20,12 +22,10 @@ const Game: React.FC = () => {
   const [revealedWords, setRevealedWords] = useState<Set<string>>(
     new Set(Array.from(commonWords))
   );
-  const [selection, setSelection] = useState<[string, number]>(["", 0]);
+  const [selection, setSelection] = useState<[string, number] | null>(null);
   const [history, setHistory] = useState<History>([]);
   const [isOver, setIsOver] = useState(false);
-  const [caviardedWordContainers] = useState<React.RefObject<WordContainer>[]>(
-    []
-  );
+  const [saveLoaded, setSaveLoaded] = useState(false);
 
   const titleWords = useMemo(() => {
     return splitWords(title)
@@ -33,44 +33,35 @@ const Game: React.FC = () => {
       .map((word) => word.toLocaleLowerCase());
   }, [title]);
 
-  const handleCaviadedWordContainerAdded = useCallback(
-    (ref: React.RefObject<WordContainer>) => {
-      caviardedWordContainers.push(ref);
+  const handleChangeSelection = useCallback(
+    (word: string | null) => {
+      if (!word || !word.length) {
+        setSelection(null);
+      } else if (!selection) {
+        setSelection([word, 0]);
+      } else {
+        const [selectedWord, index] = selection;
+        if (selectedWord !== word) {
+          setSelection([word, 0]);
+        } else {
+          setSelection([word, index + 1]);
+        }
+      }
     },
-    [caviardedWordContainers]
+    [selection]
   );
-
-  const handleUnselect = useCallback(() => {
-    caviardedWordContainers
-      .filter((container) => container.current?.getSelected())
-      .forEach((ref) => ref.current?.unselect());
-  }, [caviardedWordContainers]);
-
-  const handleSelect = useCallback(() => {
-    const [word, index] = selection;
-    const containers = caviardedWordContainers.filter(
-      (container) => container.current?.getWord().toLocaleLowerCase() === word
-    );
-    if (containers.length) {
-      containers.forEach((ref) => ref.current?.select());
-      containers[index % containers.length].current?.scrollTo();
-    } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  }, [caviardedWordContainers, selection]);
 
   const handleReveal = useCallback(
     (word: string) => {
       word = word.toLocaleLowerCase();
-      handleUnselect();
 
       if (!word.length || isOver || commonWords.has(word)) {
+        handleChangeSelection(null);
         return;
       }
 
-      setSelection([word, 0]);
+      handleChangeSelection(word);
       if (revealedWords.has(word)) {
-        handleSelect();
         return;
       }
 
@@ -78,65 +69,60 @@ const Game: React.FC = () => {
       const newRevealedWords = revealedWords.add(word);
       setRevealedWords(new Set(newRevealedWords));
       setHistory((prev) => [...prev, [word, nbOccurrences]]);
-
-      caviardedWordContainers.forEach((ref) => {
-        if (ref.current?.getWord()?.toLocaleLowerCase() === word) {
-          ref.current.reveal();
-        }
-      });
-
-      if (titleWords.every((titleWord) => newRevealedWords.has(titleWord))) {
-        setIsOver(true);
-      }
     },
-    [
-      caviardedWordContainers,
-      titleWords,
-      revealedWords,
-      article,
-      isOver,
-      handleSelect,
-      handleUnselect,
-    ]
+    [revealedWords, article, isOver, handleChangeSelection]
   );
 
-  const handleChangeSelection = useCallback(
-    (word: string) => {
-      const [selectedWord, index] = selection;
-      if (!word.length) {
-        return;
+  // Check if game is over
+  useEffect(() => {
+    if (
+      !isOver &&
+      titleWords.length &&
+      titleWords.every((titleWord) => revealedWords.has(titleWord))
+    ) {
+      setIsOver(true);
+    }
+  }, [isOver, titleWords, revealedWords]);
+
+  // Load history from save
+  useEffect((): void => {
+    if (title) {
+      const savedHistory = SaveManagement.load(title);
+      if (savedHistory) {
+        setHistory(savedHistory);
+        setRevealedWords(new Set(savedHistory.map(([word]) => word)));
       }
-      if (word === selectedWord) {
-        setSelection([word, index + 1]);
-      } else {
-        setSelection([word, 0]);
-        handleUnselect();
-      }
-      handleSelect();
-    },
-    [handleUnselect, handleSelect, selection]
-  );
+      setSaveLoaded(true);
+    }
+  }, [title]);
+
+  // Save history
+  useEffect((): void => {
+    if (title) {
+      SaveManagement.save(title, history);
+    }
+  }, [title, history]);
 
   return (
     <main id="game">
-      <div className="left-container">
-        {!isLoading && !error && (
-          <ArticleContainer
-            article={article}
-            reveal={isOver}
-            onCaviardedWordContainerAdded={handleCaviadedWordContainerAdded}
+      <GameContext.Provider
+        value={{ history, words: revealedWords, isOver, selection }}
+      >
+        <div className="left-container">
+          {!isLoading && !error && (
+            <ArticleContainer article={article} reveal={isOver} />
+          )}
+          {(isLoading || !saveLoaded) && <Loader />}
+          <Input onConfirm={handleReveal} disabled={isOver} />
+        </div>
+        <div className="right-container">
+          <HistoryContainer
+            history={history}
+            selectedWord={selection ? selection[0] : null}
+            onSelectionChange={handleChangeSelection}
           />
-        )}
-        {isLoading && <Loader />}
-        <Input onConfirm={handleReveal} disabled={isOver} />
-      </div>
-      <div className="right-container">
-        <HistoryContainer
-          history={history}
-          selectedWord={selection[0]}
-          onSelectionChange={handleChangeSelection}
-        />
-      </div>
+        </div>
+      </GameContext.Provider>
     </main>
   );
 };

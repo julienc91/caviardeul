@@ -5,3 +5,10 @@ export type Article = {
 };
 
 export type History = [string, number][];
+
+export type GameState = {
+  history: History;
+  words: Set<string>;
+  isOver: boolean;
+  selection: [string, number] | null;
+};
