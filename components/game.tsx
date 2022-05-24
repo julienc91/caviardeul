@@ -84,6 +84,22 @@ const Game: React.FC = () => {
     }
   }, [isOver, titleWords, revealedWords]);
 
+  // Scroll to selection
+  useEffect(() => {
+    if (selection) {
+      const [_, index] = selection;
+      const elements = document.querySelectorAll(".word.selected");
+      if (elements.length) {
+        const element = elements[index % elements.length];
+        const y = element.getBoundingClientRect().top;
+        window.scrollTo({
+          top: Math.max(y + window.scrollY - 100, 0),
+          behavior: "smooth",
+        });
+      }
+    }
+  }, [selection]);
+
   // Load history from save
   useEffect((): void => {
     if (title) {
