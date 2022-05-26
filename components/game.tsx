@@ -109,7 +109,7 @@ const Game: React.FC = () => {
   // Load history from save
   useEffect((): void => {
     if (title) {
-      const savedHistory = SaveManagement.load(title);
+      const savedHistory = SaveManagement.loadProgress(title);
       if (savedHistory) {
         setHistory(savedHistory);
         setRevealedWords(new Set(savedHistory.map(([word]) => word)));
@@ -118,12 +118,18 @@ const Game: React.FC = () => {
     }
   }, [title]);
 
-  // Save history
+  // Save progress and history
   useEffect((): void => {
     if (title) {
-      SaveManagement.save(title, history);
+      SaveManagement.saveProgress(title, history);
     }
   }, [title, history]);
+
+  useEffect((): void => {
+    if (title) {
+      SaveManagement.saveHistory(title, history, isOver);
+    }
+  }, [title, history, isOver]);
 
   return (
     <main id="game">

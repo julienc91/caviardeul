@@ -1,6 +1,6 @@
 import { encode } from "./encryption";
 
-export const firstGameDate = new Date(2022, 4, 26);
+export const firstGameDate = new Date(2022, 4, 25);
 const clearTextPageList: string[] = [];
 
 const shuffle = <T>(array: T[]): void => {
