@@ -206,8 +206,12 @@ nav {
       tbody tr {
         border-bottom: 1px solid $grey1;
 
-        &:hover, &.selected {
+        &:hover, &.selecteed {
           background-color: $grey1;
+          &.clickable {
+            cursor: pointer;
+            background-color: $light1;
+          }
         }
       }
 
