@@ -11,7 +11,7 @@ const HistoryContainer: React.FC<{
       <table>
         <thead>
           <tr>
-            <th>#</th>
+            <th>&nbsp;</th>
             <th>Essai</th>
             <th>Occurrences</th>
           </tr>
