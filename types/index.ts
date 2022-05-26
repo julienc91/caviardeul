@@ -1,5 +1,6 @@
 export type Article = {
   key?: string;
+  pageName: string;
   article: string;
   title: string;
 };

@@ -7,8 +7,9 @@ export const useArticle = () => {
     return fetch(`/api/article`)
       .then((res) => res.json())
       .then((res) => {
-        const { key, title, article } = res;
+        const { key, pageName, title, article } = res;
         return {
+          pageName: decode(pageName, key),
           title: decode(title, key),
           article: decode(article, key),
         };

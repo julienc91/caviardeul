@@ -108,7 +108,7 @@ nav {
     overflow: auto;
 
     a {
-      text-decoration: underline;
+      color: $lightBlue;
     }
   }
 }
@@ -211,18 +211,20 @@ nav {
     }
   }
 
-  .guess-history {
+  .guess-history, .game-information {
     background-color: $dark1;
     color: $light3;
     height: calc(100vh - #{$navbarHeight + $footerHeight});
-    padding: 0;
     overflow-y: auto;
     width: 100%;
 
     @include media-max("800px") {
       height: 100%;
     }
+  }
 
+  .guess-history {
+    padding: 0;
     table {
       border-collapse: collapse;
       text-align: left;
@@ -248,6 +250,13 @@ nav {
       td, th {
         padding: 10px;
       }
+    }
+  }
+
+  .game-information {
+    padding: 0 20px;
+    a {
+      color: $lightBlue;
     }
   }
 

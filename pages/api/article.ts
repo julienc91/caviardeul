@@ -11,6 +11,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Article>) => {
   res.status(200);
   res.json({
     key,
+    pageName: encode(pageName, key),
     article: encode(article, key),
     title: encode(title, key),
   });

@@ -13,11 +13,13 @@ import { useArticle } from "../api/article";
 import Loader from "./loader";
 import SaveManagement from "../utils/save";
 import { GameContext } from "../utils/game";
+import GameInformation from "./gameInformation";
 
 const Game: React.FC = () => {
   const { data, isLoading, error } = useArticle();
   const article = data?.article ?? "";
   const title = data?.title ?? "";
+  const pageName = data?.pageName ?? "";
 
   const [revealedWords, setRevealedWords] = useState<Set<string>>(
     new Set(Array.from(commonWords))
@@ -136,11 +138,15 @@ const Game: React.FC = () => {
           <Input onConfirm={handleReveal} disabled={isOver} />
         </div>
         <div className="right-container">
-          <HistoryContainer
-            history={history}
-            selectedWord={selection ? selection[0] : null}
-            onSelectionChange={handleChangeSelection}
-          />
+          {isOver ? (
+            <GameInformation history={history} pageName={pageName} />
+          ) : (
+            <HistoryContainer
+              history={history}
+              selectedWord={selection ? selection[0] : null}
+              onSelectionChange={handleChangeSelection}
+            />
+          )}
         </div>
       </GameContext.Provider>
     </main>
