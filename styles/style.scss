@@ -29,6 +29,13 @@ $footerHeight: 0;
 $guessInputHeight: 65px;
 $historyWidth: 30%;
 
+// mixins
+@mixin media-max($_max-width) {
+    @media screen and (max-width: $_max-width) {
+        &{ @content; }
+    }
+}
+
 // main
 body {
   background-color: $dark2;
@@ -47,7 +54,6 @@ nav {
   height: $navbarHeight;
   justify-content: left;
   padding: 0 20px;
-  position: fixed;
   width: 100%;
 
   h1 {
@@ -108,13 +114,25 @@ nav {
   flex-flow: row wrap;
   align-items: center;
   justify-content: center;
+  height: calc(100vh - #{$navbarHeight + $footerHeight});
 
   .left-container {
+    height: calc(100vh - #{$navbarHeight + $footerHeight});
     width: #{100% - $historyWidth};
+
+    @include media-max("800px") {
+      width: 100%;
+      height: 60%;
+    }
   }
 
   .right-container {
     width: $historyWidth;
+
+    @include media-max("800px") {
+      width: 100%;
+      height: 40%;
+    }
   }
 
   .loader {
@@ -149,8 +167,14 @@ nav {
     font-family: monospace;
     font-size: 1.3rem;
     line-height: 2rem;
-    padding: $navbarHeight 20px #{$guessInputHeight + $footerHeight + 10px} 20px;
+    padding: 0 20px;
     scroll-behavior: smooth;
+    height: calc(100vh - #{$navbarHeight + $footerHeight + $guessInputHeight});
+    overflow: scroll;
+
+    @include media-max("800px") {
+      height: calc(100% - #{$guessInputHeight});
+    }
 
     .word {
       box-sizing: border-box;
@@ -187,11 +211,12 @@ nav {
     color: $light3;
     height: calc(100vh - #{$navbarHeight + $footerHeight});
     padding: 0;
-    position: fixed;
     overflow-y: auto;
-    right: 0;
-    top: $navbarHeight;
-    width: $historyWidth;
+    width: 100%;
+
+    @include media-max("800px") {
+      height: 100%;
+    }
 
     table {
       border-collapse: collapse;
@@ -228,9 +253,7 @@ nav {
     justify-content: center;
     background-color: $dark1;
     height: $guessInputHeight;
-    position: fixed;
-    top: calc(100vh - #{$guessInputHeight + $footerHeight});
-    width: inherit;
+    width: 100%;
 
     input {
       height: 40px;
@@ -260,5 +283,5 @@ nav {
 
 // footer
 footer {
-
+  height: $footerHeight;
 }

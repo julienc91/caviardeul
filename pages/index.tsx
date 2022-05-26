@@ -26,7 +26,6 @@ const Home: NextPage = () => {
 
       <Navbar onShowInfoModal={handleShowInfoModal} />
       <Game />
-      <footer>Footer</footer>
 
       <InfoModal open={showInfoModal} onClose={handleCloseInfoModal} />
     </>
