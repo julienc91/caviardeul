@@ -2,7 +2,7 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: "Segoe UI", "Liberation Sans", sans-serif;
+  font-family: "Liberation Sans", sans-serif;
 }
 
 a {
@@ -62,7 +62,12 @@ nav {
   }
 
   ul {
+    align-items: center;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
     list-style: none;
+    flex: 1;
     li {
       cursor: pointer;
     }
