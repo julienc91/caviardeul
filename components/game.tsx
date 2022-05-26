@@ -88,12 +88,13 @@ const Game: React.FC = () => {
   useEffect(() => {
     if (selection) {
       const [_, index] = selection;
-      const elements = document.querySelectorAll(".word.selected");
-      if (elements.length) {
+      const articleContainer = document.querySelector(".article-container");
+      const elements = articleContainer?.querySelectorAll(".word.selected");
+      if (elements?.length) {
         const element = elements[index % elements.length];
-        const y = element.getBoundingClientRect().top;
-        window.scrollTo({
-          top: Math.max(y + window.scrollY - 100, 0),
+        const y = element.offsetTop;
+        articleContainer?.scrollTo({
+          top: Math.max(y - 100, 0),
           behavior: "smooth",
         });
       }
