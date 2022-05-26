@@ -78,7 +78,10 @@ const Game: React.FC = () => {
     if (
       !isOver &&
       titleWords.length &&
-      titleWords.every((titleWord) => revealedWords.has(titleWord))
+      titleWords.every(
+        (titleWord) =>
+          revealedWords.has(titleWord) || commonWords.has(titleWord)
+      )
     ) {
       setIsOver(true);
     }
