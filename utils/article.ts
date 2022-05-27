@@ -3,7 +3,10 @@ import { Article } from "../types";
 import { encodedPageList, firstGameDate } from "./settings";
 import { decode } from "./encryption";
 
-export const getArticle = async (pageName: string): Promise<Article> => {
+export const getArticle = async (
+  puzzleId: number,
+  pageName: string
+): Promise<Article> => {
   const wikipediaResponse = await fetch(
     `https://fr.wikipedia.org/w/api.php?action=parse&format=json&page=${pageName}&prop=text&formatversion=2&origin=*`
   );
@@ -13,13 +16,14 @@ export const getArticle = async (pageName: string): Promise<Article> => {
   const article =
     `# ${title}\n\n` + convertToMarkdown(stripArticle(rawArticle));
   return {
+    puzzleId,
     pageName,
     title,
     article,
   };
 };
 
-export const getCurrentArticlePageName = (): string => {
+export const getCurrentArticlePageId = (): [string, number] => {
   const now = new Date();
   const diff = now.getTime() - firstGameDate.getTime();
   const diffInDays = Math.floor(diff / (1000 * 3600 * 24));
@@ -27,8 +31,8 @@ export const getCurrentArticlePageName = (): string => {
   if (!encryptionKey) {
     throw Error("Missing encryption key");
   }
-  return decode(
-    encodedPageList[diffInDays % encodedPageList.length],
-    encryptionKey
-  );
+  return [
+    decode(encodedPageList[diffInDays % encodedPageList.length], encryptionKey),
+    diffInDays + 1,
+  ];
 };

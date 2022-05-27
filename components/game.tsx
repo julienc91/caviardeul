@@ -20,6 +20,7 @@ const Game: React.FC = () => {
   const article = data?.article ?? "";
   const title = data?.title ?? "";
   const pageName = data?.pageName ?? "";
+  const puzzleId = data?.puzzleId ?? -1;
 
   const [revealedWords, setRevealedWords] = useState<Set<string>>(
     new Set(Array.from(commonWords))
@@ -110,28 +111,28 @@ const Game: React.FC = () => {
 
   // Load history from save
   useEffect((): void => {
-    if (title) {
-      const savedHistory = SaveManagement.loadProgress(title);
+    if (puzzleId > 0) {
+      const savedHistory = SaveManagement.loadProgress(puzzleId);
       if (savedHistory) {
         setHistory(savedHistory);
         setRevealedWords(new Set(savedHistory.map(([word]) => word)));
       }
       setSaveLoaded(true);
     }
-  }, [title]);
+  }, [puzzleId]);
 
   // Save progress and history
   useEffect((): void => {
-    if (title) {
-      SaveManagement.saveProgress(title, history);
+    if (puzzleId > 0) {
+      SaveManagement.saveProgress(puzzleId, history);
     }
-  }, [title, history]);
+  }, [puzzleId, history]);
 
   useEffect((): void => {
-    if (title) {
-      SaveManagement.saveHistory(title, history, isOver);
+    if (puzzleId > 0) {
+      SaveManagement.saveHistory(puzzleId, title, history, isOver);
     }
-  }, [title, history, isOver]);
+  }, [puzzleId, title, history, isOver]);
 
   return (
     <main id="game">
@@ -147,7 +148,11 @@ const Game: React.FC = () => {
         </div>
         <div className="right-container">
           {isOver ? (
-            <GameInformation history={history} pageName={pageName} />
+            <GameInformation
+              history={history}
+              pageName={pageName}
+              puzzleId={puzzleId}
+            />
           ) : (
             <HistoryContainer
               history={history}

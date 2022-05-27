@@ -2,16 +2,19 @@ import React from "react";
 import { History } from "../types";
 import ExternalLink from "./externalLink";
 
-const GameInformation: React.FC<{ history: History; pageName: string }> = ({
-  history,
-  pageName,
-}) => {
+const GameInformation: React.FC<{
+  history: History;
+  pageName: string;
+  puzzleId: number;
+}> = ({ history, pageName, puzzleId }) => {
   const nbTrials = history.length;
   const accuracy = Math.round(
     (history.filter(([_, count]) => count > 0).length / nbTrials) * 100
   );
   const shareLink = `http://twitter.com/share?text=${encodeURIComponent(
-    "J'ai déchiffré le Caviardeul du jour en " +
+    "J'ai déchiffré le Caviardeul n°" +
+      puzzleId +
+      " en " +
       nbTrials +
       " coup" +
       (nbTrials > 1 ? "s" : "") +
@@ -23,7 +26,7 @@ const GameInformation: React.FC<{ history: History; pageName: string }> = ({
     <div className="game-information">
       <h2>Bravo&nbsp;!</h2>
       <p>
-        Vous avez déchiffré la page du jour en {nbTrials} coup
+        Vous avez déchiffré le Caviardeul du jour en {nbTrials} coup
         {nbTrials > 1 ? "s" : ""} avec une précision de {accuracy}%.
       </p>
       <ul>
@@ -37,7 +40,7 @@ const GameInformation: React.FC<{ history: History; pageName: string }> = ({
           Partager <ExternalLink href={shareLink}>sur Twitter</ExternalLink>
         </li>
       </ul>
-      <p>Revenez demain pour une nouvelle page à déchffrer&nbsp;!</p>
+      <p>Revenez demain pour une nouvelle page à déchiffrer&nbsp;!</p>
     </div>
   );
 };

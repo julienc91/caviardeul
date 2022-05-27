@@ -13,7 +13,7 @@ class SaveManagement {
     return key;
   }
 
-  static loadProgress(expectedTitle: string): History | null {
+  static loadProgress(expectedPuzzleId: number): History | null {
     const data = localStorage.getItem("progress");
     if (!data) {
       return null;
@@ -22,9 +22,9 @@ class SaveManagement {
     try {
       const key = SaveManagement.getEncryptionKey();
       const decryptedData = decode(data, key);
-      const { history, title } = JSON.parse(decryptedData);
+      const { history, puzzleId } = JSON.parse(decryptedData);
 
-      if (!history || !title || title !== expectedTitle) {
+      if (!history || !expectedPuzzleId || puzzleId !== expectedPuzzleId) {
         SaveManagement.clearProgress();
         return null;
       }
@@ -35,9 +35,9 @@ class SaveManagement {
     }
   }
 
-  static saveProgress(title: string, history: History): void {
+  static saveProgress(puzzleId: number, history: History): void {
     const data = {
-      title,
+      puzzleId,
       history,
     };
     const key = SaveManagement.getEncryptionKey(true);
@@ -61,9 +61,15 @@ class SaveManagement {
     }
   }
 
-  static saveHistory(title: string, history: History, isOver: boolean): void {
+  static saveHistory(
+    puzzleId: number,
+    title: string,
+    history: History,
+    isOver: boolean
+  ): void {
     const existing = SaveManagement.loadHistory();
     const data = {
+      puzzleId,
       title,
       isOver,
       nbTrials: history.length,
@@ -71,9 +77,10 @@ class SaveManagement {
     };
     if (
       existing.length === 0 ||
-      existing[existing.length - 1].title !== title
+      existing[existing.length - 1].puzzleId !== puzzleId
     ) {
       existing.push({
+        puzzleId,
         title,
         isOver,
         nbTrials: history.length,

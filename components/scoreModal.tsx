@@ -36,6 +36,7 @@ const ScoreModal: React.FC<{ open: boolean; onClose: () => void }> = ({
         <table>
           <thead>
             <tr>
+              <th>&nbsp;</th>
               <th>Article</th>
               <th>Essais</th>
               <th>Précision</th>
@@ -45,9 +46,10 @@ const ScoreModal: React.FC<{ open: boolean; onClose: () => void }> = ({
           <tbody>
             {history
               .reverse()
-              .map(({ title, isOver, nbTrials, accuracy }, i) => {
+              .map(({ puzzleId, title, isOver, nbTrials, accuracy }) => {
                 return (
-                  <tr key={i}>
+                  <tr key={puzzleId}>
+                    <td>#{puzzleId}</td>
                     <td>{title}</td>
                     <td>{nbTrials}</td>
                     <td>

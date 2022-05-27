@@ -1,5 +1,6 @@
 export type Article = {
   key?: string;
+  puzzleId: number;
   pageName: string;
   article: string;
   title: string;
@@ -15,6 +16,7 @@ export type GameState = {
 };
 
 export type ScoreHistory = {
+  puzzleId: number;
   title: string;
   isOver: boolean;
   nbTrials: number;
