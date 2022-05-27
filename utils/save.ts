@@ -1,19 +1,38 @@
 import { History, ScoreHistory } from "../types";
+import { decode, encode } from "./encryption";
 
 class SaveManagement {
+  static getEncryptionKey(generate: boolean = false): string {
+    let key = localStorage.getItem("key");
+    if (!key && generate) {
+      key = Math.random().toString(36).substring(2, 15);
+      localStorage.setItem("key", key);
+    } else if (!key) {
+      throw new Error("No encryption key found");
+    }
+    return key;
+  }
+
   static loadProgress(expectedTitle: string): History | null {
     const data = localStorage.getItem("progress");
     if (!data) {
       return null;
     }
 
-    const { history, title } = JSON.parse(data);
-    if (!history || !title || title !== expectedTitle) {
+    try {
+      const key = SaveManagement.getEncryptionKey();
+      const decryptedData = decode(data, key);
+      const { history, title } = JSON.parse(decryptedData);
+
+      if (!history || !title || title !== expectedTitle) {
+        SaveManagement.clearProgress();
+        return null;
+      }
+      return history;
+    } catch (e) {
       SaveManagement.clearProgress();
       return null;
     }
-
-    return history;
   }
 
   static saveProgress(title: string, history: History): void {
@@ -21,8 +40,10 @@ class SaveManagement {
       title,
       history,
     };
+    const key = SaveManagement.getEncryptionKey(true);
     const json = JSON.stringify(data);
-    localStorage.setItem("progress", json);
+    const encryptedData = encode(json, key);
+    localStorage.setItem("progress", encryptedData);
   }
 
   static loadHistory(): ScoreHistory {
@@ -30,7 +51,14 @@ class SaveManagement {
     if (!data) {
       return [];
     }
-    return JSON.parse(data) || [];
+    try {
+      const key = SaveManagement.getEncryptionKey();
+      const decryptedData = decode(data, key);
+      return (JSON.parse(decryptedData) as ScoreHistory) || [];
+    } catch (e) {
+      SaveManagement.clearHistory();
+      return [];
+    }
   }
 
   static saveHistory(title: string, history: History, isOver: boolean): void {
@@ -56,7 +84,9 @@ class SaveManagement {
     }
 
     const json = JSON.stringify(existing);
-    localStorage.setItem("history", json);
+    const encryptionKey = SaveManagement.getEncryptionKey(true);
+    const encryptedData = encode(json, encryptionKey);
+    localStorage.setItem("history", encryptedData);
   }
 
   static clearProgress(): void {
