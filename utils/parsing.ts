@@ -26,10 +26,16 @@ const elementsToRemove = [
   ".reference",
   ".reference-cadre",
   ".thumb",
+  ".wikitable",
   "style",
   "sup.reference",
 ];
-const elementsToStripAfter = ["#Voir_aussi", "#Notes_et_références"];
+const elementsToStripAfter = [
+  "h2 #Voir_aussi",
+  "h2 #Notes_et_références",
+  "h2 #Notes",
+  "h2 #Références",
+];
 const elementsToFlatten = ["a", "abbr", "b", "i", "span", "sup", "time"];
 
 /**

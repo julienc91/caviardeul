@@ -3,9 +3,9 @@ import { Article } from "../types";
 import { encodedPageList, firstGameDate } from "./settings";
 import { decode } from "./encryption";
 
-export const getArticle = async (page: string): Promise<Article> => {
+export const getArticle = async (pageName: string): Promise<Article> => {
   const wikipediaResponse = await fetch(
-    `https://fr.wikipedia.org/w/api.php?action=parse&format=json&page=${page}&prop=text&formatversion=2&origin=*`
+    `https://fr.wikipedia.org/w/api.php?action=parse&format=json&page=${pageName}&prop=text&formatversion=2&origin=*`
   );
   const content = await wikipediaResponse.json();
   const title = content.parse.title;
@@ -13,6 +13,7 @@ export const getArticle = async (page: string): Promise<Article> => {
   const article =
     `# ${title}\n\n` + convertToMarkdown(stripArticle(rawArticle));
   return {
+    pageName,
     title,
     article,
   };
