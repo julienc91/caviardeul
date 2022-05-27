@@ -65,6 +65,12 @@ body {
   color: $light2;
   height: 100vh;
   overflow: auto;
+
+  @include media-max($breakpoint) {
+    .medium-up {
+      display: none;
+    }
+  }
 }
 
 // navbar
@@ -78,6 +84,10 @@ nav {
   justify-content: left;
   padding: 0 20px;
   width: 100%;
+
+  @include media-max($breakpoint) {
+    padding: 0 10px;
+  }
 
   h1 {
     font-size: 1.1rem;
@@ -98,6 +108,9 @@ nav {
       }
       &.left {
         padding-right: 40px;
+        @include media-max($breakpoint) {
+          padding-right: 20px;
+        }
       }
     }
   }
@@ -127,14 +140,14 @@ nav {
     top: 30%;
     left: 50%;
     line-height: 1.5rem;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -30%);
     background-color: $light4;
     padding: 20px;
     border-radius: 5px;
-    max-width: 600px;
-    min-width: 400px;
+    max-width: min(600px, 90vw);
+    min-width: 350px;
     height: auto;
-    max-height: 80%;
+    max-height: 80vh;
     overflow: auto;
 
     a {
@@ -167,6 +180,10 @@ nav {
       border-collapse: collapse;
       text-align: left;
       width: 100%;
+
+      @include media-max($breakpoint) {
+        font-size: 0.8rem;
+      }
 
       thead {
         font-weight: bold;
