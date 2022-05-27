@@ -9,7 +9,7 @@ import {
   splitWords,
 } from "../utils/caviarding";
 import HistoryContainer from "./history";
-import { useArticle } from "../api/article";
+import { useArticle } from "../hooks/article";
 import Loader from "./loader";
 import SaveManagement from "../utils/save";
 import { GameContext } from "../utils/game";
@@ -93,8 +93,10 @@ const Game: React.FC = () => {
   useEffect(() => {
     if (selection) {
       const [_, index] = selection;
-      const articleContainer = document.querySelector(".article-container");
-      const elements = articleContainer?.querySelectorAll(".word.selected");
+      const articleContainer =
+        document.querySelector<HTMLElement>(".article-container");
+      const elements =
+        articleContainer?.querySelectorAll<HTMLElement>(".word.selected");
       if (elements?.length) {
         const element = elements[index % elements.length];
         const y = element.offsetTop;
