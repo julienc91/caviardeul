@@ -3,6 +3,17 @@ import { Article } from "../types";
 import { encodedPageList, firstGameDate } from "./settings";
 import { decode } from "./encryption";
 
+export const getNextArticleCountdown = () => {
+  const now = new Date();
+  const tomorrow = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1
+  );
+  const diff = tomorrow.getTime() - now.getTime();
+  return Math.round(diff / 1000);
+};
+
 export const getArticle = async (
   puzzleId: number,
   pageName: string
