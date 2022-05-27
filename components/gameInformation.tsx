@@ -16,7 +16,7 @@ const GameInformation: React.FC<{ history: History; pageName: string }> = ({
       (nbTrials > 1 ? "s" : "") +
       " !"
   )}&url=${encodeURIComponent(
-    "https://caviardeul.vercel.app/"
+    "https://caviardeul.julienc.io/"
   )}&hashtags=caviardeul`;
   return (
     <div className="game-information">

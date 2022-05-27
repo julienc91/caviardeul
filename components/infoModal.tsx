@@ -29,8 +29,7 @@ const InfoModal: React.FC<{ open: boolean; onClose: () => void }> = ({
         </p>
         <p>
           Le but est de retrouver quotidiennement l&apos;article Wikipédia caché
-          derrière les mots caviardés, et choisi aléatoirement parmi la liste
-          des{" "}
+          derrière les mots caviardés, et choisi parmi la liste des{" "}
           <a
             href="https://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Articles_vitaux/Niveau_4"
             target="_blank"

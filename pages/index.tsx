@@ -4,9 +4,11 @@ import Head from "next/head";
 import Game from "../components/game";
 import Navbar from "../components/navbar";
 import InfoModal from "../components/infoModal";
+import ScoreModal from "../components/scoreModal";
 
 const Home: NextPage = () => {
   const [showInfoModal, setShowInfoModal] = useState(false);
+  const [showScoreModal, setShowScoreModal] = useState(false);
 
   const handleShowInfoModal = () => {
     setShowInfoModal(true);
@@ -14,6 +16,14 @@ const Home: NextPage = () => {
 
   const handleCloseInfoModal = () => {
     setShowInfoModal(false);
+  };
+
+  const handleShowScoreModal = () => {
+    setShowScoreModal(true);
+  };
+
+  const handleCloseScoreModal = () => {
+    setShowScoreModal(false);
   };
 
   return (
@@ -24,10 +34,14 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Navbar onShowInfoModal={handleShowInfoModal} />
+      <Navbar
+        onShowInfoModal={handleShowInfoModal}
+        onShowScoreModal={handleShowScoreModal}
+      />
       <Game />
 
       <InfoModal open={showInfoModal} onClose={handleCloseInfoModal} />
+      <ScoreModal open={showScoreModal} onClose={handleCloseScoreModal} />
     </>
   );
 };

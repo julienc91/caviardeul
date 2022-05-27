@@ -1,14 +1,21 @@
 import React from "react";
 import Image from "next/image";
 
-const Navbar: React.FC<{ onShowInfoModal: () => void }> = ({
-  onShowInfoModal,
-}) => {
+const Navbar: React.FC<{
+  onShowInfoModal: () => void;
+  onShowScoreModal: () => void;
+}> = ({ onShowInfoModal, onShowScoreModal }) => {
   return (
     <nav>
       <h1>Caviardeul</h1>
       <ul>
-        <li onClick={onShowInfoModal}>À propos</li>
+        <li className="left" onClick={onShowInfoModal}>
+          À propos
+        </li>
+        <li className="left" onClick={onShowScoreModal}>
+          Scores
+        </li>
+        <li className="divider" />
         <li>
           <a
             href="https://github.com/julienc91/caviardeul"

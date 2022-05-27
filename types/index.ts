@@ -13,3 +13,10 @@ export type GameState = {
   isOver: boolean;
   selection: [string, number] | null;
 };
+
+export type ScoreHistory = {
+  title: string;
+  isOver: boolean;
+  nbTrials: number;
+  accuracy: number;
+}[];

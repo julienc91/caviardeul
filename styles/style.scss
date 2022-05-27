@@ -3,6 +3,7 @@ body {
   padding: 0;
   margin: 0;
   font-family: "Liberation Sans", sans-serif;
+  scroll-behavior: smooth;
 }
 
 a {
@@ -70,6 +71,12 @@ nav {
     flex: 1;
     li {
       cursor: pointer;
+      &.divider {
+        flex: 1;
+      }
+      &.left {
+        padding-right: 40px;
+      }
     }
   }
 }
@@ -103,12 +110,53 @@ nav {
     padding: 20px;
     border-radius: 5px;
     max-width: 600px;
+    min-width: 400px;
     height: auto;
     max-height: 80%;
     overflow: auto;
 
     a {
       color: $lightBlue;
+    }
+
+    button {
+      margin-top: 20px;
+      background-color: $dark1;
+      color: $light4;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    table {
+      border-collapse: collapse;
+      text-align: left;
+      width: 100%;
+
+      thead {
+        font-weight: bold;
+        border-bottom: 3px solid $grey1;
+      }
+
+      tbody {
+        display: block;
+        max-height: 70vh;
+        overflow: auto;
+        tr {
+          border-bottom: 1px solid $light1;
+        }
+      }
+
+      thead, tbody tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+      }
+
+      th, td {
+        padding: 10px;
+      }
     }
   }
 }
@@ -173,11 +221,12 @@ nav {
     font-size: 1.3rem;
     line-height: 2rem;
     padding: 0 20px;
-    scroll-behavior: smooth;
     height: calc(100vh - #{$navbarHeight + $footerHeight + $guessInputHeight});
-    overflow: scroll;
+    overflow: auto;
 
     @include media-max("800px") {
+      font-size: 1.1rem;
+      line-height: 1.7rem;
       height: calc(100% - #{$guessInputHeight});
     }
 

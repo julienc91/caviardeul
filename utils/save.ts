@@ -1,4 +1,4 @@
-import { History } from "../types";
+import { History, ScoreHistory } from "../types";
 
 class SaveManagement {
   static loadProgress(expectedTitle: string): History | null {
@@ -25,12 +25,7 @@ class SaveManagement {
     localStorage.setItem("progress", json);
   }
 
-  static loadHistory(): {
-    title: string;
-    isOver: boolean;
-    nbTrials: number;
-    accuracy: number;
-  }[] {
+  static loadHistory(): ScoreHistory {
     const data = localStorage.getItem("history");
     if (!data) {
       return [];
@@ -66,6 +61,10 @@ class SaveManagement {
 
   static clearProgress(): void {
     localStorage.removeItem("progress");
+  }
+
+  static clearHistory(): void {
+    localStorage.removeItem("history");
   }
 }
 
