@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import ExternalLink from "./externalLink";
 
 const Navbar: React.FC<{
   onShowInfoModal: () => void;
@@ -17,13 +18,9 @@ const Navbar: React.FC<{
         </li>
         <li className="divider" />
         <li>
-          <a
-            href="https://github.com/julienc91/caviardeul"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <ExternalLink href="https://github.com/julienc91/caviardeul">
             <Image height={30} width={30} src="/github.png" alt="GitHub" />
-          </a>
+          </ExternalLink>
         </li>
       </ul>
     </nav>

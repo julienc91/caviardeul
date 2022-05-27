@@ -19,6 +19,7 @@ a {
 $dark1: #202020;
 $dark2: #101010;
 $grey1: #303040;
+$red1: #d03030;
 $lightBlue: #0070ff;
 $light1: #a0a0a0;
 $light2: #ccc;
@@ -30,11 +31,32 @@ $footerHeight: 0;
 $guessInputHeight: 65px;
 $historyWidth: 30%;
 
+$breakpoint: 800px;
+
 // mixins
 @mixin media-max($_max-width) {
     @media screen and (max-width: $_max-width) {
         &{ @content; }
     }
+}
+
+// webkit scrollbar style
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: $light4;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: $light2;
+  border-radius: 20px;
+  transition: background-color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: $light1;
+  }
 }
 
 // main
@@ -119,14 +141,26 @@ nav {
       color: $lightBlue;
     }
 
-    button {
-      margin-top: 20px;
-      background-color: $dark1;
-      color: $light4;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
+    .modal-buttons {
+      display: flex;
+      flex-flow: row-reverse wrap;
+      justify-content: space-between;
+
+      button {
+        margin-top: 20px;
+        background-color: $dark1;
+        color: $light4;
+        font-weight: 600;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+
+        &.danger {
+          background-color: $red1;
+          color: $light3;
+        }
+      }
     }
 
     table {
@@ -173,7 +207,7 @@ nav {
     height: calc(100vh - #{$navbarHeight + $footerHeight});
     width: #{100% - $historyWidth};
 
-    @include media-max("800px") {
+    @include media-max($breakpoint) {
       width: 100%;
       height: 60%;
     }
@@ -182,7 +216,7 @@ nav {
   .right-container {
     width: $historyWidth;
 
-    @include media-max("800px") {
+    @include media-max($breakpoint) {
       width: 100%;
       height: 40%;
     }
@@ -224,7 +258,7 @@ nav {
     height: calc(100vh - #{$navbarHeight + $footerHeight + $guessInputHeight});
     overflow: auto;
 
-    @include media-max("800px") {
+    @include media-max($breakpoint) {
       font-size: 1.1rem;
       line-height: 1.7rem;
       height: calc(100% - #{$guessInputHeight});
@@ -267,7 +301,7 @@ nav {
     overflow-y: auto;
     width: 100%;
 
-    @include media-max("800px") {
+    @include media-max($breakpoint) {
       height: 100%;
     }
   }

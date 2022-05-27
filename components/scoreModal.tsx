@@ -60,7 +60,12 @@ const ScoreModal: React.FC<{ open: boolean; onClose: () => void }> = ({
           </tbody>
         </table>
 
-        <button onClick={handleClearHistory}>Effacer</button>
+        <div className="modal-buttons">
+          <button onClick={onClose}>Fermer</button>
+          <button className="danger" onClick={handleClearHistory}>
+            Effacer
+          </button>
+        </div>
       </div>
     </div>
   );

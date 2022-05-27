@@ -1,5 +1,6 @@
 import React from "react";
 import { History } from "../types";
+import ExternalLink from "./externalLink";
 
 const GameInformation: React.FC<{ history: History; pageName: string }> = ({
   history,
@@ -28,21 +29,15 @@ const GameInformation: React.FC<{ history: History; pageName: string }> = ({
       <ul>
         <li>
           Voir la page originale{" "}
-          <a
-            href={`https://fr.wikipedia.org/wiki/${pageName}`}
-            target="_blank"
-            rel="noreferrer"
-          >
+          <ExternalLink href={`https://fr.wikipedia.org/wiki/${pageName}`}>
             sur Wikipédia
-          </a>
+          </ExternalLink>
         </li>
         <li>
-          Partager{" "}
-          <a href={shareLink} target="_blank" rel="noreferrer">
-            sur Twitter
-          </a>
+          Partager <ExternalLink href={shareLink}>sur Twitter</ExternalLink>
         </li>
       </ul>
+      <p>Revenez demain pour une nouvelle page à déchffrer&nbsp;!</p>
     </div>
   );
 };
