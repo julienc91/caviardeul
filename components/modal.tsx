@@ -16,8 +16,8 @@ const Modal: React.FC<{
       <div className="modal">
         {children}
         <div className="modal-buttons">
-          {extraButtons}
           <button onClick={onClose}>{closeLabel || "Fermer"}</button>
+          {extraButtons}
         </div>
       </div>
     </div>
