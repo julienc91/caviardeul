@@ -2,6 +2,14 @@ import { History, ScoreHistory } from "../types";
 import { decode, encode } from "./encryption";
 
 class SaveManagement {
+  static getIsTutorialSkipped() {
+    return localStorage.getItem("skipTutorial") === "true";
+  }
+
+  static setSkipTutorial() {
+    localStorage.setItem("skipTutorial", "true");
+  }
+
   static getEncryptionKey(generate: boolean = false): string {
     let key = localStorage.getItem("key");
     if (!key && generate) {

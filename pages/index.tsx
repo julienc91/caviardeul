@@ -5,6 +5,7 @@ import Game from "../components/game";
 import Navbar from "../components/navbar";
 import InfoModal from "../components/infoModal";
 import ScoreModal from "../components/scoreModal";
+import IntroductionModal from "../components/introductionModal";
 
 const Home: NextPage = () => {
   const [showInfoModal, setShowInfoModal] = useState(false);
@@ -44,6 +45,7 @@ const Home: NextPage = () => {
 
       <InfoModal open={showInfoModal} onClose={handleCloseInfoModal} />
       <ScoreModal open={showScoreModal} onClose={handleCloseScoreModal} />
+      <IntroductionModal />
     </>
   );
 };
