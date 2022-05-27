@@ -29,8 +29,10 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Caviardeul</title>
+        <title>Caviardeul - Déchiffrez l&apos;article du jour</title>
         <meta name="description" content="Un jeu de réflexion quotidien" />
+        <meta name="author" content="@julienc91" />
+
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -47,3 +49,9 @@ const Home: NextPage = () => {
 };
 
 export default Home;
+
+export const getStaticProps = async () => {
+  return {
+    props: {},
+  };
+};

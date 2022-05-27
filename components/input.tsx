@@ -14,19 +14,19 @@ const Input: React.FC<{
     [setValue]
   );
 
+  const handleSubmit = useCallback(() => {
+    onConfirm(splitWords(value).filter(isWord).join().toLocaleLowerCase());
+    setValue("");
+  }, [onConfirm, value]);
+
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {
       if (event.key === "Enter") {
         handleSubmit();
       }
     },
-    [onConfirm, value]
+    [onConfirm, value, handleSubmit]
   );
-
-  const handleSubmit = useCallback(() => {
-    onConfirm(splitWords(value).filter(isWord).join().toLocaleLowerCase());
-    setValue("");
-  }, [onConfirm, value]);
 
   return (
     <div className="guess-input">
