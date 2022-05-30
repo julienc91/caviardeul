@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { commonWords, isWord, splitWords } from "../utils/caviarding";
+import {
+  commonWords,
+  isWord,
+  splitWords,
+  standardizeText,
+} from "../utils/caviarding";
 import { GameContext } from "../utils/game";
 
 const _WordContainer: React.FC<{ node: any }> = ({ node }) => {
@@ -9,9 +14,9 @@ const _WordContainer: React.FC<{ node: any }> = ({ node }) => {
   return (
     <GameContext.Consumer>
       {({ words, selection }) => {
-        const lowercaseWord = word.toLocaleLowerCase();
-        const revealed = words.has(lowercaseWord);
-        const selected = selection && selection[0] === lowercaseWord;
+        const standardizedWord = standardizeText(word);
+        const revealed = words.has(standardizedWord);
+        const selected = selection && selection[0] === standardizedWord;
         if (revealed) {
           return (
             <span className={`word` + (selected ? " selected" : "")}>
@@ -49,8 +54,9 @@ const ArticleContainer: React.FC<{
         {reveal
           ? article
           : splitWords(article).reduce((value, word) => {
+              const standardizedWord = standardizeText(word);
               let currentValue;
-              if (!commonWords.has(word.toLocaleLowerCase()) && isWord(word)) {
+              if (!commonWords.has(standardizedWord) && isWord(word)) {
                 currentValue = `**${word}**`;
               } else {
                 currentValue = word;

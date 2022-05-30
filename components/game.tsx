@@ -7,6 +7,7 @@ import {
   countOccurrences,
   isWord,
   splitWords,
+  standardizeText,
 } from "../utils/caviarding";
 import HistoryContainer from "./history";
 import { useArticle } from "../hooks/article";
@@ -31,10 +32,12 @@ const Game: React.FC = () => {
   const [saveLoaded, setSaveLoaded] = useState(false);
 
   const titleWords = useMemo(() => {
-    return splitWords(title)
-      .filter(isWord)
-      .map((word) => word.toLocaleLowerCase());
+    return splitWords(title).filter(isWord).map(standardizeText);
   }, [title]);
+
+  const standardizedArticle = useMemo(() => {
+    return standardizeText(article);
+  }, [article]);
 
   const handleChangeSelection = useCallback(
     (word: string | null) => {
@@ -56,7 +59,7 @@ const Game: React.FC = () => {
 
   const handleReveal = useCallback(
     (word: string) => {
-      word = word.toLocaleLowerCase();
+      word = standardizeText(word);
 
       if (isOver || commonWords.has(word)) {
         handleChangeSelection(null);
@@ -78,7 +81,7 @@ const Game: React.FC = () => {
         return;
       }
 
-      const nbOccurrences = countOccurrences(article, word);
+      const nbOccurrences = countOccurrences(standardizedArticle, word);
       const newRevealedWords = revealedWords.add(word);
       setRevealedWords(new Set(newRevealedWords));
       setHistory((prev) => [...prev, [word, nbOccurrences]]);

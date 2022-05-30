@@ -38,8 +38,8 @@ const IntroductionfoModal: React.FC = () => {
         plus vite&nbsp;!
       </p>
       <p>
-        <b>Attention&nbsp;!</b> Les accents et les caractères spéciaux sont pris
-        en compte. Par contre, les majuscules et minuscules ne le sont pas.
+        Ni la casse, ni les caractères spéciaux ou les accents ne sont pris en
+        compte.
       </p>
       <p>
         Chaque jour, une nouvelle partie démarre avec un nouvel article à

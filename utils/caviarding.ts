@@ -1,16 +1,17 @@
+import latinize from "latinize";
+
 export const commonWords = new Set<string>([
   "a",
-  "à",
   "ainsi",
   "alors",
-  "après",
+  "apres",
   "autour",
   "avant",
   "avec",
   "au",
   "aux",
   "c",
-  "ça",
+  "ca",
   "car",
   "ce",
   "ces",
@@ -37,7 +38,6 @@ export const commonWords = new Set<string>([
   "ne",
   "non",
   "ou",
-  "où",
   "par",
   "pas",
   "pendant",
@@ -69,10 +69,19 @@ export const isWord = (word: string): boolean => {
 };
 
 export const countOccurrences = (text: string, word: string): number => {
+  const standardizedWord = standardizeText(word);
   const regex = new RegExp(
-    `\([${punctuationList}]|^)(${word.toLocaleLowerCase()})([${punctuationList}]|$)`,
+    `\([${punctuationList}]|^)(${standardizedWord})([${punctuationList}]|$)`,
     "gim"
   );
   const matches = Array.from(text.matchAll(regex));
   return matches.length;
+};
+
+const removeDiacritics = (word: string): string => {
+  return latinize(word);
+};
+
+export const standardizeText = (word: string): string => {
+  return removeDiacritics(word.toLocaleLowerCase());
 };
