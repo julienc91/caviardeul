@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { History } from "../types";
 
 const HistoryContainer: React.FC<{
@@ -6,6 +6,17 @@ const HistoryContainer: React.FC<{
   selectedWord: string | null;
   onSelectionChange: (world: string) => void;
 }> = ({ history, selectedWord, onSelectionChange }) => {
+  const selectedRow = useRef<HTMLTableRowElement>(null);
+  useEffect(() => {
+    if (selectedRow.current) {
+      selectedRow.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "center",
+      });
+    }
+  }, [selectedRow, selectedWord]);
+
   return (
     <div className="guess-history">
       <table>
@@ -29,6 +40,7 @@ const HistoryContainer: React.FC<{
                     (isClickable ? "clickable " : "")
                   }
                   onClick={() => onSelectionChange(word)}
+                  ref={isSelectedWord ? selectedRow : null}
                 >
                   <td>{i + 1}</td>
                   <td>{word}</td>

@@ -338,7 +338,7 @@ nav {
       tbody tr {
         border-bottom: 1px solid $grey1;
 
-        &:hover, &.selecteed {
+        &:hover, &.selected {
           background-color: $grey1;
           &.clickable {
             cursor: pointer;
