@@ -58,8 +58,18 @@ const Game: React.FC = () => {
     (word: string) => {
       word = word.toLocaleLowerCase();
 
-      if (!word.length || isOver || commonWords.has(word)) {
+      if (isOver || commonWords.has(word)) {
         handleChangeSelection(null);
+        return;
+      }
+
+      if (!word.length) {
+        if (selection) {
+          const [selectedWord, _] = selection;
+          handleChangeSelection(selectedWord);
+        } else {
+          handleChangeSelection(null);
+        }
         return;
       }
 
@@ -73,7 +83,7 @@ const Game: React.FC = () => {
       setRevealedWords(new Set(newRevealedWords));
       setHistory((prev) => [...prev, [word, nbOccurrences]]);
     },
-    [revealedWords, article, isOver, handleChangeSelection]
+    [revealedWords, article, isOver, selection, handleChangeSelection]
   );
 
   // Check if game is over
