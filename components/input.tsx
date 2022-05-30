@@ -36,7 +36,7 @@ const Input: React.FC<{
         value={value}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
-        placeholder="Un mot?"
+        placeholder="Un mot ?"
       />
       <input
         type="submit"

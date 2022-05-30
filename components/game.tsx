@@ -86,7 +86,13 @@ const Game: React.FC = () => {
       setRevealedWords(new Set(newRevealedWords));
       setHistory((prev) => [...prev, [word, nbOccurrences]]);
     },
-    [revealedWords, article, isOver, selection, handleChangeSelection]
+    [
+      revealedWords,
+      isOver,
+      selection,
+      handleChangeSelection,
+      standardizedArticle,
+    ]
   );
 
   // Check if game is over
