@@ -31,10 +31,12 @@ const elementsToRemove = [
   "sup.reference",
 ];
 const elementsToStripAfter = [
-  "h2 #Voir_aussi",
+  "h2 #Annexes",
+  "h2 #Bibliographie",
   "h2 #Notes_et_références",
   "h2 #Notes",
   "h2 #Références",
+  "h2 #Voir_aussi",
 ];
 const elementsToFlatten = ["a", "abbr", "b", "i", "span", "sup", "time"];
 
