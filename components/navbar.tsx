@@ -5,7 +5,8 @@ import ExternalLink from "./externalLink";
 const Navbar: React.FC<{
   onShowInfoModal: () => void;
   onShowScoreModal: () => void;
-}> = ({ onShowInfoModal, onShowScoreModal }) => {
+  onShowSettingsModal: () => void;
+}> = ({ onShowInfoModal, onShowScoreModal, onShowSettingsModal }) => {
   return (
     <nav>
       <h1>Caviardeul</h1>
@@ -15,6 +16,9 @@ const Navbar: React.FC<{
         </li>
         <li className="left" onClick={onShowScoreModal}>
           Scores
+        </li>
+        <li className="left" onClick={onShowSettingsModal}>
+          Options
         </li>
         <li className="divider" />
         <li>

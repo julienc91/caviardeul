@@ -22,3 +22,7 @@ export type ScoreHistory = {
   nbTrials: number;
   accuracy: number;
 }[];
+
+export type Settings = {
+  lightMode: boolean;
+};

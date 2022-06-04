@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useCallback, useState } from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Game from "../components/game";
@@ -6,26 +6,36 @@ import Navbar from "../components/navbar";
 import InfoModal from "../components/infoModal";
 import ScoreModal from "../components/scoreModal";
 import IntroductionModal from "../components/introductionModal";
+import SettingsModal from "../components/settingsModal";
 
 const Home: NextPage = () => {
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showScoreModal, setShowScoreModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
 
-  const handleShowInfoModal = () => {
+  const handleShowInfoModal = useCallback(() => {
     setShowInfoModal(true);
-  };
+  }, []);
 
-  const handleCloseInfoModal = () => {
+  const handleCloseInfoModal = useCallback(() => {
     setShowInfoModal(false);
-  };
+  }, []);
 
-  const handleShowScoreModal = () => {
+  const handleShowScoreModal = useCallback(() => {
     setShowScoreModal(true);
-  };
+  }, []);
 
-  const handleCloseScoreModal = () => {
+  const handleCloseScoreModal = useCallback(() => {
     setShowScoreModal(false);
-  };
+  }, []);
+
+  const handleShowSettingsModal = useCallback(() => {
+    setShowSettingsModal(true);
+  }, []);
+
+  const handleCloseSettingsModal = useCallback(() => {
+    setShowSettingsModal(false);
+  }, []);
 
   return (
     <>
@@ -40,11 +50,16 @@ const Home: NextPage = () => {
       <Navbar
         onShowInfoModal={handleShowInfoModal}
         onShowScoreModal={handleShowScoreModal}
+        onShowSettingsModal={handleShowSettingsModal}
       />
       <Game />
 
       <InfoModal open={showInfoModal} onClose={handleCloseInfoModal} />
       <ScoreModal open={showScoreModal} onClose={handleCloseScoreModal} />
+      <SettingsModal
+        open={showSettingsModal}
+        onClose={handleCloseSettingsModal}
+      />
       <IntroductionModal />
     </>
   );

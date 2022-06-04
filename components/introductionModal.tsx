@@ -34,7 +34,7 @@ const IntroductionfoModal: React.FC = () => {
       <p>
         Le jeu s&apos;arrête lorsque tous les mots du titre de l&apos;article
         sont découverts. Vous pouvez faire autant de propositions que vous le
-        souhaitez, mais essayez d&apos; être efficace en terminant la partie au
+        souhaitez, mais essayez d&apos;être efficace en terminant la partie au
         plus vite&nbsp;!
       </p>
       <p>

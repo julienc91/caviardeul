@@ -1,4 +1,4 @@
-import { History, ScoreHistory } from "../types";
+import { History, ScoreHistory, Settings } from "../types";
 import { decode, encode } from "./encryption";
 
 class SaveManagement {
@@ -110,6 +110,18 @@ class SaveManagement {
 
   static clearHistory(): void {
     localStorage.removeItem("history");
+  }
+
+  static getSettings(): Settings | null {
+    const data = localStorage.getItem("settings");
+    if (!data) {
+      return null;
+    }
+    return JSON.parse(data);
+  }
+
+  static saveSettings(settings: Settings): void {
+    localStorage.setItem("settings", JSON.stringify(settings));
   }
 }
 

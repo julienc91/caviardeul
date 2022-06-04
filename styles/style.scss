@@ -33,6 +33,12 @@ $historyWidth: 30%;
 
 $breakpoint: 800px;
 
+// dark/light mode
+:root {
+  --color-background: #{$dark2};
+  --color-text: #{$light3};
+}
+
 // mixins
 @mixin media-max($_max-width) {
     @media screen and (max-width: $_max-width) {
@@ -61,10 +67,11 @@ $breakpoint: 800px;
 
 // main
 body {
-  background-color: $dark2;
+  background-color: var(--color-background);
   color: $light2;
   height: 100vh;
   overflow: auto;
+  transition: color 0.5s ease-in, background-color 0.5s ease-out;
 
   @include media-max($breakpoint) {
     .medium-up {
@@ -83,7 +90,7 @@ nav {
   height: $navbarHeight;
   justify-content: left;
   padding: 0 20px;
-  width: 100%;
+  min-width: 100%;
 
   @include media-max($breakpoint) {
     padding: 0 10px;
@@ -97,19 +104,25 @@ nav {
   ul {
     align-items: center;
     display: flex;
-    flex-flow: row wrap;
+    flex-flow: row;
     justify-content: space-between;
     list-style: none;
     flex: 1;
+
+    @include media-max($breakpoint) {
+      padding: 0 0 0 10px
+    }
+
     li {
       cursor: pointer;
+      white-space: nowrap;
       &.divider {
         flex: 1;
       }
       &.left {
         padding-right: 40px;
         @include media-max($breakpoint) {
-          padding-right: 20px;
+          padding-right: 15px;
         }
       }
     }
@@ -249,7 +262,7 @@ nav {
       width: 40px;
       height: 40px;
       margin: 100px auto;
-      background-color: $light3;
+      background-color: var(--color-text);
 
       border-radius: 100%;
       animation: animation 1.0s infinite ease-in-out;
@@ -267,7 +280,7 @@ nav {
   }
 
   .article-container {
-    color: $light3;
+    color: var(--color-text);
     font-family: monospace;
     font-size: 1.3rem;
     line-height: 2rem;
@@ -291,8 +304,8 @@ nav {
     }
 
     .caviarded {
-      background-color: $light3;
-      border: solid 1px $light3;
+      background-color: var(--color-text);
+      border: solid 1px var(--color-text);
       &:nth-of-type(5n) {
         border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
       }
