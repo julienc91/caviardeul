@@ -293,19 +293,19 @@ nav {
     .caviarded {
       background-color: $light3;
       border: solid 1px $light3;
-      &.v1 {
+      &:nth-of-type(5n) {
         border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
       }
-      &.v2 {
+      &:nth-of-type(5n + 1) {
         border-radius: 225px 30px 255px 30px/30px 255px 30px 225px;
       }
-      &.v3 {
+      &:nth-of-type(5n + 2) {
         border-radius: 200px 30px 255px 20px/20px 215px 30px 250px;
       }
-      &.v4 {
+      &:nth-of-type(5n + 3) {
         border-radius: 220px 50px 215px 30px/40px 240px 20px 210px;
       }
-      &.v5 {
+      &:nth-of-type(5n + 4) {
         border-radius: 30px 255px 30px 225px/30px 225px 30px 250px;
       }
     }

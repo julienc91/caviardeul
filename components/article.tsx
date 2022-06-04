@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ReactMarkdown from "react-markdown";
 import {
   commonWords,
@@ -10,7 +10,6 @@ import { GameContext } from "../utils/game";
 
 const _WordContainer: React.FC<{ node: any }> = ({ node }) => {
   const word = node.children[0].value;
-  const [caviardingStyle] = useState<number>(Math.floor(Math.random() * 5) + 1);
   return (
     <GameContext.Consumer>
       {({ words, selection }) => {
@@ -25,9 +24,7 @@ const _WordContainer: React.FC<{ node: any }> = ({ node }) => {
           );
         } else {
           return (
-            <span className={`word caviarded v${caviardingStyle}`}>
-              {"█".repeat(word.length)}
-            </span>
+            <span className="word caviarded">{"█".repeat(word.length)}</span>
           );
         }
       }}
