@@ -43,7 +43,7 @@ const ArticleContainer: React.FC<{
   reveal: boolean;
 }> = ({ article, reveal }) => {
   return (
-    <div className="article-container">
+    <div id="article" className="article-container">
       <MarkdownContainer
         components={{
           strong: ({ node }) => {

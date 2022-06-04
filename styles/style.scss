@@ -369,6 +369,18 @@ nav {
     height: $guessInputHeight;
     width: 100%;
 
+    .article-navigation {
+      align-items: center;
+      background-color: $dark2;
+      border: 1px solid $light3;
+      border-right: 0;
+      cursor: pointer;
+      display: flex;
+      height: 40px;
+      justify-content: center;
+      width: 40px;
+    }
+
     input {
       height: 40px;
       font-size: 1rem;

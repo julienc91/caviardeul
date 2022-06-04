@@ -1,5 +1,7 @@
 import React, { ChangeEvent, useCallback, useState } from "react";
 import { isWord, splitWords } from "../utils/caviarding";
+import { ArrowUp } from "../assets/inlineImages";
+import Image from "next/image";
 
 const Input: React.FC<{
   disabled: boolean;
@@ -25,11 +27,24 @@ const Input: React.FC<{
         handleSubmit();
       }
     },
-    [onConfirm, value, handleSubmit]
+    [handleSubmit]
   );
+
+  const handleScrollTop = useCallback(() => {
+    document
+      .getElementById("article")
+      ?.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   return (
     <div className="guess-input">
+      <div
+        className="article-navigation"
+        onClick={handleScrollTop}
+        title="Retour au début"
+      >
+        <Image src={ArrowUp} width={25} height={25} alt="Flèche vers le haut" />
+      </div>
       <input
         type="text"
         disabled={disabled}
