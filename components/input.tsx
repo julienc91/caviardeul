@@ -8,6 +8,7 @@ const Input: React.FC<{
   onConfirm: (value: string) => void;
 }> = ({ disabled, onConfirm }) => {
   const [value, setValue] = useState<string>("");
+  const [lastValue, setLastValue] = useState<string>("");
 
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -18,6 +19,7 @@ const Input: React.FC<{
 
   const handleSubmit = useCallback(() => {
     onConfirm(splitWords(value).filter(isWord).join().toLocaleLowerCase());
+    setLastValue(value);
     setValue("");
   }, [onConfirm, value]);
 
@@ -25,9 +27,13 @@ const Input: React.FC<{
     (event: React.KeyboardEvent<HTMLInputElement>) => {
       if (event.key === "Enter") {
         handleSubmit();
+      } else if (event.key === "ArrowDown" && !value.length) {
+        setValue(lastValue);
+      } else if (event.key === "ArrowUp" && value === lastValue) {
+        setValue("");
       }
     },
-    [handleSubmit]
+    [handleSubmit, value, lastValue]
   );
 
   const handleScrollTop = useCallback(() => {
