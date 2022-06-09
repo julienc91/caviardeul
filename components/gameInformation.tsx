@@ -18,7 +18,7 @@ const GameInformation: React.FC<{
       nbTrials +
       " coup" +
       (nbTrials > 1 ? "s" : "") +
-      " !"
+      "\u00A0!"
   )}&url=${encodeURIComponent(
     "https://caviardeul.julienc.io/"
   )}&hashtags=caviardeul`;
