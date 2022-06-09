@@ -14,7 +14,6 @@ const SettingsModal: React.FC<{ open: boolean; onClose: () => void }> = ({
   const [lightMode, setLightMode] = useState(false);
 
   const handleToggleLightMode = useCallback(() => {
-    console.log(lightMode);
     const [backgroundColor, textColor] = getColorScheme(!lightMode);
 
     document.documentElement.style.setProperty("--color-text", textColor);

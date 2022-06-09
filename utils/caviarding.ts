@@ -60,11 +60,14 @@ const punctuationList = "{}()\\[\\]\\\\.,;:!¡?¿/@#%\\^&*_~+\\-=<>«»\"'\\s";
 const wordRegex = new RegExp(`^[^${punctuationList}]+$`, "i");
 const separatorRegex = new RegExp(`([${punctuationList}]+)`, "gim");
 
-export const splitWords = (text: string): string[] => {
+export const splitWords = (
+  text: string,
+  isMarkdown: boolean = false
+): string[] => {
   const splittedText = text.split(separatorRegex);
   const result = [];
 
-  if (splittedText.length >= 3) {
+  if (splittedText.length >= 3 && isMarkdown) {
     for (let i = 0; i < splittedText.length - 2; i++) {
       // Regroup items when they correspond to an ordered list marker
       const separator1 = splittedText[i];

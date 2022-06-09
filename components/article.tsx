@@ -50,7 +50,7 @@ const ArticleContainer: React.FC<{
       >
         {reveal
           ? article
-          : splitWords(article).reduce((value, word) => {
+          : splitWords(article, true).reduce((value, word) => {
               const standardizedWord = standardizeText(word);
               let currentValue;
               if (!commonWords.has(standardizedWord) && isWord(word)) {
