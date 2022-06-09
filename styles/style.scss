@@ -157,10 +157,9 @@ nav {
     background-color: $light4;
     padding: 20px;
     border-radius: 5px;
-    max-width: min(600px, 90vw);
+    max-height: 90vh;
+    max-width: min(700px, 90vw);
     min-width: 350px;
-    height: auto;
-    max-height: 80vh;
     overflow: auto;
 
     a {
@@ -205,7 +204,7 @@ nav {
 
       tbody {
         display: block;
-        max-height: 70vh;
+        max-height: 40vh;
         overflow: auto;
         tr {
           border-bottom: 1px solid $light1;
