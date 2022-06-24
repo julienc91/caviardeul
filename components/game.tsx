@@ -3,8 +3,8 @@ import { History } from "../types";
 import ArticleContainer from "./article";
 import Input from "./input";
 import {
-  commonWords,
   countOccurrences,
+  isCommonWord,
   isWord,
   splitWords,
   standardizeText,
@@ -23,9 +23,7 @@ const Game: React.FC = () => {
   const pageName = data?.pageName ?? "";
   const puzzleId = data?.puzzleId ?? -1;
 
-  const [revealedWords, setRevealedWords] = useState<Set<string>>(
-    new Set(Array.from(commonWords))
-  );
+  const [revealedWords, setRevealedWords] = useState<Set<string>>(new Set());
   const [selection, setSelection] = useState<[string, number] | null>(null);
   const [history, setHistory] = useState<History>([]);
   const [isOver, setIsOver] = useState(false);
@@ -59,13 +57,13 @@ const Game: React.FC = () => {
 
   const handleReveal = useCallback(
     (word: string) => {
-      word = standardizeText(word);
-
-      if (isOver || commonWords.has(word)) {
+      if (isOver || isCommonWord(word)) {
         handleChangeSelection(null);
         return;
       }
 
+      word = word.toLocaleLowerCase();
+      const standardizedWord = standardizeText(word);
       if (!word.length) {
         if (selection) {
           const [selectedWord, _] = selection;
@@ -76,21 +74,26 @@ const Game: React.FC = () => {
         return;
       }
 
-      handleChangeSelection(word);
-      if (revealedWords.has(word)) {
+      handleChangeSelection(standardizedWord);
+      if (revealedWords.has(standardizedWord)) {
         return;
       }
 
-      const nbOccurrences = countOccurrences(standardizedArticle, word);
-      const newRevealedWords = revealedWords.add(word);
+      const nbOccurrences = countOccurrences(
+        article,
+        standardizedArticle,
+        word
+      );
+      const newRevealedWords = revealedWords.add(standardizedWord);
       setRevealedWords(new Set(newRevealedWords));
-      setHistory((prev) => [...prev, [word, nbOccurrences]]);
+      setHistory((prev) => [...prev, [standardizedWord, nbOccurrences]]);
     },
     [
       revealedWords,
       isOver,
       selection,
       handleChangeSelection,
+      article,
       standardizedArticle,
     ]
   );
@@ -101,8 +104,7 @@ const Game: React.FC = () => {
       !isOver &&
       titleWords.length &&
       titleWords.every(
-        (titleWord) =>
-          revealedWords.has(titleWord) || commonWords.has(titleWord)
+        (titleWord) => revealedWords.has(titleWord) || isCommonWord(titleWord)
       )
     ) {
       setIsOver(true);

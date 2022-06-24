@@ -1,17 +1,18 @@
 import latinize from "latinize";
 
-export const commonWords = new Set<string>([
+const commonWords = new Set<string>([
   "a",
+  "à",
   "ainsi",
   "alors",
-  "apres",
+  "après",
   "autour",
   "avant",
   "avec",
   "au",
   "aux",
   "c",
-  "ca",
+  "ça",
   "car",
   "ce",
   "ces",
@@ -22,6 +23,7 @@ export const commonWords = new Set<string>([
   "de",
   "depuis",
   "des",
+  "dès",
   "donc",
   "du",
   "en",
@@ -38,6 +40,7 @@ export const commonWords = new Set<string>([
   "ne",
   "non",
   "ou",
+  "où",
   "par",
   "pas",
   "pendant",
@@ -94,14 +97,46 @@ export const isWord = (word: string): boolean => {
   return !!word.match(wordRegex);
 };
 
-export const countOccurrences = (text: string, word: string): number => {
+export const isCommonWord = (word: string): boolean => {
+  return commonWords.has(word.toLocaleLowerCase());
+};
+
+const getRelatedCommonWords = (word: string): string[] => {
+  word = word.toLocaleLowerCase();
+  return Array.from(commonWords).filter(
+    (commonWord) => word === standardizeText(commonWord)
+  );
+};
+
+export const countOccurrences = (
+  text: string,
+  standardizedText: string,
+  word: string
+): number => {
+  if (isCommonWord(word)) {
+    throw new Error(`Cannot count occurrences of common word: ${word}`);
+  }
+
   const standardizedWord = standardizeText(word);
   const regex = new RegExp(
     `\([${punctuationList}]|^)(${standardizedWord})([${punctuationList}]|$)`,
     "gim"
   );
-  const matches = Array.from(text.matchAll(regex));
-  return matches.length;
+  const matches = Array.from(standardizedText.matchAll(regex));
+  let count = matches.length;
+
+  // Substract matches of the related common words, if they exist
+  const relatedCommonWords = getRelatedCommonWords(standardizedWord);
+  count -= relatedCommonWords
+    .map((commonWord) => {
+      const regex = new RegExp(
+        `\([${punctuationList}]|^)(${commonWord})([${punctuationList}]|$)`,
+        "gim"
+      );
+      return Array.from(text.matchAll(regex)).length;
+    })
+    .reduce((a, b) => a + b, 0);
+  return count;
 };
 
 const removeDiacritics = (word: string): string => {
