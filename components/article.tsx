@@ -1,7 +1,7 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import {
-  commonWords,
+  isCommonWord,
   isWord,
   splitWords,
   standardizeText,
@@ -51,9 +51,8 @@ const ArticleContainer: React.FC<{
         {reveal
           ? article
           : splitWords(article, true).reduce((value, word) => {
-              const standardizedWord = standardizeText(word);
               let currentValue;
-              if (!commonWords.has(standardizedWord) && isWord(word)) {
+              if (!isCommonWord(word) && isWord(word)) {
                 currentValue = `**${word}**`;
               } else {
                 currentValue = word;
