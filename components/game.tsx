@@ -168,13 +168,14 @@ const Game: React.FC = () => {
           <Input onConfirm={handleReveal} disabled={isOver} />
         </div>
         <div className="right-container">
-          {isOver ? (
+          {isOver && (
             <GameInformation
               history={history}
               pageName={pageName}
               puzzleId={puzzleId}
             />
-          ) : (
+          )}
+          {!isLoading && (
             <HistoryContainer
               history={history}
               selectedWord={selection ? selection[0] : null}

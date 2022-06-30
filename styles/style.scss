@@ -307,6 +307,9 @@ nav {
   }
 
   .right-container {
+    background-color: $dark1;
+    height: calc(100vh - #{$navbarHeight + $footerHeight});
+    overflow-y: auto;
     width: $historyWidth;
 
     @include media-max($breakpoint) {
@@ -388,10 +391,8 @@ nav {
   }
 
   .guess-history, .game-information {
-    background-color: $dark1;
     color: $light3;
-    height: calc(100vh - #{$navbarHeight + $footerHeight});
-    overflow-y: auto;
+    max-height: 100%;
     width: 100%;
 
     @include media-max($breakpoint) {
@@ -430,6 +431,8 @@ nav {
   }
 
   .game-information {
+    border-bottom: 2px solid $light1;
+    margin-bottom: 50px;
     padding: 0 20px;
     a {
       color: $lightBlue;
