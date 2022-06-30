@@ -19,6 +19,8 @@ const elementsToRemove = [
   ".gallery",
   ".hatnote",
   ".infobox",
+  ".infobox_v2",
+  ".infobox_v3",
   ".metadata",
   ".mw-editsection",
   ".mw-empty-elt",
