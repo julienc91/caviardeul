@@ -24,7 +24,9 @@ const _WordContainer: React.FC<{ node: any }> = ({ node }) => {
           );
         } else {
           return (
-            <span className="word caviarded">{"█".repeat(word.length)}</span>
+            <span className="word caviarded" data-word-length={word.length}>
+              {"█".repeat(word.length)}
+            </span>
           );
         }
       }}

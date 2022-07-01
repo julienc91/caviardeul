@@ -372,6 +372,10 @@ nav {
     .caviarded {
       background-color: var(--color-text);
       border: solid 1px var(--color-text);
+      cursor: pointer;
+      position: relative;
+      user-select: none;
+
       &:nth-of-type(5n) {
         border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
       }
@@ -386,6 +390,24 @@ nav {
       }
       &:nth-of-type(5n + 4) {
         border-radius: 30px 255px 30px 225px/30px 225px 30px 250px;
+      }
+
+      &::after {
+        align-items: center;
+        content: attr(data-word-length);
+        color: var(--color-background);
+        display: flex;
+        height: 100%;
+        left: 0;
+        justify-content: center;
+        opacity: 0;
+        position: absolute;
+        top: 0;
+        transition: opacity 0.2s ease-in-out;
+        width: 100%;
+      }
+      &:active::after, &:focus::after, &:focus-within::after {
+        opacity: 1;
       }
     }
   }
