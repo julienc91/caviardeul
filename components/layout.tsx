@@ -5,6 +5,7 @@ import InfoModal from "./infoModal";
 import ScoreModal from "./scoreModal";
 import IntroductionModal from "./introductionModal";
 import SettingsModal from "./settingsModal";
+import SettingsManager from "./settingsManager";
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [showInfoModal, setShowInfoModal] = useState(false);
@@ -51,15 +52,17 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         onShowSettingsModal={handleShowSettingsModal}
       />
 
-      {children}
+      <SettingsManager>
+        {children}
 
-      <InfoModal open={showInfoModal} onClose={handleCloseInfoModal} />
-      <ScoreModal open={showScoreModal} onClose={handleCloseScoreModal} />
-      <SettingsModal
-        open={showSettingsModal}
-        onClose={handleCloseSettingsModal}
-      />
-      <IntroductionModal />
+        <InfoModal open={showInfoModal} onClose={handleCloseInfoModal} />
+        <ScoreModal open={showScoreModal} onClose={handleCloseScoreModal} />
+        <SettingsModal
+          open={showSettingsModal}
+          onClose={handleCloseSettingsModal}
+        />
+        <IntroductionModal />
+      </SettingsManager>
     </>
   );
 };

@@ -1,6 +1,6 @@
 import { convertToMarkdown, stripArticle } from "./parsing";
 import { Article } from "../types";
-import { encodedPageList, firstGameDate } from "./settings";
+import { encodedPageList, firstGameDate } from "./config";
 import { decode } from "./encryption";
 
 export const getNextArticleCountdown = () => {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import ReactMarkdown from "react-markdown";
 import {
   isCommonWord,
@@ -7,9 +7,11 @@ import {
   standardizeText,
 } from "../utils/caviarding";
 import { GameContext } from "../utils/game";
+import { SettingsContext } from "../utils/settings";
 
 const _WordContainer: React.FC<{ node: any }> = ({ node }) => {
   const word = node.children[0].value;
+  const { settings } = useContext(SettingsContext);
   return (
     <GameContext.Consumer>
       {({ words, selection }) => {
@@ -24,7 +26,13 @@ const _WordContainer: React.FC<{ node: any }> = ({ node }) => {
           );
         } else {
           return (
-            <span className="word caviarded" data-word-length={word.length}>
+            <span
+              className={
+                "word caviarded" +
+                (settings?.displayWordLength ? " word-length" : "")
+              }
+              data-word-length={word.length}
+            >
               {"█".repeat(word.length)}
             </span>
           );

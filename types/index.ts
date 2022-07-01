@@ -25,4 +25,10 @@ export type ScoreHistory = {
 
 export type Settings = {
   lightMode: boolean;
+  displayWordLength: boolean;
+};
+
+export type SettingsState = {
+  settings: Settings | null;
+  onChangeSettings: (settings: Partial<Settings>) => void;
 };
