@@ -205,11 +205,13 @@ nav {
 
 // info modal
 .modal-container {
+  animation: 0.2s modal-animation;
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  transition: opacity 0.2s ease-in-out;
   z-index: 100;
 
   .modal-background {
@@ -220,6 +222,11 @@ nav {
     opacity: 0.8;
     width: 100%;
     height: 100%;
+  }
+
+  @keyframes modal-animation {
+    from { opacity: 0; }
+    to   { opacity: 1; }
   }
 
   .modal {
