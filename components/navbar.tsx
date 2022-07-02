@@ -15,7 +15,10 @@ const Navbar: React.FC<{
 
   return (
     <nav>
-      <button className="hamburger" onClick={handleClick}>
+      <button
+        className={"hamburger" + (active ? " active" : "")}
+        onClick={handleClick}
+      >
         <span className="line" />
         <span className="line" />
         <span className="line" />
