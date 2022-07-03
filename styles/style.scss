@@ -375,6 +375,7 @@ main {
     line-height: 2rem;
     height: calc(100vh - #{$navbarHeight + $footerHeight + $guessInputHeight});
     overflow: auto;
+    padding: 0 20px;
 
     @include media-max($breakpoint) {
       font-size: 1.1rem;
@@ -436,7 +437,7 @@ main {
     }
   }
 
-  .right-container {
+  .right-container, .left-container {
     padding: 0;
   }
 

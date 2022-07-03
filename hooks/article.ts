@@ -2,11 +2,14 @@ import { useMutation, useQuery } from "react-query";
 import { Article, CustomGameCreation } from "../types";
 import { decode } from "../utils/encryption";
 
-export const useArticle = () => {
+export const useArticle = (customPuzzleId?: string) => {
   return useQuery<Article, Error>(
     "getArticle",
     () => {
-      return fetch(`/api/article`)
+      const url = customPuzzleId
+        ? `/api/custom/${customPuzzleId}`
+        : "/api/article";
+      return fetch(url)
         .then((res) => res.json())
         .then((res) => {
           const { key, puzzleId, pageName, title, article } = res;

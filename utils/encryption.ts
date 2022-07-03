@@ -23,3 +23,10 @@ export const decode = (encoded: string, key: string): string => {
 export const encode = (decoded: string, key: string): string => {
   return AES.encrypt(decoded, key).toString();
 };
+
+/**
+ * Generate a random key.
+ */
+export const generateKey = (): string => {
+  return Math.random().toString(36).substring(2, 15);
+};
