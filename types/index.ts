@@ -1,8 +1,18 @@
+export type Error = {
+  error: string;
+  debug?: string;
+};
+
 export type Article = {
   key?: string;
   puzzleId: number;
   pageName: string;
   article: string;
+  title: string;
+};
+
+export type CustomGameCreation = {
+  pageId: string;
   title: string;
 };
 

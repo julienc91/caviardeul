@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Article } from "../../types";
+import { Article, Error } from "../../types";
 import { encode } from "../../utils/encryption";
 import {
   getArticle,
@@ -7,10 +7,26 @@ import {
   getNextArticleCountdown,
 } from "../../utils/article";
 
-const handler = async (req: NextApiRequest, res: NextApiResponse<Article>) => {
+const handler = async (
+  req: NextApiRequest,
+  res: NextApiResponse<Article | Error>
+) => {
+  const { method } = req;
+  if (method !== "GET") {
+    res.setHeader("Allow", ["GET"]);
+    res.status(405).json({ error: `Method ${method} Not Allowed` });
+    return;
+  }
+
   const [pageName, puzzleId] = getCurrentArticlePageId();
   const nextArticleCountdown = getNextArticleCountdown();
-  const { article, title } = await getArticle(puzzleId, pageName);
+  const result = await getArticle(pageName);
+  if (result === null) {
+    res.status(503).json({ error: "Article not found" });
+    return;
+  }
+
+  const { article, title } = result;
   const key = Math.random().toString();
 
   res.status(200);

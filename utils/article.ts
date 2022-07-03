@@ -15,19 +15,24 @@ export const getNextArticleCountdown = () => {
 };
 
 export const getArticle = async (
-  puzzleId: number,
   pageName: string
-): Promise<Article> => {
+): Promise<Omit<Article, "puzzleId"> | null> => {
   const wikipediaResponse = await fetch(
     `https://fr.wikipedia.org/w/api.php?action=parse&format=json&page=${pageName}&prop=text&formatversion=2&origin=*`
   );
+  if (wikipediaResponse.status !== 200) {
+    return null;
+  }
   const content = await wikipediaResponse.json();
+  if (content?.error) {
+    return null;
+  }
+
   const title = content.parse.title;
   const rawArticle = content.parse.text;
   const article =
     `# ${title}\n\n` + convertToMarkdown(stripArticle(rawArticle));
   return {
-    puzzleId,
     pageName,
     title,
     article,
