@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from "react";
 import { History } from "../types";
 import ArticleContainer from "./article";
 import Input from "./input";
@@ -99,7 +105,7 @@ const Game: React.FC = () => {
   );
 
   // Check if game is over
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (
       !isOver &&
       titleWords.length &&
@@ -131,7 +137,7 @@ const Game: React.FC = () => {
   }, [selection]);
 
   // Load history from save
-  useEffect((): void => {
+  useLayoutEffect((): void => {
     if (puzzleId > 0) {
       const savedHistory = SaveManagement.loadProgress(puzzleId);
       if (savedHistory) {
@@ -144,16 +150,16 @@ const Game: React.FC = () => {
 
   // Save progress and history
   useEffect((): void => {
-    if (puzzleId > 0) {
+    if (puzzleId > 0 && saveLoaded) {
       SaveManagement.saveProgress(puzzleId, history);
     }
-  }, [puzzleId, history]);
+  }, [puzzleId, history, saveLoaded]);
 
   useEffect((): void => {
-    if (puzzleId > 0) {
+    if (puzzleId > 0 && saveLoaded) {
       SaveManagement.saveHistory(puzzleId, title, history, isOver);
     }
-  }, [puzzleId, title, history, isOver]);
+  }, [puzzleId, title, history, isOver, saveLoaded]);
 
   return (
     <main id="game">
