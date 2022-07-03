@@ -1,6 +1,7 @@
 import React from "react";
 import { History } from "../types";
 import ExternalLink from "./externalLink";
+import { BASE_URL } from "../utils/config";
 
 const GameInformation: React.FC<{
   history: History;
@@ -19,9 +20,7 @@ const GameInformation: React.FC<{
       " coup" +
       (nbTrials > 1 ? "s" : "") +
       "\u00A0!"
-  )}&url=${encodeURIComponent(
-    "https://caviardeul.julienc.io/"
-  )}&hashtags=caviardeul`;
+  )}&url=${encodeURIComponent(BASE_URL + "/")}&hashtags=caviardeul`;
   return (
     <div className="game-information">
       <h2>Bravo&nbsp;!</h2>

@@ -228,3 +228,5 @@ export const encodedPageList = [
   "U2FsdGVkX1+MXaixdJsCpipQJ4xEXfvqpdT1l+KkqJqgiO4Ybavg0T76eoQ3Jj+K",
   "U2FsdGVkX1/+gpWTruqvgFt4abSiuaS9C1CjoO9oDu4=",
 ];
+
+export const BASE_URL = "https://caviardeul.julienc.io";
