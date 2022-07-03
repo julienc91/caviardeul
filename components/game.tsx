@@ -22,12 +22,13 @@ import SaveManagement from "../utils/save";
 import { GameContext } from "../utils/game";
 import GameInformation from "./gameInformation";
 
-const Game: React.FC = () => {
+const Game: React.FC<{ customPuzzleId?: string }> = ({ customPuzzleId }) => {
   const { data, isLoading, error } = useArticle();
   const article = data?.article ?? "";
   const title = data?.title ?? "";
   const pageName = data?.pageName ?? "";
   const puzzleId = data?.puzzleId ?? -1;
+  const custom = !!customPuzzleId;
 
   const [revealedWords, setRevealedWords] = useState<Set<string>>(new Set());
   const [selection, setSelection] = useState<[string, number] | null>(null);
@@ -138,7 +139,7 @@ const Game: React.FC = () => {
 
   // Load history from save
   useLayoutEffect((): void => {
-    if (puzzleId > 0) {
+    if (!custom && puzzleId > 0) {
       const savedHistory = SaveManagement.loadProgress(puzzleId);
       if (savedHistory) {
         setHistory(savedHistory);
@@ -146,20 +147,20 @@ const Game: React.FC = () => {
       }
       setSaveLoaded(true);
     }
-  }, [puzzleId]);
+  }, [custom, puzzleId]);
 
   // Save progress and history
   useEffect((): void => {
-    if (puzzleId > 0 && saveLoaded) {
+    if (!custom && puzzleId > 0 && saveLoaded) {
       SaveManagement.saveProgress(puzzleId, history);
     }
-  }, [puzzleId, history, saveLoaded]);
+  }, [custom, puzzleId, history, saveLoaded]);
 
   useEffect((): void => {
-    if (puzzleId > 0 && saveLoaded) {
+    if (!custom && puzzleId > 0 && saveLoaded) {
       SaveManagement.saveHistory(puzzleId, title, history, isOver);
     }
-  }, [puzzleId, title, history, isOver, saveLoaded]);
+  }, [custom, puzzleId, title, history, isOver, saveLoaded]);
 
   return (
     <main id="game">
@@ -176,6 +177,7 @@ const Game: React.FC = () => {
         <div className="right-container">
           {isOver && (
             <GameInformation
+              customPuzzleId={customPuzzleId}
               history={history}
               pageName={pageName}
               puzzleId={puzzleId}

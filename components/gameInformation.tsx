@@ -2,31 +2,35 @@ import React from "react";
 import { History } from "../types";
 import ExternalLink from "./externalLink";
 import { BASE_URL } from "../utils/config";
+import Link from "next/link";
 
 const GameInformation: React.FC<{
+  customPuzzleId?: string;
   history: History;
   pageName: string;
   puzzleId: number;
-}> = ({ history, pageName, puzzleId }) => {
+}> = ({ customPuzzleId, history, pageName, puzzleId }) => {
+  const customGame = !!customPuzzleId;
   const nbTrials = history.length;
   const accuracy = Math.round(
     (history.filter(([_, count]) => count > 0).length / nbTrials) * 100
   );
+
+  const shareSentence = `J'ai déchiffré ${
+    customGame ? "ce Caviardeul" : `le Caviardeul n°${puzzleId}`
+  } en ${nbTrials} coup${nbTrials > 1 ? "s" : ""}\u00A0!`;
+  const shareUrl = BASE_URL + (customGame ? `/custom/${customPuzzleId}` : "/");
   const shareLink = `http://twitter.com/share?text=${encodeURIComponent(
-    "J'ai déchiffré le Caviardeul n°" +
-      puzzleId +
-      " en " +
-      nbTrials +
-      " coup" +
-      (nbTrials > 1 ? "s" : "") +
-      "\u00A0!"
-  )}&url=${encodeURIComponent(BASE_URL + "/")}&hashtags=caviardeul`;
+    shareSentence
+  )}&url=${encodeURIComponent(shareUrl)}&hashtags=caviardeul`;
+
   return (
     <div className="game-information">
       <h2>Bravo&nbsp;!</h2>
       <p>
-        Vous avez déchiffré le Caviardeul du jour en {nbTrials} coup
-        {nbTrials > 1 ? "s" : ""} avec une précision de {accuracy}%.
+        Vous avez déchiffré{" "}
+        {customGame ? "cet article" : "le Caviardeul du jour"} en {nbTrials}{" "}
+        coup{nbTrials > 1 ? "s" : ""} avec une précision de {accuracy}%.
       </p>
       <ul>
         <li>
@@ -39,7 +43,14 @@ const GameInformation: React.FC<{
           Partager <ExternalLink href={shareLink}>sur Twitter</ExternalLink>
         </li>
       </ul>
-      <p>Revenez demain pour une nouvelle page à déchiffrer&nbsp;!</p>
+      {customGame ? (
+        <p>
+          Créez votre nouvelle{" "}
+          <Link href="/custom/nouveau">partie personnalisée</Link>&nbsp;
+        </p>
+      ) : (
+        <p>Revenez demain pour une nouvelle page à déchiffrer&nbsp;!</p>
+      )}
     </div>
   );
 };

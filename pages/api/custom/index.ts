@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { CustomGameCreation, Error } from "../../types";
-import { encode } from "../../utils/encryption";
-import { getArticle } from "../../utils/article";
+import { CustomGameCreation, Error } from "../../../types";
+import { encode } from "../../../utils/encryption";
+import { getArticle } from "../../../utils/article";
 
 const handler = async (
   req: NextApiRequest,

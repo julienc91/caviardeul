@@ -1,5 +1,5 @@
 import { History, ScoreHistory, Settings } from "../types";
-import { decode, encode } from "./encryption";
+import { decode, encode, generateKey } from "./encryption";
 
 class SaveManagement {
   static getIsTutorialSkipped() {
@@ -13,7 +13,7 @@ class SaveManagement {
   static getEncryptionKey(generate: boolean = false): string {
     let key = localStorage.getItem("key");
     if (!key && generate) {
-      key = Math.random().toString(36).substring(2, 15);
+      key = generateKey();
       localStorage.setItem("key", key);
     } else if (!key) {
       throw new Error("No encryption key found");
