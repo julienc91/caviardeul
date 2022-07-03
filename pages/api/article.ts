@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Article, Error } from "../../types";
-import { encode } from "../../utils/encryption";
+import { encode, generateKey } from "../../utils/encryption";
 import {
   getArticle,
   getCurrentArticlePageId,
@@ -27,7 +27,7 @@ const handler = async (
   }
 
   const { article, title } = result;
-  const key = Math.random().toString();
+  const key = generateKey();
 
   res.status(200);
   res.setHeader("Cache-Control", `s-maxage=${nextArticleCountdown}`);

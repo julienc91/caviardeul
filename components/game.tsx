@@ -22,13 +22,13 @@ import SaveManagement from "../utils/save";
 import { GameContext } from "../utils/game";
 import GameInformation from "./gameInformation";
 
-const Game: React.FC<{ customPuzzleId?: string }> = ({ customPuzzleId }) => {
-  const { data, isLoading, error } = useArticle();
+const Game: React.FC<{ pageId?: string }> = ({ pageId }) => {
+  const custom = !!pageId;
+  const { data, isLoading, error } = useArticle(pageId);
   const article = data?.article ?? "";
   const title = data?.title ?? "";
   const pageName = data?.pageName ?? "";
   const puzzleId = data?.puzzleId ?? -1;
-  const custom = !!customPuzzleId;
 
   const [revealedWords, setRevealedWords] = useState<Set<string>>(new Set());
   const [selection, setSelection] = useState<[string, number] | null>(null);
@@ -145,6 +145,8 @@ const Game: React.FC<{ customPuzzleId?: string }> = ({ customPuzzleId }) => {
         setHistory(savedHistory);
         setRevealedWords(new Set(savedHistory.map(([word]) => word)));
       }
+    }
+    if (puzzleId >= 0) {
       setSaveLoaded(true);
     }
   }, [custom, puzzleId]);
@@ -177,7 +179,7 @@ const Game: React.FC<{ customPuzzleId?: string }> = ({ customPuzzleId }) => {
         <div className="right-container">
           {isOver && (
             <GameInformation
-              customPuzzleId={customPuzzleId}
+              pageId={pageId}
               history={history}
               pageName={pageName}
               puzzleId={puzzleId}

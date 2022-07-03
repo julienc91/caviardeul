@@ -4,12 +4,16 @@ import { CustomGameCreation } from "../../types";
 import Loader from "../../components/loader";
 import { BASE_URL } from "../../utils/config";
 import { copyToClipboard } from "../../utils/clipboard";
+import { GetStaticProps } from "next";
+import { useRouter } from "next/router";
 
 const NewCustomGame: React.FC = () => {
   const [pageName, setPageName] = useState("");
   const [gameId, setGameId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const mutation = useCreateCustomGame();
+  const gameUrl = gameId ? BASE_URL + "/custom/" + gameId : "";
+  const router = useRouter();
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,9 +45,9 @@ const NewCustomGame: React.FC = () => {
     async ({ pageId, title }: CustomGameCreation) => {
       setGameId(pageId);
       setTitle(title);
-      await handleCopyToClipboard(BASE_URL + "/" + pageId);
+      await handleCopyToClipboard(gameUrl);
     },
-    [handleCopyToClipboard]
+    [handleCopyToClipboard, gameUrl]
   );
 
   const handleSubmit = useCallback(
@@ -110,14 +114,14 @@ const NewCustomGame: React.FC = () => {
               <input
                 type="button"
                 value="Copier"
-                onClick={() => handleCopyToClipboard(BASE_URL + "/" + gameId)}
+                onClick={() => handleCopyToClipboard(gameUrl)}
               />
-              <input type="text" readOnly value={`${BASE_URL}/${gameId}`} />
+              <input type="text" readOnly value={gameUrl} />
               <input
                 type="button"
                 value="Ouvrir"
-                onClick={() => {
-                  window?.open(`${BASE_URL}/${gameId}`, "_blank")?.focus();
+                onClick={async () => {
+                  await router.push(gameUrl);
                 }}
               />
             </div>
@@ -157,7 +161,7 @@ const NewCustomGame: React.FC = () => {
 
 export default NewCustomGame;
 
-export const getStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {},
   };

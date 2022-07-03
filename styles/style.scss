@@ -344,7 +344,7 @@ main {
   .loader {
     align-items: center;
     display: flex;
-    height: 100vh;
+    height: calc(100vh - #{$navbarHeight + $footerHeight + $guessInputHeight});
     justify-content: center;
 
     .spinner {
