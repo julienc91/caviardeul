@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 import Image from "next/image";
 import ExternalLink from "./externalLink";
+import Link from "next/link";
 
 const Navbar: React.FC<{
   onShowInfoModal: () => void;
@@ -23,7 +24,9 @@ const Navbar: React.FC<{
         <span className="line" />
         <span className="line" />
       </button>
-      <h1>Caviardeul</h1>
+      <h1>
+        <Link href="/">Caviardeul</Link>
+      </h1>
 
       <div className={"nav-links" + (active ? " active" : "")}>
         <div className="nav-link-background" onClick={handleClick} />
@@ -36,6 +39,9 @@ const Navbar: React.FC<{
           </li>
           <li className="left" onClick={onShowSettingsModal}>
             Options
+          </li>
+          <li className="left">
+            <Link href="/custom/nouveau">Partie personnalisée</Link>
           </li>
           <li className="divider" />
           <li>

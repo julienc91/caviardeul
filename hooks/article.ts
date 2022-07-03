@@ -1,5 +1,5 @@
-import { useQuery } from "react-query";
-import { Article } from "../types";
+import { useMutation, useQuery } from "react-query";
+import { Article, CustomGameCreation } from "../types";
 import { decode } from "../utils/encryption";
 
 export const useArticle = () => {
@@ -22,4 +22,24 @@ export const useArticle = () => {
       refetchOnWindowFocus: false,
     }
   );
+};
+
+export const useCreateCustomGame = () => {
+  return useMutation((pageName: string) => {
+    return fetch("/api/custom", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ pageName }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.error) {
+          throw res;
+        }
+        const { title, pageId } = res;
+        return { title, pageId };
+      });
+  });
 };

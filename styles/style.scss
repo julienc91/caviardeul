@@ -306,8 +306,8 @@ nav {
   }
 }
 
-// game
-#game {
+// main
+main {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
@@ -316,6 +316,7 @@ nav {
 
   .left-container {
     height: calc(100vh - #{$navbarHeight + $footerHeight});
+    padding: 0 20px;
     width: #{100% - $historyWidth};
 
     @include media-max($breakpoint) {
@@ -328,6 +329,7 @@ nav {
     background-color: $dark1;
     height: calc(100vh - #{$navbarHeight + $footerHeight});
     overflow-y: auto;
+    padding: 0 20px;
     width: $historyWidth;
 
     @include media-max($breakpoint) {
@@ -335,7 +337,10 @@ nav {
       height: 40%;
     }
   }
+}
 
+// game
+#game {
   .loader {
     align-items: center;
     display: flex;
@@ -368,7 +373,6 @@ nav {
     font-family: monospace;
     font-size: 1.3rem;
     line-height: 2rem;
-    padding: 0 20px;
     height: calc(100vh - #{$navbarHeight + $footerHeight + $guessInputHeight});
     overflow: auto;
 
@@ -430,6 +434,10 @@ nav {
         }
       }
     }
+  }
+
+  .right-container {
+    padding: 0;
   }
 
   .guess-history, .game-information {
@@ -524,6 +532,57 @@ nav {
           background-color: $grey1;
         }
       }
+    }
+  }
+}
+
+// new custom game
+#new-custom-game {
+  form {
+    margin-bottom: 50px;
+  }
+
+  .url-input {
+    border: 1px solid $light4;
+    padding: 10px 0 10px 10px;
+
+    input {
+      border: 0;
+      height: 40px;
+      margin: 0 0 0 5px;
+    }
+  }
+
+  .url-copy {
+    align-items: center;
+    display: flex;
+    flex-flow: row wrap;
+
+    input[type="text"] {
+      background-color: #fff;
+      border: 1px solid $light3;
+      color: $dark1;
+      height: 41px;
+      padding:  10px;
+    }
+  }
+
+  input[type="submit"], input[type="button"] {
+    background-color: $dark2;
+    border: 1px solid $light3;
+    color: $light4;
+    cursor: pointer;
+    height: 41px;
+    margin: 0;
+    padding: 0 20px;
+    transition: background-color 0.2s ease-in-out;
+
+    &:disabled {
+      background-color: $grey1;
+      cursor: not-allowed;
+    }
+    &:hover {
+      background-color: $grey1;
     }
   }
 }
