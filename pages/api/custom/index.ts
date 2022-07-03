@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { CustomGameCreation, Error } from "../../../types";
-import { encode } from "../../../utils/encryption";
+import { encode, toBase64Url } from "../../../utils/encryption";
 import { getArticle } from "../../../utils/article";
 
 const handler = async (
@@ -38,7 +38,7 @@ const handler = async (
   }
 
   const { title } = result;
-  const pageId = encode(pageName, encryptionKey);
+  const pageId = toBase64Url(encode(pageName, encryptionKey));
 
   res.status(201);
   res.json({

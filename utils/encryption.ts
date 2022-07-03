@@ -25,6 +25,22 @@ export const encode = (decoded: string, key: string): string => {
 };
 
 /**
+ * Convert a Base64 string to Base64Url.
+ * @param str
+ */
+export const toBase64Url = (str: string): string => {
+  return str.replace(/\+/g, "-").replace(/\//g, "_");
+};
+
+/**
+ * Convert a Base64Url string to Base64.
+ * @param str
+ */
+export const fromBase64Url = (str: string): string => {
+  return str.replace(/-/g, "+").replace(/_/g, "/");
+};
+
+/**
  * Generate a random key.
  */
 export const generateKey = (): string => {

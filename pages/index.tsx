@@ -1,5 +1,5 @@
 import React from "react";
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import Game from "../components/game";
 
 const Home: NextPage = () => {
@@ -8,7 +8,7 @@ const Home: NextPage = () => {
 
 export default Home;
 
-export const getStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   return {
     props: {},
   };

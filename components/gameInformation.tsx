@@ -5,12 +5,12 @@ import { BASE_URL } from "../utils/config";
 import Link from "next/link";
 
 const GameInformation: React.FC<{
-  customPuzzleId?: string;
+  pageId?: string;
   history: History;
   pageName: string;
   puzzleId: number;
-}> = ({ customPuzzleId, history, pageName, puzzleId }) => {
-  const customGame = !!customPuzzleId;
+}> = ({ pageId, history, pageName, puzzleId }) => {
+  const customGame = !!pageId;
   const nbTrials = history.length;
   const accuracy = Math.round(
     (history.filter(([_, count]) => count > 0).length / nbTrials) * 100
@@ -19,7 +19,7 @@ const GameInformation: React.FC<{
   const shareSentence = `J'ai déchiffré ${
     customGame ? "ce Caviardeul" : `le Caviardeul n°${puzzleId}`
   } en ${nbTrials} coup${nbTrials > 1 ? "s" : ""}\u00A0!`;
-  const shareUrl = BASE_URL + (customGame ? `/custom/${customPuzzleId}` : "/");
+  const shareUrl = BASE_URL + (customGame ? `/custom/${pageId}` : "/");
   const shareLink = `http://twitter.com/share?text=${encodeURIComponent(
     shareSentence
   )}&url=${encodeURIComponent(shareUrl)}&hashtags=caviardeul`;
