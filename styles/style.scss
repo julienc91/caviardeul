@@ -314,6 +314,14 @@ main {
   justify-content: center;
   height: calc(100vh - #{$navbarHeight + $footerHeight});
 
+  .error {
+    align-items: center;
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    height: calc(100vh - #{$navbarHeight + $footerHeight});
+  }
+
   .left-container {
     height: calc(100vh - #{$navbarHeight + $footerHeight});
     padding: 0 20px;
@@ -434,6 +442,21 @@ main {
           opacity: 1;
         }
       }
+    }
+  }
+
+  .banner {
+    background-color: $dark1;
+    color: $light4;
+    margin: 20px 0;
+    padding: 10px;
+    position: relative;
+
+    .close {
+      cursor: pointer;
+      position: absolute;
+      right: 20px;
+      top: 20px;
     }
   }
 

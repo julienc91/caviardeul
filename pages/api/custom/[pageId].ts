@@ -28,7 +28,7 @@ const handler = async (
 
   const { pageId } = req.query;
   if (typeof pageId !== "string" || pageId.length === 0) {
-    res.status(404).json({ error: "Page not found" });
+    res.status(404).json({ error: "La page n'a pas été trouvée" });
     return;
   }
 
@@ -36,13 +36,13 @@ const handler = async (
   try {
     pageName = decode(fromBase64Url(pageId), encryptionKey);
   } catch (e) {
-    res.status(404).json({ error: "Page not found" });
+    res.status(404).json({ error: "La page n'a pas été trouvée" });
     return;
   }
 
   const result = await getArticle(pageName);
   if (result === null) {
-    res.status(404).json({ error: "Article not found" });
+    res.status(404).json({ error: "L'article n'a pas été trouvé" });
     return;
   }
 

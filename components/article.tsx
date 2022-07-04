@@ -8,6 +8,7 @@ import {
 } from "../utils/caviarding";
 import { GameContext } from "../utils/game";
 import { SettingsContext } from "../utils/settings";
+import CustomGameBanner from "./customGameBanner";
 
 const _WordContainer: React.FC<{ node: any }> = ({ node }) => {
   const word = node.children[0].value;
@@ -47,10 +48,12 @@ const MarkdownContainer = React.memo(ReactMarkdown);
 
 const ArticleContainer: React.FC<{
   article: string;
+  customGame: boolean;
   reveal: boolean;
-}> = ({ article, reveal }) => {
+}> = ({ article, customGame, reveal }) => {
   return (
     <div id="article" className="article-container">
+      {customGame && <CustomGameBanner />}
       <MarkdownContainer
         components={{
           strong: ({ node }) => {

@@ -229,4 +229,5 @@ export const encodedPageList = [
   "U2FsdGVkX1/+gpWTruqvgFt4abSiuaS9C1CjoO9oDu4=",
 ];
 
-export const BASE_URL = "https://caviardeul.julienc.io";
+export const BASE_URL =
+  process.env.NEXT_PUBLIC_BASE_URL ?? "https://caviardeul.julienc.io";

@@ -22,7 +22,7 @@ const handler = async (
   const nextArticleCountdown = getNextArticleCountdown();
   const result = await getArticle(pageName);
   if (result === null) {
-    res.status(503).json({ error: "Article not found" });
+    res.status(503).json({ error: "L'article n'a pas été trouvé" });
     return;
   }
 
