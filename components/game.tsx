@@ -25,10 +25,10 @@ import GameInformation from "./gameInformation";
 const Game: React.FC<{ pageId?: string }> = ({ pageId }) => {
   const custom = !!pageId;
   const { data, isLoading, error } = useArticle(pageId);
-  const article = data?.article ?? "";
-  const title = data?.title ?? "";
-  const pageName = data?.pageName ?? "";
-  const puzzleId = data?.puzzleId ?? -1;
+  const article = isLoading ? "" : data?.article ?? "";
+  const title = isLoading ? "" : data?.title ?? "";
+  const pageName = isLoading ? "" : data?.pageName ?? "";
+  const puzzleId = isLoading ? -1 : data?.puzzleId ?? -1;
 
   const [revealedWords, setRevealedWords] = useState<Set<string>>(new Set());
   const [selection, setSelection] = useState<[string, number] | null>(null);
@@ -164,6 +164,14 @@ const Game: React.FC<{ pageId?: string }> = ({ pageId }) => {
     }
   }, [custom, puzzleId, title, history, isOver, saveLoaded]);
 
+  if (error) {
+    return (
+      <main>
+        <div className="error">{error.toString()}</div>
+      </main>
+    );
+  }
+
   return (
     <main id="game">
       <GameContext.Provider
@@ -171,9 +179,13 @@ const Game: React.FC<{ pageId?: string }> = ({ pageId }) => {
       >
         <div className="left-container">
           {!isLoading && !error && (
-            <ArticleContainer article={article} reveal={isOver} />
+            <ArticleContainer
+              customGame={custom}
+              article={article}
+              reveal={isOver}
+            />
           )}
-          {(isLoading || !saveLoaded) && <Loader />}
+          {(isLoading || (!saveLoaded && !error)) && <Loader />}
           <Input onConfirm={handleReveal} disabled={isOver} />
         </div>
         <div className="right-container">

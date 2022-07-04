@@ -27,13 +27,13 @@ const handler = async (
     pageName.length === 0 ||
     pageName.match(/[:/]/)
   ) {
-    res.status(400).json({ error: "Invalid page name", debug: pageName });
+    res.status(400).json({ error: "La page est invalide", debug: pageName });
     return;
   }
 
   const result = await getArticle(pageName);
   if (result === null) {
-    res.status(400).json({ error: "Article not found" });
+    res.status(400).json({ error: "L'article n'a pas été trouvé" });
     return;
   }
 

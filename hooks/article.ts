@@ -10,6 +10,9 @@ export const useArticle = (pageId?: string) => {
       return fetch(url)
         .then((res) => res.json())
         .then((res) => {
+          if (res.error) {
+            throw res.error;
+          }
           const { key, puzzleId, pageName, title, article } = res;
           return {
             puzzleId,
@@ -21,26 +24,32 @@ export const useArticle = (pageId?: string) => {
     },
     {
       refetchOnWindowFocus: false,
+      retry: false,
     }
   );
 };
 
 export const useCreateCustomGame = () => {
-  return useMutation((pageName: string) => {
-    return fetch("/api/custom", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ pageName }),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.error) {
-          throw res;
-        }
-        const { title, pageId } = res;
-        return { title, pageId };
-      });
-  });
+  return useMutation(
+    (pageName: string) => {
+      return fetch("/api/custom", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ pageName }),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.error) {
+            throw res.error;
+          }
+          const { title, pageId } = res;
+          return { title, pageId };
+        });
+    },
+    {
+      retry: false,
+    }
+  );
 };
