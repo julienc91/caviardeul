@@ -25,6 +25,7 @@ const elementsToRemove = [
   ".mw-editsection",
   ".mw-empty-elt",
   ".noprint",
+  ".bandeau-portail",
   ".reference",
   ".reference-cadre",
   ".thumb",
