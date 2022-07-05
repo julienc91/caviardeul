@@ -71,7 +71,7 @@ export const splitWords = (
   const result = [];
 
   if (splittedText.length >= 3 && isMarkdown) {
-    for (let i = 0; i < splittedText.length - 2; i++) {
+    for (let i = 0; i < splittedText.length - 1; i++) {
       // Regroup items when they correspond to an ordered list marker
       const separator1 = splittedText[i];
       const number = splittedText[i + 1];
@@ -87,6 +87,7 @@ export const splitWords = (
         result.push(separator1);
       }
     }
+    console.log(result);
   } else {
     result.push(...splittedText);
   }
