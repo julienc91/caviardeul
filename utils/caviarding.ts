@@ -87,7 +87,6 @@ export const splitWords = (
         result.push(separator1);
       }
     }
-    console.log(result);
   } else {
     result.push(...splittedText);
   }
