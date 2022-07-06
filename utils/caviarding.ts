@@ -59,7 +59,7 @@ const commonWords = new Set<string>([
   "y",
 ]);
 
-const punctuationList = "{}()\\[\\]\\\\.,;:!¡?¿/@#%\\^&*_~+\\-=<>«»\"'\\s";
+const punctuationList = "{}()\\[\\]\\\\.…,;:!¡?¿/@#%\\^&*_~+\\-=<>«»\"'’\\s";
 const wordRegex = new RegExp(`^[^${punctuationList}]+$`, "i");
 const separatorRegex = new RegExp(`([${punctuationList}]+)`, "gim");
 
