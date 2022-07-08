@@ -21,8 +21,14 @@ class SaveManagement {
     return key;
   }
 
-  static loadProgress(expectedPuzzleId: number): History | null {
-    const data = localStorage.getItem("progress");
+  static loadProgress(puzzleId: number, pageId?: string): History | null {
+    const isCustom = !!pageId;
+    if (isCustom !== (puzzleId === 0)) {
+      return null;
+    }
+
+    const storageKey = isCustom ? "custom-game-progress" : "progress";
+    const data = localStorage.getItem(storageKey);
     if (!data) {
       return null;
     }
@@ -30,28 +36,47 @@ class SaveManagement {
     try {
       const key = SaveManagement.getEncryptionKey();
       const decryptedData = decode(data, key);
-      const { history, puzzleId } = JSON.parse(decryptedData);
+      const {
+        history,
+        puzzleId: savedPuzzleId,
+        pageId: savedPageId,
+      } = JSON.parse(decryptedData);
 
-      if (!history || !expectedPuzzleId || puzzleId !== expectedPuzzleId) {
-        SaveManagement.clearProgress();
+      if (!history || savedPuzzleId !== puzzleId) {
+        SaveManagement.clearProgress(isCustom);
+        return null;
+      }
+      if (isCustom && pageId !== savedPageId) {
+        SaveManagement.clearProgress(isCustom);
         return null;
       }
       return history;
     } catch (e) {
-      SaveManagement.clearProgress();
+      SaveManagement.clearProgress(isCustom);
       return null;
     }
   }
 
-  static saveProgress(puzzleId: number, history: History): void {
+  static saveProgress(
+    puzzleId: number,
+    history: History,
+    pageId?: string
+  ): void {
+    const isCustom = !!pageId;
+    if (isCustom !== (puzzleId === 0)) {
+      return;
+    }
+
     const data = {
       puzzleId,
       history,
+      pageId: isCustom ? pageId : null,
     };
+    const storageKey = isCustom ? "custom-game-progress" : "progress";
     const key = SaveManagement.getEncryptionKey(true);
     const json = JSON.stringify(data);
     const encryptedData = encode(json, key);
-    localStorage.setItem("progress", encryptedData);
+    localStorage.setItem(storageKey, encryptedData);
   }
 
   static loadHistory(): ScoreHistory {
@@ -104,8 +129,9 @@ class SaveManagement {
     localStorage.setItem("history", encryptedData);
   }
 
-  static clearProgress(): void {
-    localStorage.removeItem("progress");
+  static clearProgress(isCustom: boolean = false): void {
+    const storageKey = isCustom ? "custom-game-progress" : "progress";
+    localStorage.removeItem(storageKey);
   }
 
   static clearHistory(): void {

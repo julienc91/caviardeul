@@ -139,24 +139,22 @@ const Game: React.FC<{ pageId?: string }> = ({ pageId }) => {
 
   // Load history from save
   useLayoutEffect((): void => {
-    if (!custom && puzzleId > 0) {
-      const savedHistory = SaveManagement.loadProgress(puzzleId);
+    if (puzzleId >= 0) {
+      const savedHistory = SaveManagement.loadProgress(puzzleId, pageId);
       if (savedHistory) {
         setHistory(savedHistory);
         setRevealedWords(new Set(savedHistory.map(([word]) => word)));
       }
-    }
-    if (puzzleId >= 0) {
       setSaveLoaded(true);
     }
-  }, [custom, puzzleId]);
+  }, [custom, puzzleId, pageId]);
 
   // Save progress and history
   useEffect((): void => {
-    if (!custom && puzzleId > 0 && saveLoaded) {
-      SaveManagement.saveProgress(puzzleId, history);
+    if (puzzleId >= 0 && saveLoaded) {
+      SaveManagement.saveProgress(puzzleId, history, pageId);
     }
-  }, [custom, puzzleId, history, saveLoaded]);
+  }, [custom, puzzleId, pageId, history, saveLoaded]);
 
   useEffect((): void => {
     if (!custom && puzzleId > 0 && saveLoaded) {
