@@ -2,11 +2,13 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { CustomGameCreation, Error } from "../../../types";
 import { encode, toBase64Url } from "../../../utils/encryption";
 import { getArticle } from "../../../utils/article";
+import { applyCors } from "../../../utils/api";
 
 const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<CustomGameCreation | Error>
 ) => {
+  await applyCors(req, res);
   const { method } = req;
   if (method !== "POST") {
     res.setHeader("Allow", ["POST"]);

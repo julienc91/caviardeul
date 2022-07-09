@@ -7,11 +7,13 @@ import {
   generateKey,
 } from "../../../utils/encryption";
 import { getArticle } from "../../../utils/article";
+import { applyCors } from "../../../utils/api";
 
 const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<Article | Error>
 ) => {
+  await applyCors(req, res);
   const { method } = req;
   if (method !== "GET") {
     res.setHeader("Allow", ["GET"]);
