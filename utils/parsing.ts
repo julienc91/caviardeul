@@ -41,7 +41,17 @@ const elementsToStripAfter = [
   "h2 #Références",
   "h2 #Voir_aussi",
 ];
-const elementsToFlatten = ["a", "abbr", "b", "i", "span", "sup", "time"];
+const elementsToFlatten = [
+  "a",
+  "abbr",
+  "b",
+  "i",
+  "em",
+  "span",
+  "strong",
+  "sup",
+  "time",
+];
 
 /**
  * Remove extra elements from the Wikipedia article. Only remaining HTML tags after stripping are:
