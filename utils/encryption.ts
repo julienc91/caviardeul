@@ -1,5 +1,6 @@
 import AES from "crypto-js/aes";
 import enc from "crypto-js/enc-utf8";
+import { Article, EncodedArticle } from "../types";
 
 /*
 Encryption is used to send the article to the client, to not
@@ -45,4 +46,17 @@ export const fromBase64Url = (str: string): string => {
  */
 export const generateKey = (): string => {
   return Math.random().toString(36).substring(2, 15);
+};
+
+/**
+ * Decrypt an EncodedArticle object.
+ */
+export const decodeArticle = (encodedArticle: EncodedArticle): Article => {
+  const { key, puzzleId, pageName, article, title } = encodedArticle;
+  return {
+    puzzleId,
+    pageName: decode(pageName, key),
+    article: decode(article, key),
+    title: decode(title, key),
+  };
 };

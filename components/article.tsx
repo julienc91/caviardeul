@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import {
   isCommonWord,
@@ -9,6 +9,7 @@ import {
 import { GameContext } from "../utils/game";
 import { SettingsContext } from "../utils/settings";
 import CustomGameBanner from "./customGameBanner";
+import { ReactMarkdownOptions } from "react-markdown/lib/react-markdown";
 
 const _WordContainer: React.FC<{ node: any }> = ({ node }) => {
   const word = node.children[0].value;
@@ -43,14 +44,24 @@ const _WordContainer: React.FC<{ node: any }> = ({ node }) => {
   );
 };
 
+const _MarkdownContainer: React.FC<
+  ReactMarkdownOptions & { onContentLoaded: () => void }
+> = ({ children, onContentLoaded, ...props }) => {
+  useEffect(() => {
+    onContentLoaded();
+  });
+  return <ReactMarkdown {...props}>{children}</ReactMarkdown>;
+};
+
 const WordContainer = React.memo(_WordContainer);
-const MarkdownContainer = React.memo(ReactMarkdown);
+const MarkdownContainer = React.memo(_MarkdownContainer);
 
 const ArticleContainer: React.FC<{
   article: string;
   customGame: boolean;
   reveal: boolean;
-}> = ({ article, customGame, reveal }) => {
+  onContentLoaded: () => void;
+}> = ({ article, customGame, reveal, onContentLoaded }) => {
   return (
     <div id="article" className="article-container">
       {customGame && <CustomGameBanner />}
@@ -60,6 +71,7 @@ const ArticleContainer: React.FC<{
             return <WordContainer node={node} />;
           },
         }}
+        onContentLoaded={onContentLoaded}
       >
         {reveal
           ? article

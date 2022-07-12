@@ -4,7 +4,14 @@ export type Error = {
 };
 
 export type Article = {
-  key?: string;
+  puzzleId: number;
+  pageName: string;
+  article: string;
+  title: string;
+};
+
+export type EncodedArticle = {
+  key: string;
   puzzleId: number;
   pageName: string;
   article: string;

@@ -1,32 +1,24 @@
-import { useMutation, useQuery } from "react-query";
-import { Article } from "../types";
-import { decode } from "../utils/encryption";
+import { useMutation } from "react-query";
+import { BASE_URL } from "../utils/config";
+import { EncodedArticle } from "../types";
 
-export const useArticle = (pageId?: string) => {
-  return useQuery<Article, Error>(
-    "getArticle",
-    () => {
-      const url = pageId ? `/api/custom/${pageId}` : "/api/article";
-      return fetch(url)
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.error) {
-            throw res.error;
-          }
-          const { key, puzzleId, pageName, title, article } = res;
-          return {
-            puzzleId,
-            pageName: decode(pageName, key),
-            title: decode(title, key),
-            article: decode(article, key),
-          };
-        });
-    },
-    {
-      refetchOnWindowFocus: false,
-      retry: false,
-    }
-  );
+export const getEncodedArticle = (pageId?: string): Promise<EncodedArticle> => {
+  const url = `${BASE_URL}/${pageId ? `api/custom/${pageId}` : "api/article"}`;
+  return fetch(url)
+    .then((res) => res.json())
+    .then((res) => {
+      if (res.error) {
+        throw res.error;
+      }
+      const { key, puzzleId, pageName, title, article } = res;
+      return {
+        key,
+        puzzleId,
+        pageName,
+        title,
+        article,
+      };
+    });
 };
 
 export const useCreateCustomGame = () => {

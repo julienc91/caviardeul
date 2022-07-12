@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { History } from "../types";
+import { Article, History } from "../types";
 import ArticleContainer from "./article";
 import Input from "./input";
 import {
@@ -16,25 +16,29 @@ import {
   standardizeText,
 } from "../utils/caviarding";
 import HistoryContainer from "./history";
-import { useArticle } from "../hooks/article";
 import Loader from "./loader";
 import SaveManagement from "../utils/save";
 import { GameContext } from "../utils/game";
 import GameInformation from "./gameInformation";
 
-const Game: React.FC<{ pageId?: string }> = ({ pageId }) => {
+const Game: React.FC<{ article: Article | null; pageId?: string }> = ({
+  article: articleObject,
+  pageId,
+}) => {
   const custom = !!pageId;
-  const { data, isLoading, error } = useArticle(pageId);
-  const article = isLoading ? "" : data?.article ?? "";
-  const title = isLoading ? "" : data?.title ?? "";
-  const pageName = isLoading ? "" : data?.pageName ?? "";
-  const puzzleId = isLoading ? -1 : data?.puzzleId ?? -1;
-
+  const [isLoading, setIsLoading] = useState(true);
   const [revealedWords, setRevealedWords] = useState<Set<string>>(new Set());
   const [selection, setSelection] = useState<[string, number] | null>(null);
   const [history, setHistory] = useState<History>([]);
   const [isOver, setIsOver] = useState(false);
   const [saveLoaded, setSaveLoaded] = useState(false);
+  const loading = isLoading || !saveLoaded;
+
+  const article = articleObject?.article ?? "";
+  const title = articleObject?.title ?? "";
+  const pageName = articleObject?.pageName ?? "";
+  const puzzleId = articleObject?.puzzleId ?? -1;
+  const error = puzzleId < 0;
 
   const titleWords = useMemo(() => {
     return splitWords(title).filter(isWord).map(standardizeText);
@@ -43,6 +47,10 @@ const Game: React.FC<{ pageId?: string }> = ({ pageId }) => {
   const standardizedArticle = useMemo(() => {
     return standardizeText(article);
   }, [article]);
+
+  const handleContentLoaded = useCallback(() => {
+    setIsLoading(false);
+  }, []);
 
   const handleChangeSelection = useCallback(
     (word: string | null) => {
@@ -138,7 +146,7 @@ const Game: React.FC<{ pageId?: string }> = ({ pageId }) => {
   }, [selection]);
 
   // Load history from save
-  useLayoutEffect((): void => {
+  useEffect((): void => {
     if (puzzleId >= 0) {
       const savedHistory = SaveManagement.loadProgress(puzzleId, pageId);
       if (savedHistory) {
@@ -165,7 +173,7 @@ const Game: React.FC<{ pageId?: string }> = ({ pageId }) => {
   if (error) {
     return (
       <main>
-        <div className="error">{error.toString()}</div>
+        <div className="error">Impossible de charger l&apos;article.</div>
       </main>
     );
   }
@@ -176,14 +184,15 @@ const Game: React.FC<{ pageId?: string }> = ({ pageId }) => {
         value={{ history, words: revealedWords, isOver, selection }}
       >
         <div className="left-container">
-          {!isLoading && !error && (
+          {saveLoaded && (
             <ArticleContainer
               customGame={custom}
               article={article}
               reveal={isOver}
+              onContentLoaded={handleContentLoaded}
             />
           )}
-          {(isLoading || (!saveLoaded && !error)) && <Loader />}
+          {isLoading && <Loader />}
           <Input onConfirm={handleReveal} disabled={isOver} />
         </div>
         <div className="right-container">
@@ -195,7 +204,7 @@ const Game: React.FC<{ pageId?: string }> = ({ pageId }) => {
               puzzleId={puzzleId}
             />
           )}
-          {!isLoading && (
+          {!loading && (
             <HistoryContainer
               history={history}
               selectedWord={selection ? selection[0] : null}

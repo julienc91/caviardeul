@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Article, Error } from "../../../types";
+import { EncodedArticle, Error } from "../../../types";
 import {
   decode,
   encode,
@@ -11,7 +11,7 @@ import { applyCors } from "../../../utils/api";
 
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<Article | Error>
+  res: NextApiResponse<EncodedArticle | Error>
 ) => {
   await applyCors(req, res);
   const { method } = req;
