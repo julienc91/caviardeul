@@ -15,7 +15,6 @@ const elementsToRemove = [
   //
   "#toc",
   ".API.nowrap", // Phonetical pronunciation
-  ".extiw",
   ".gallery",
   ".hatnote",
   ".infobox",
@@ -40,6 +39,7 @@ const elementsToStripAfter = [
   "h2 #Notes",
   "h2 #Références",
   "h2 #Voir_aussi",
+  "h3 #Notes_et_références",
 ];
 const elementsToFlatten = [
   "a",
