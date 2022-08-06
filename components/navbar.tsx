@@ -34,11 +34,14 @@ const Navbar: React.FC<{
           <li className="left" onClick={onShowInfoModal}>
             À propos
           </li>
-          <li className="left" onClick={onShowScoreModal}>
-            Scores
-          </li>
+          {/*<li className="left" onClick={onShowScoreModal}>*/}
+          {/*  Scores*/}
+          {/*</li>*/}
           <li className="left" onClick={onShowSettingsModal}>
             Options
+          </li>
+          <li className="left">
+            <Link href="/archives/">Archives</Link>
           </li>
           <li className="left">
             <Link href="/custom/nouveau">Partie personnalisée</Link>

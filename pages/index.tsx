@@ -10,7 +10,7 @@ const Home: NextPage<{ encodedArticle: EncodedArticle }> = ({
   ...props
 }) => {
   const article = decodeArticle(encodedArticle);
-  return <Game article={article} {...props} />;
+  return <Game article={article} custom={false} {...props} />;
 };
 
 export default Home;

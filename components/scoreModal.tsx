@@ -7,7 +7,7 @@ const ScoreModal: React.FC<{ open: boolean; onClose: () => void }> = ({
   open,
   onClose,
 }) => {
-  const [history, setHistory] = React.useState<ScoreHistory>([]);
+  const [history, setHistory] = React.useState<ScoreHistory[]>([]);
 
   useEffect(() => {
     if (open) {
@@ -48,7 +48,7 @@ const ScoreModal: React.FC<{ open: boolean; onClose: () => void }> = ({
         </thead>
         <tbody>
           {history
-            .reverse()
+            .sort((a, b) => b.puzzleId - a.puzzleId)
             .map(({ puzzleId, title, isOver, nbTrials, accuracy }) => {
               return (
                 <tr key={puzzleId}>

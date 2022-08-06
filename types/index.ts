@@ -38,7 +38,7 @@ export type ScoreHistory = {
   isOver: boolean;
   nbTrials: number;
   accuracy: number;
-}[];
+};
 
 export type Settings = {
   lightMode: boolean;

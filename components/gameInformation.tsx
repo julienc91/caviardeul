@@ -6,20 +6,26 @@ import Link from "next/link";
 
 const GameInformation: React.FC<{
   pageId?: string;
+  archive: boolean;
   history: History;
   pageName: string;
   puzzleId: number;
-}> = ({ pageId, history, pageName, puzzleId }) => {
-  const customGame = !!pageId;
+}> = ({ pageId, archive, history, pageName, puzzleId }) => {
+  const customGame = !!pageId && !archive;
   const nbTrials = history.length;
   const accuracy = Math.round(
     (history.filter(([_, count]) => count > 0).length / nbTrials) * 100
   );
 
   const shareSentence = `J'ai déchiffré ${
-    customGame ? "ce Caviardeul" : `le Caviardeul n°${puzzleId}`
+    customGame || archive ? "ce Caviardeul" : `le Caviardeul n°${puzzleId}`
   } en ${nbTrials} coup${nbTrials > 1 ? "s" : ""}\u00A0!`;
-  const shareUrl = BASE_URL + (customGame ? `/custom/${pageId}` : "/");
+  let shareUrl = `${BASE_URL}/`;
+  if (archive) {
+    shareUrl += `archives/${pageId}`;
+  } else if (customGame) {
+    shareUrl += `custom/${pageId}`;
+  }
   const shareLink = `http://twitter.com/share?text=${encodeURIComponent(
     shareSentence
   )}&url=${encodeURIComponent(shareUrl)}&hashtags=caviardeul`;
@@ -29,8 +35,9 @@ const GameInformation: React.FC<{
       <h2>Bravo&nbsp;!</h2>
       <p>
         Vous avez déchiffré{" "}
-        {customGame ? "cet article" : "le Caviardeul du jour"} en {nbTrials}{" "}
-        coup{nbTrials > 1 ? "s" : ""} avec une précision de {accuracy}%.
+        {customGame || archive ? "cet article" : "le Caviardeul du jour"} en{" "}
+        {nbTrials} coup{nbTrials > 1 ? "s" : ""} avec une précision de{" "}
+        {accuracy}%.
       </p>
       <ul>
         <li>
@@ -43,12 +50,13 @@ const GameInformation: React.FC<{
           Partager <ExternalLink href={shareLink}>sur Twitter</ExternalLink>
         </li>
       </ul>
-      {customGame ? (
+      {customGame && (
         <p>
           Créez votre nouvelle{" "}
           <Link href="/custom/nouveau">partie personnalisée</Link>&nbsp;
         </p>
-      ) : (
+      )}
+      {!customGame && !archive && (
         <p>Revenez demain pour une nouvelle page à déchiffrer&nbsp;!</p>
       )}
     </div>

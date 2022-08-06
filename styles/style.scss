@@ -252,22 +252,6 @@ nav {
       display: flex;
       flex-flow: row-reverse wrap;
       justify-content: space-between;
-
-      button {
-        margin-top: 20px;
-        background-color: $dark1;
-        color: $light4;
-        font-weight: 600;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-
-        &.danger {
-          background-color: $red1;
-          color: $light3;
-        }
-      }
     }
 
     table {
@@ -303,6 +287,23 @@ nav {
         padding: 10px;
       }
     }
+  }
+}
+
+// generics
+button {
+  margin-top: 20px;
+  background-color: $dark1;
+  color: $light4;
+  font-weight: 600;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &.danger {
+    background-color: $red1;
+    color: $light3;
   }
 }
 
@@ -609,6 +610,45 @@ main {
     &:hover {
       background-color: $grey1;
     }
+  }
+}
+
+// archives
+#archives {
+  display: block;
+  padding: 0 30px 50px;
+  overflow: auto;
+
+  .archive-grid {
+    display: grid;
+    grid-auto-rows: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-gap: 20px;
+    width: 100%;
+
+    .archive-item {
+      align-items: center;
+      background-color: $dark1;
+      border: 1px solid $light3;
+      display: flex;
+      flex-flow: column;
+      justify-content: center;
+      padding: 10px;
+      width: 100%;
+      transition: background-color 0.2s ease-in-out;
+      h3 {
+        margin: 0 0 15px 0;
+      }
+      &:not(.completed):hover {
+        background-color: $grey1;
+        cursor: pointer;
+      }
+    }
+  }
+
+  button {
+    display: block;
+    margin-left: auto;
   }
 }
 

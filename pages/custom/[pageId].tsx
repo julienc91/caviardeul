@@ -10,7 +10,7 @@ const CustomGame: NextPage<{
   encodedArticle: EncodedArticle | null;
 }> = ({ encodedArticle, ...props }) => {
   const article = encodedArticle ? decodeArticle(encodedArticle) : null;
-  return <Game article={article} {...props} />;
+  return <Game article={article} custom={true} {...props} />;
 };
 
 export default CustomGame;
@@ -18,7 +18,7 @@ export default CustomGame;
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const pageId = (params?.pageId || "") as string;
   try {
-    const data = await getEncodedArticle(pageId);
+    const data = await getEncodedArticle(pageId, true);
     return { props: { pageId, encodedArticle: data } };
   } catch (error) {}
   return { props: { pageId, encodedArticle: null } };

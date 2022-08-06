@@ -21,11 +21,12 @@ import SaveManagement from "../utils/save";
 import { GameContext } from "../utils/game";
 import GameInformation from "./gameInformation";
 
-const Game: React.FC<{ article: Article | null; pageId?: string }> = ({
-  article: articleObject,
-  pageId,
-}) => {
-  const custom = !!pageId;
+const Game: React.FC<{
+  article: Article | null;
+  pageId?: string;
+  custom: boolean;
+}> = ({ article: articleObject, pageId, custom }) => {
+  const archive = !!pageId && !custom;
   const [isLoading, setIsLoading] = useState(true);
   const [revealedWords, setRevealedWords] = useState<Set<string>>(new Set());
   const [selection, setSelection] = useState<[string, number] | null>(null);
@@ -198,6 +199,7 @@ const Game: React.FC<{ article: Article | null; pageId?: string }> = ({
         <div className="right-container">
           {isOver && (
             <GameInformation
+              archive={archive}
               pageId={pageId}
               history={history}
               pageName={pageName}

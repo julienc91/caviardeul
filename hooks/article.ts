@@ -2,8 +2,18 @@ import { useMutation } from "react-query";
 import { BASE_URL } from "../utils/config";
 import { EncodedArticle } from "../types";
 
-export const getEncodedArticle = (pageId?: string): Promise<EncodedArticle> => {
-  const url = `${BASE_URL}/${pageId ? `api/custom/${pageId}` : "api/article"}`;
+export const getEncodedArticle = (
+  pageId?: string,
+  custom?: boolean
+): Promise<EncodedArticle> => {
+  let url = `${BASE_URL}/api/`;
+  if (!pageId) {
+    url += "article";
+  } else if (custom) {
+    url += `custom/${pageId}`;
+  } else {
+    url += `archives/${pageId}`;
+  }
   return fetch(url)
     .then((res) => res.json())
     .then((res) => {
