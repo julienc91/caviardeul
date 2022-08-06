@@ -3,7 +3,7 @@ import { EncodedArticle, Error } from "../../types";
 import { encode, generateKey } from "../../utils/encryption";
 import {
   getArticle,
-  getCurrentArticlePageId,
+  getCurrentPageNameAndID,
   getNextArticleCountdown,
 } from "../../utils/article";
 import { applyCors } from "../../utils/api";
@@ -20,7 +20,7 @@ const handler = async (
     return;
   }
 
-  const [pageName, puzzleId] = getCurrentArticlePageId();
+  const [pageName, puzzleId] = getCurrentPageNameAndID();
   const nextArticleCountdown = getNextArticleCountdown();
   const result = await getArticle(pageName);
   if (result === null) {

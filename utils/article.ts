@@ -39,9 +39,17 @@ export const getArticle = async (
   };
 };
 
-export const getCurrentArticlePageId = (): [string, number] => {
-  const now = new Date();
-  const diff = now.getTime() - firstGameDate.getTime();
+export const getCurrentPageNameAndID = (): [string, number] => {
+  return getPageNameAndIDFromDate(new Date());
+};
+
+export const getPageNameAndIDFromDate = (date: Date): [string, number] => {
+  if (date > new Date()) {
+    throw Error("Date in the future");
+  } else if (date < firstGameDate) {
+    throw Error("Date before the first game");
+  }
+  const diff = date.getTime() - firstGameDate.getTime();
   const diffInDays = Math.floor(diff / (1000 * 3600 * 24));
   const encryptionKey = process.env.ENCRYPTION_KEY;
   if (!encryptionKey) {
@@ -51,4 +59,17 @@ export const getCurrentArticlePageId = (): [string, number] => {
     decode(encodedPageList[diffInDays % encodedPageList.length], encryptionKey),
     diffInDays + 1,
   ];
+};
+
+export const getPageNameFromPageId = (pageId: number): string => {
+  if (pageId <= 0) {
+    throw Error("Invalid page id");
+  }
+
+  const articleDate = new Date(
+    firstGameDate.getTime() + (pageId - 1) * 1000 * 3600 * 24
+  );
+
+  const [pageName, _] = getPageNameAndIDFromDate(articleDate);
+  return pageName;
 };
