@@ -18,7 +18,7 @@ const GameInformation: React.FC<{
   );
 
   const shareSentence = `J'ai déchiffré ${
-    customGame || archive ? "ce Caviardeul" : `le Caviardeul n°${puzzleId}`
+    customGame ? "ce Caviardeul" : `le Caviardeul n°${puzzleId}`
   } en ${nbTrials} coup${nbTrials > 1 ? "s" : ""}\u00A0!`;
   let shareUrl = `${BASE_URL}/`;
   if (archive) {

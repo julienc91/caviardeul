@@ -5,9 +5,8 @@ import Link from "next/link";
 
 const Navbar: React.FC<{
   onShowInfoModal: () => void;
-  onShowScoreModal: () => void;
   onShowSettingsModal: () => void;
-}> = ({ onShowInfoModal, onShowScoreModal, onShowSettingsModal }) => {
+}> = ({ onShowInfoModal, onShowSettingsModal }) => {
   const [active, setActive] = useState<boolean>(false);
 
   const handleClick = useCallback(() => {
@@ -31,20 +30,17 @@ const Navbar: React.FC<{
       <div className={"nav-links" + (active ? " active" : "")}>
         <div className="nav-link-background" onClick={handleClick} />
         <ul>
-          <li className="left" onClick={onShowInfoModal}>
-            À propos
-          </li>
-          {/*<li className="left" onClick={onShowScoreModal}>*/}
-          {/*  Scores*/}
-          {/*</li>*/}
-          <li className="left" onClick={onShowSettingsModal}>
-            Options
-          </li>
           <li className="left">
             <Link href="/archives/">Archives</Link>
           </li>
           <li className="left">
             <Link href="/custom/nouveau">Partie personnalisée</Link>
+          </li>
+          <li className="left" onClick={onShowInfoModal}>
+            À propos
+          </li>
+          <li className="left" onClick={onShowSettingsModal}>
+            Options
           </li>
           <li className="divider" />
           <li>

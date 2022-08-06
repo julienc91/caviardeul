@@ -253,40 +253,6 @@ nav {
       flex-flow: row-reverse wrap;
       justify-content: space-between;
     }
-
-    table {
-      border-collapse: collapse;
-      text-align: left;
-      width: 100%;
-
-      @include media-max($breakpoint) {
-        font-size: 0.8rem;
-      }
-
-      thead {
-        font-weight: bold;
-        border-bottom: 3px solid $grey1;
-      }
-
-      tbody {
-        display: block;
-        max-height: 40vh;
-        overflow: auto;
-        tr {
-          border-bottom: 1px solid $light1;
-        }
-      }
-
-      thead, tbody tr {
-        display: table;
-        width: 100%;
-        table-layout: fixed;
-      }
-
-      th, td {
-        padding: 10px;
-      }
-    }
   }
 }
 
@@ -615,15 +581,12 @@ main {
 
 // archives
 #archives {
-  display: block;
-  padding: 0 30px 50px;
-  overflow: auto;
-
   .archive-grid {
     display: grid;
     grid-auto-rows: 1fr;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     grid-gap: 20px;
+    margin-bottom: 50px;
     width: 100%;
 
     .archive-item {
@@ -644,11 +607,6 @@ main {
         cursor: pointer;
       }
     }
-  }
-
-  button {
-    display: block;
-    margin-left: auto;
   }
 }
 

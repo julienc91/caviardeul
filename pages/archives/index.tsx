@@ -4,23 +4,64 @@ import SaveManagement from "../../utils/save";
 import { ScoreHistory } from "../../types";
 import Link from "next/link";
 import { GetStaticProps } from "next";
+import ConfirmModal from "../../components/confirmModal";
 
 const Archives: React.FC = () => {
+  const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [history, setHistory] = useState<ScoreHistory[]>([]);
   const now = new Date();
   const diff = now.getTime() - firstGameDate.getTime();
-  const nbGames = Math.floor(diff / (1000 * 3600 * 24));
+
+  const nbGames = Math.floor(diff / (1000 * 3600 * 24)) + 1;
+  const nbPlayedGames = history.length;
+
+  const finishedGames = useMemo(
+    () => history.filter(({ isOver }) => isOver),
+    [history]
+  );
+  const nbFinishedGames = useMemo(() => finishedGames.length, [finishedGames]);
+
+  const avgTrials = useMemo(
+    () =>
+      Math.floor(
+        finishedGames.reduce((acc, { nbTrials }) => acc + nbTrials, 0) /
+          Math.max(nbFinishedGames, 1)
+      ),
+    [finishedGames, nbFinishedGames]
+  );
+  const avgAccuracy = useMemo(
+    () =>
+      Math.floor(
+        finishedGames.reduce(
+          (acc, { accuracy, nbTrials }) =>
+            acc + (accuracy * 100) / Math.max(nbTrials, 1),
+          0
+        ) / Math.max(nbFinishedGames, 1)
+      ),
+    [finishedGames, nbFinishedGames]
+  );
 
   useEffect(() => {
     setHistory(SaveManagement.loadHistory());
   }, []);
 
+  const handleShowConfirmModal = useCallback(
+    () => setShowConfirmModal(true),
+    []
+  );
+  const handleCloseConfirmModal = useCallback(
+    () => setShowConfirmModal(false),
+    []
+  );
+
   const handleReset = useCallback(() => {
     SaveManagement.clearHistory();
+    SaveManagement.clearProgress();
     setHistory([]);
-  }, []);
+    handleCloseConfirmModal();
+  }, [handleCloseConfirmModal]);
 
-  const finishedGames = useMemo(() => {
+  const finishedGamesById = useMemo(() => {
     return history
       .filter(({ isOver }) => isOver)
       .reduce((acc: { [id: number]: ScoreHistory }, item) => {
@@ -31,9 +72,9 @@ const Archives: React.FC = () => {
 
   const gamesContainer = [];
   for (let i = nbGames; i >= 1; i--) {
-    const scoreHistory = finishedGames[i];
+    const scoreHistory = finishedGamesById[i];
     const isOver = scoreHistory?.isOver ?? false;
-    const url = `/archives/${i}`;
+    const url = i < nbGames ? `/archives/${i}` : `/`;
 
     let container = (
       <div className={"archive-item" + (isOver ? " completed" : "")} key={i}>
@@ -53,26 +94,62 @@ const Archives: React.FC = () => {
             </span>
           </>
         ) : (
-          <span>
-            <Link href={`/archives/${i}`}>► Jouer</Link>
-          </span>
+          <span>► Jouer</span>
         )}
       </div>
     );
 
     if (!isOver) {
-      container = <Link href={url}>{container}</Link>;
+      container = (
+        <Link href={url} key={i}>
+          {container}
+        </Link>
+      );
     }
     gamesContainer.push(container);
   }
 
   return (
     <main id="archives">
-      <h1>Archives</h1>
-      <div className="archive-grid">{gamesContainer}</div>
-      <button className="danger" onClick={handleReset}>
-        Réinitialiser
-      </button>
+      <div className="left-container">
+        <h1>Archives</h1>
+        <div className="archive-grid">{gamesContainer}</div>
+      </div>
+      <div className="right-container">
+        <h1>Score</h1>
+
+        <ul>
+          <li>
+            Parties jouées&nbsp;: {nbPlayedGames}/{nbGames} (
+            {Math.floor((nbPlayedGames * 100) / Math.max(nbGames, 1))}%)
+          </li>
+          <li>
+            Parties terminées&nbsp;: {nbFinishedGames}/{nbGames} (
+            {Math.floor((nbFinishedGames * 100) / Math.max(nbGames, 1))}%)
+          </li>
+          <li>Nombre d&apos;essais moyen&nbsp;: {avgTrials}</li>
+          <li>Précision moyenne&nbsp;: {avgAccuracy}%</li>
+        </ul>
+
+        <button className="danger" onClick={handleShowConfirmModal}>
+          Réinitialiser
+        </button>
+        <ConfirmModal
+          message={
+            <>
+              Cette action réinitialisera vos scores et votre progression de
+              manière irréversible.
+              <br />
+              Voulez-vous continuer&nbsp;?
+            </>
+          }
+          open={showConfirmModal}
+          danger={true}
+          confirmLabel="Confirmer"
+          onConfirm={handleReset}
+          onCancel={handleCloseConfirmModal}
+        />
+      </div>
     </main>
   );
 };
