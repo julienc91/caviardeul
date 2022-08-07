@@ -48,11 +48,11 @@ $breakpoint: 800px;
 
 // webkit scrollbar style
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: $light4;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -353,6 +353,7 @@ main {
     height: calc(100vh - #{$navbarHeight + $footerHeight + $guessInputHeight});
     overflow: auto;
     padding: 0 20px;
+    -webkit-overflow-scrolling: touch;
 
     @include media-max($breakpoint) {
       font-size: 1.1rem;
