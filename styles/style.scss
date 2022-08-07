@@ -101,12 +101,13 @@ nav {
       border: 2px solid $light1;
       border-radius: 5px;
       color: $light4;
-      cursor: pointer;
       display: flex;
       flex-flow: column;
+      font-weight: normal;
       height: 2.3rem;
       justify-content: space-evenly;
-      margin-right: 10px;
+      margin: 0 10px 0 0;
+      padding: 5px;
       transition: transform 0.2s ease-in-out;
       width: 2.5rem;
 
@@ -262,7 +263,7 @@ button {
   background-color: $dark1;
   color: $light4;
   font-weight: 600;
-  border: none;
+  border: 0;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
