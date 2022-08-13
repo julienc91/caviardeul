@@ -230,4 +230,7 @@ export const encodedPageList = [
 ];
 
 export const BASE_URL =
-  process.env.NEXT_PUBLIC_BASE_URL ?? "https://caviardeul.julienc.io";
+  process.env.NEXT_PUBLIC_BASE_URL ?? "https://caviardeul.fr";
+
+export const DEPRECATED_DOMAIN =
+  process.env.NEXT_PUBLIC_DEPRECATED_DOMAIN ?? "caviardeul.julienc.io";

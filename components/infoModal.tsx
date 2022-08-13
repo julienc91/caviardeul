@@ -46,6 +46,10 @@ const InfoModal: React.FC<{ open: boolean; onClose: () => void }> = ({
         </ExternalLink>
         .
       </p>
+      <p>
+        Développé par{" "}
+        <ExternalLink href="https://julienc.io">Julien Chaumont</ExternalLink>.
+      </p>
     </Modal>
   );
 };

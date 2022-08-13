@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import Layout from "../components/layout";
 import "nprogress/nprogress.css";
 import dynamic from "next/dynamic";
+import LocalStorageMigrator from "../components/localStorageMigrator";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +20,7 @@ const Caviardeul = ({ Component, pageProps }: AppProps) => {
     <>
       <TopProgressBar />
       <QueryClientProvider client={queryClient}>
+        <LocalStorageMigrator />
         <Layout>
           <Component {...pageProps} />
         </Layout>
