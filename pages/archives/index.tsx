@@ -13,7 +13,6 @@ const Archives: React.FC = () => {
   const diff = now.getTime() - firstGameDate.getTime();
 
   const nbGames = Math.floor(diff / (1000 * 3600 * 24)) + 1;
-  const nbPlayedGames = history.length;
 
   const finishedGames = useMemo(
     () => history.filter(({ isOver }) => isOver),
@@ -119,10 +118,6 @@ const Archives: React.FC = () => {
         <h1>Score</h1>
 
         <ul>
-          <li>
-            Parties jouées&nbsp;: {nbPlayedGames}/{nbGames} (
-            {Math.floor((nbPlayedGames * 100) / Math.max(nbGames, 1))}%)
-          </li>
           <li>
             Parties terminées&nbsp;: {nbFinishedGames}/{nbGames} (
             {Math.floor((nbFinishedGames * 100) / Math.max(nbGames, 1))}%)
