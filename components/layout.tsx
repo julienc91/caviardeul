@@ -29,8 +29,11 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <>
       <Head>
-        <title>Caviardeul - Déchiffrez l&apos;article du jour</title>
-        <meta name="description" content="Un jeu de réflexion quotidien" />
+        <title>Caviardeul - Déchiffrez l&apos;article Wikipédia du jour</title>
+        <meta
+          name="description"
+          content="Chaque jour, un nouvel article Wikipédia à déchiffrer"
+        />
         <meta name="author" content="@julienc91" />
 
         <link rel="icon" href="/favicon.ico" />

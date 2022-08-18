@@ -7,6 +7,7 @@ import { decodeArticle } from "../../utils/encryption";
 import SaveManagement from "../../utils/save";
 import Loader from "../../components/loader";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 const ArchiveGame: NextPage<{
   pageId: string;
@@ -46,7 +47,16 @@ const ArchiveGame: NextPage<{
     return <Loader />;
   }
 
-  return <Game article={article} custom={false} {...props} />;
+  return (
+    <>
+      <Head>
+        <title>
+          Caviardeul - Déchiffrez le Caviardeul n°{article.puzzleId}
+        </title>
+      </Head>
+      <Game article={article} custom={false} {...props} />
+    </>
+  );
 };
 
 export default ArchiveGame;

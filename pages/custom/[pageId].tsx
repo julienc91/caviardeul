@@ -4,13 +4,21 @@ import Game from "../../components/game";
 import { getEncodedArticle } from "../../hooks/article";
 import { EncodedArticle } from "../../types";
 import { decodeArticle } from "../../utils/encryption";
+import Head from "next/head";
 
 const CustomGame: NextPage<{
   pageId: string;
   encodedArticle: EncodedArticle | null;
 }> = ({ encodedArticle, ...props }) => {
   const article = encodedArticle ? decodeArticle(encodedArticle) : null;
-  return <Game article={article} custom={true} {...props} />;
+  return (
+    <>
+      <Head>
+        <title>Caviardeul - Déchiffrez une partie personnalisée</title>
+      </Head>
+      <Game article={article} custom={true} {...props} />
+    </>
+  );
 };
 
 export default CustomGame;

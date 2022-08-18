@@ -5,6 +5,7 @@ import { ScoreHistory } from "../../types";
 import Link from "next/link";
 import { GetStaticProps } from "next";
 import ConfirmModal from "../../components/confirmModal";
+import Head from "next/head";
 
 const Archives: React.FC = () => {
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
@@ -109,43 +110,48 @@ const Archives: React.FC = () => {
   }
 
   return (
-    <main id="archives">
-      <div className="left-container">
-        <h1>Archives</h1>
-        <div className="archive-grid">{gamesContainer}</div>
-      </div>
-      <div className="right-container">
-        <h1>Score</h1>
+    <>
+      <Head>
+        <title>Caviardeul - Archives</title>
+      </Head>
+      <main id="archives">
+        <div className="left-container">
+          <h1>Archives</h1>
+          <div className="archive-grid">{gamesContainer}</div>
+        </div>
+        <div className="right-container">
+          <h1>Score</h1>
 
-        <ul>
-          <li>
-            Parties terminées&nbsp;: {nbFinishedGames}/{nbGames} (
-            {Math.floor((nbFinishedGames * 100) / Math.max(nbGames, 1))}%)
-          </li>
-          <li>Nombre d&apos;essais moyen&nbsp;: {avgTrials}</li>
-          <li>Précision moyenne&nbsp;: {avgAccuracy}%</li>
-        </ul>
+          <ul>
+            <li>
+              Parties terminées&nbsp;: {nbFinishedGames}/{nbGames} (
+              {Math.floor((nbFinishedGames * 100) / Math.max(nbGames, 1))}%)
+            </li>
+            <li>Nombre d&apos;essais moyen&nbsp;: {avgTrials}</li>
+            <li>Précision moyenne&nbsp;: {avgAccuracy}%</li>
+          </ul>
 
-        <button className="danger" onClick={handleShowConfirmModal}>
-          Réinitialiser
-        </button>
-        <ConfirmModal
-          message={
-            <>
-              Cette action réinitialisera vos scores et votre progression de
-              manière irréversible.
-              <br />
-              Voulez-vous continuer&nbsp;?
-            </>
-          }
-          open={showConfirmModal}
-          danger={true}
-          confirmLabel="Confirmer"
-          onConfirm={handleReset}
-          onCancel={handleCloseConfirmModal}
-        />
-      </div>
-    </main>
+          <button className="danger" onClick={handleShowConfirmModal}>
+            Réinitialiser
+          </button>
+          <ConfirmModal
+            message={
+              <>
+                Cette action réinitialisera vos scores et votre progression de
+                manière irréversible.
+                <br />
+                Voulez-vous continuer&nbsp;?
+              </>
+            }
+            open={showConfirmModal}
+            danger={true}
+            confirmLabel="Confirmer"
+            onConfirm={handleReset}
+            onCancel={handleCloseConfirmModal}
+          />
+        </div>
+      </main>
+    </>
   );
 };
 
