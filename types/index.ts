@@ -49,3 +49,7 @@ export type SettingsState = {
   settings: Settings | null;
   onChangeSettings: (settings: Partial<Settings>) => void;
 };
+
+export type User = {
+  id: string;
+};
