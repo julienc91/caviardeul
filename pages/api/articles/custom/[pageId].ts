@@ -1,13 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { EncodedArticle, Error } from "../../../types";
+import { EncodedArticle, Error } from "../../../../types";
 import {
   decode,
   encode,
   fromBase64Url,
   generateKey,
-} from "../../../utils/encryption";
-import { getArticle } from "../../../utils/article";
-import { applyCors } from "../../../utils/api";
+} from "../../../../utils/encryption";
+import { getArticle } from "../../../../utils/article";
+import { applyCors } from "../../../../utils/api";
 
 const handler = async (
   req: NextApiRequest,
