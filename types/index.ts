@@ -40,6 +40,10 @@ export type ScoreHistory = {
   accuracy: number;
 };
 
+export type ArticleStats = {
+  distribution: Record<number, number>;
+};
+
 export type Settings = {
   lightMode: boolean;
   displayWordLength: boolean;

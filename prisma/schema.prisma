@@ -11,10 +11,29 @@ model DailyArticle {
   id Int @id @default(sequence())
   pageId String @unique
   date DateTime @unique
+  nbDailyWinners Int @default(0)
+  nbWinners Int @default(0)
+  stats Json?
+
+  dailyArticleScores DailyArticleScore[]
 }
 
 model User {
   id String @id @default(uuid()) @db.Uuid
   createdAt DateTime @default(now())
   lastSeenAt DateTime @default(now())
+
+  dailyArticleScores DailyArticleScore[]
+}
+
+model DailyArticleScore {
+  dailyArticle DailyArticle @relation(fields: [dailyArticleId], references: [id], onDelete: Cascade)
+  dailyArticleId Int
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @db.Uuid
+  createdAt DateTime @default(now())
+  nbAttempts Int @default(0)
+  nbCorrect Int @default(0)
+
+  @@unique([dailyArticleId, userId])
 }
