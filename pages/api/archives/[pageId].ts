@@ -1,11 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import prismaClient from "../../../prisma";
 import { EncodedArticle, Error } from "../../../types";
 import { encode, generateKey } from "../../../utils/encryption";
-import {
-  getArticle,
-  getCurrentPageNameAndID,
-  getPageNameFromPageId,
-} from "../../../utils/article";
+import { getArticle } from "../../../utils/article";
 import { applyCors } from "../../../utils/api";
 
 const handler = async (
@@ -27,22 +24,16 @@ const handler = async (
   }
 
   const pageId = parseInt(rawPageId, 10);
-  const [_, currentPageId] = getCurrentPageNameAndID();
+  const dailyArticle = await prismaClient.dailyArticle.findUnique({
+    where: { id: pageId },
+  });
 
-  if (pageId >= currentPageId) {
+  if (dailyArticle === null || dailyArticle.date > new Date()) {
     res.status(404).json({ error: "L'article n'est pas encore archivé" });
     return;
   }
 
-  let pageName;
-  try {
-    pageName = getPageNameFromPageId(pageId);
-  } catch (e) {
-    res.status(404).json({ error: "La page n'a pas été trouvée" });
-    return;
-  }
-
-  const result = await getArticle(pageName);
+  const result = await getArticle(dailyArticle.pageId);
   if (result === null) {
     res.status(503).json({ error: "L'article n'a pas été trouvé" });
     return;
@@ -56,7 +47,7 @@ const handler = async (
   res.json({
     key,
     puzzleId: pageId,
-    pageName: encode(pageName, key),
+    pageName: encode(dailyArticle.pageId, key),
     article: encode(article, key),
     title: encode(title, key),
   });

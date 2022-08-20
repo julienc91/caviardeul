@@ -1,11 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import prismaClient from "../../prisma";
 import { EncodedArticle, Error } from "../../types";
 import { encode, generateKey } from "../../utils/encryption";
-import {
-  getArticle,
-  getCurrentPageNameAndID,
-  getNextArticleCountdown,
-} from "../../utils/article";
+import { getArticle, getNextArticleCountdown } from "../../utils/article";
 import { applyCors } from "../../utils/api";
 
 const handler = async (
@@ -20,7 +17,18 @@ const handler = async (
     return;
   }
 
-  const [pageName, puzzleId] = getCurrentPageNameAndID();
+  const { id: puzzleId, pageId: pageName } =
+    await prismaClient.dailyArticle.findFirstOrThrow({
+      where: {
+        date: {
+          lt: new Date(),
+        },
+      },
+      orderBy: {
+        id: "desc",
+      },
+    });
+
   const nextArticleCountdown = getNextArticleCountdown();
   const result = await getArticle(pageName);
   if (result === null) {
@@ -35,7 +43,7 @@ const handler = async (
   res.setHeader("Cache-Control", `s-maxage=${nextArticleCountdown}`);
   res.json({
     key,
-    puzzleId,
+    puzzleId: Number(puzzleId),
     pageName: encode(pageName, key),
     article: encode(article, key),
     title: encode(title, key),
