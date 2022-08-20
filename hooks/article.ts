@@ -6,13 +6,13 @@ export const getEncodedArticle = (
   pageId?: string,
   custom?: boolean
 ): Promise<EncodedArticle> => {
-  let url = `${BASE_URL}/api/`;
+  let url = `${BASE_URL}/api/articles/`;
   if (!pageId) {
-    url += "article";
+    url += "current";
   } else if (custom) {
     url += `custom/${pageId}`;
   } else {
-    url += `archives/${pageId}`;
+    url += `${pageId}`;
   }
   return fetch(url)
     .then((res) => res.json())
@@ -34,7 +34,7 @@ export const getEncodedArticle = (
 export const useCreateCustomGame = () => {
   return useMutation(
     (pageName: string) => {
-      return fetch("/api/custom", {
+      return fetch("/api/articles/custom", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

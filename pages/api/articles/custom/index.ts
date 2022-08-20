@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { CustomGameCreation, Error } from "../../../types";
-import { encode, toBase64Url } from "../../../utils/encryption";
-import { getArticle } from "../../../utils/article";
-import { applyCors } from "../../../utils/api";
+import { CustomGameCreation, Error } from "../../../../types";
+import { encode, toBase64Url } from "../../../../utils/encryption";
+import { getArticle } from "../../../../utils/article";
+import { applyCors } from "../../../../utils/api";
 
 const handler = async (
   req: NextApiRequest,
