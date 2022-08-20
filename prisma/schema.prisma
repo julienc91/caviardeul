@@ -1,0 +1,14 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "cockroachdb"
+  url = env("DATABASE_URL")
+}
+
+model DailyArticle {
+  id Int @id @default(sequence()) @db.Int
+  pageId String @unique
+  date DateTime @unique
+}

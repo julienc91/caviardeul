@@ -1,7 +1,5 @@
 import { convertToMarkdown, stripArticle } from "./parsing";
 import { Article } from "../types";
-import { encodedPageList, firstGameDate } from "./config";
-import { decode } from "./encryption";
 
 export const getNextArticleCountdown = () => {
   const now = new Date();
@@ -37,39 +35,4 @@ export const getArticle = async (
     title,
     article,
   };
-};
-
-export const getCurrentPageNameAndID = (): [string, number] => {
-  return getPageNameAndIDFromDate(new Date());
-};
-
-export const getPageNameAndIDFromDate = (date: Date): [string, number] => {
-  if (date > new Date()) {
-    throw Error("Date in the future");
-  } else if (date < firstGameDate) {
-    throw Error("Date before the first game");
-  }
-  const diff = date.getTime() - firstGameDate.getTime();
-  const diffInDays = Math.floor(diff / (1000 * 3600 * 24));
-  const encryptionKey = process.env.ENCRYPTION_KEY;
-  if (!encryptionKey) {
-    throw Error("Missing encryption key");
-  }
-  return [
-    decode(encodedPageList[diffInDays % encodedPageList.length], encryptionKey),
-    diffInDays + 1,
-  ];
-};
-
-export const getPageNameFromPageId = (pageId: number): string => {
-  if (pageId <= 0) {
-    throw Error("Invalid page id");
-  }
-
-  const articleDate = new Date(
-    firstGameDate.getTime() + (pageId - 1) * 1000 * 3600 * 24
-  );
-
-  const [pageName, _] = getPageNameAndIDFromDate(articleDate);
-  return pageName;
 };
