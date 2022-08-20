@@ -8,7 +8,13 @@ datasource db {
 }
 
 model DailyArticle {
-  id Int @id @default(sequence()) @db.Int
+  id Int @id @default(sequence())
   pageId String @unique
   date DateTime @unique
+}
+
+model User {
+  id String @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now())
+  lastSeenAt DateTime @default(now())
 }
