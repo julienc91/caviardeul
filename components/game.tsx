@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useContext,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -20,6 +21,7 @@ import Loader from "./loader";
 import SaveManagement from "../utils/save";
 import { GameContext } from "../utils/game";
 import GameInformation from "./gameInformation";
+import { UserContext } from "../utils/user";
 
 const Game: React.FC<{
   article: Article | null;
@@ -40,6 +42,8 @@ const Game: React.FC<{
   const pageName = articleObject?.pageName ?? "";
   const puzzleId = articleObject?.puzzleId ?? -1;
   const error = puzzleId < 0;
+
+  const { saveScore } = useContext(UserContext);
 
   const titleWords = useMemo(() => {
     return splitWords(title).filter(isWord).map(standardizeText);
@@ -168,8 +172,15 @@ const Game: React.FC<{
   useEffect((): void => {
     if (!custom && puzzleId > 0 && saveLoaded) {
       SaveManagement.saveHistory(puzzleId, title, history, isOver);
+      if (isOver) {
+        const nbAttempts = history.length;
+        const nbCorrect = history.filter(
+          ([, nbOccurrences]) => nbOccurrences > 0
+        ).length;
+        saveScore(puzzleId, nbAttempts, nbCorrect);
+      }
     }
-  }, [custom, puzzleId, title, history, isOver, saveLoaded]);
+  }, [custom, puzzleId, title, history, isOver, saveLoaded, saveScore]);
 
   if (error) {
     return (

@@ -5,6 +5,7 @@ import InfoModal from "./infoModal";
 import IntroductionModal from "./introductionModal";
 import SettingsModal from "./settingsModal";
 import SettingsManager from "./settingsManager";
+import UserManager from "./userManager";
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [showInfoModal, setShowInfoModal] = useState(false);
@@ -39,21 +40,23 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Navbar
-        onShowInfoModal={handleShowInfoModal}
-        onShowSettingsModal={handleShowSettingsModal}
-      />
-
-      <SettingsManager>
-        {children}
-
-        <InfoModal open={showInfoModal} onClose={handleCloseInfoModal} />
-        <SettingsModal
-          open={showSettingsModal}
-          onClose={handleCloseSettingsModal}
+      <UserManager>
+        <Navbar
+          onShowInfoModal={handleShowInfoModal}
+          onShowSettingsModal={handleShowSettingsModal}
         />
-        <IntroductionModal />
-      </SettingsManager>
+
+        <SettingsManager>
+          {children}
+
+          <InfoModal open={showInfoModal} onClose={handleCloseInfoModal} />
+          <SettingsModal
+            open={showSettingsModal}
+            onClose={handleCloseSettingsModal}
+          />
+          <IntroductionModal />
+        </SettingsManager>
+      </UserManager>
     </>
   );
 };

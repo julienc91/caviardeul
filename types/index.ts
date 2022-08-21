@@ -57,3 +57,7 @@ export type SettingsState = {
 export type User = {
   id: string;
 };
+
+export type UserState = {
+  saveScore: (articleId: number, nbAttempts: number, nbCorrect: number) => void;
+};
