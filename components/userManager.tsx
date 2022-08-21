@@ -1,10 +1,13 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { UserContext } from "../utils/user";
 import { getCookie, setCookie } from "cookies-next";
-import { User } from "../types";
+import { ScoreHistory, User } from "../types";
 import { BASE_URL } from "../utils/config";
+import SaveManagement from "../utils/save";
 
 const UserManager: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [history, setHistory] = useState<ScoreHistory[] | null>(null);
+
   const getUserId = useCallback(async () => {
     let userId = getCookie("userId");
     if (!userId) {
@@ -16,6 +19,35 @@ const UserManager: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     }
     return userId.toString();
   }, []);
+
+  useEffect(() => {
+    setHistory(SaveManagement.loadHistory());
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (history?.length && !localStorage.getItem("exported_history")) {
+        const userId = await getUserId();
+        for (let i = 0; i < history.length; i++) {
+          if (!history[i].isOver) {
+            continue;
+          }
+          await fetch(`${BASE_URL}/api/users/${userId}/scores`, {
+            method: "POST",
+            body: JSON.stringify({
+              articleId: history[i].puzzleId,
+              nbAttempts: history[i].nbTrials,
+              nbCorrect: history[i].accuracy,
+            }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+        }
+        localStorage.setItem("exported_history", "1");
+      }
+    })().catch(console.log);
+  }, [history, getUserId]);
 
   const saveScore = useCallback(
     async (articleId: number, nbAttempts: number, nbCorrect: number) => {
