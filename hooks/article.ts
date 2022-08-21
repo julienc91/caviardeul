@@ -34,7 +34,7 @@ export const getEncodedArticle = (
 export const useCreateCustomGame = () => {
   return useMutation(
     (pageName: string) => {
-      return fetch("/api/articles/custom", {
+      return fetch(`${BASE_URL}/api/articles/custom`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
