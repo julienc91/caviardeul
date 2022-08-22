@@ -1,8 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import prismaClient from "../../../../../prisma";
-import { ArticleStats, Error } from "../../../../../types";
-import { applyCors } from "../../../../../utils/api";
-import { isSameDay } from "../../../../../utils/date";
+
+import prismaClient from "@caviardeul/prisma";
+import { ArticleStats, Error } from "@caviardeul/types";
+import { applyCors } from "@caviardeul/utils/api";
+import { isSameDay } from "@caviardeul/utils/date";
 
 const handler = async (
   req: NextApiRequest,

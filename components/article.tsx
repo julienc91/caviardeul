@@ -1,15 +1,16 @@
 import React, { useContext, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
+import { ReactMarkdownOptions } from "react-markdown/lib/react-markdown";
+
+import CustomGameBanner from "@caviardeul/components/customGameBanner";
 import {
   isCommonWord,
   isWord,
   splitWords,
   standardizeText,
-} from "../utils/caviarding";
-import { GameContext } from "../utils/game";
-import { SettingsContext } from "../utils/settings";
-import CustomGameBanner from "./customGameBanner";
-import { ReactMarkdownOptions } from "react-markdown/lib/react-markdown";
+} from "@caviardeul/utils/caviarding";
+import { GameContext } from "@caviardeul/utils/game";
+import { SettingsContext } from "@caviardeul/utils/settings";
 
 const _WordContainer: React.FC<{ node: any }> = ({ node }) => {
   const word = node.children[0].value;

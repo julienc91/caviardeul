@@ -1,11 +1,12 @@
-import React, { useCallback, useState } from "react";
 import Head from "next/head";
-import Navbar from "./navbar";
-import InfoModal from "./infoModal";
-import IntroductionModal from "./introductionModal";
-import SettingsModal from "./settingsModal";
-import SettingsManager from "./settingsManager";
-import UserManager from "./userManager";
+import React, { useCallback, useState } from "react";
+
+import InfoModal from "@caviardeul/components/infoModal";
+import IntroductionModal from "@caviardeul/components/introductionModal";
+import Navbar from "@caviardeul/components/navbar";
+import SettingsManager from "@caviardeul/components/settingsManager";
+import SettingsModal from "@caviardeul/components/settingsModal";
+import UserManager from "@caviardeul/components/userManager";
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [showInfoModal, setShowInfoModal] = useState(false);

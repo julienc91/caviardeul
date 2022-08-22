@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { DEPRECATED_DOMAIN } from "../utils/config";
-import { decode, encode } from "../utils/encryption";
-import SaveManagement from "../utils/save";
-import { ScoreHistory } from "../types";
+
+import { ScoreHistory } from "@caviardeul/types";
+import { DEPRECATED_DOMAIN } from "@caviardeul/utils/config";
+import { decode, encode } from "@caviardeul/utils/encryption";
+import SaveManagement from "@caviardeul/utils/save";
 
 const LocalStorageMigrator: React.FC = () => {
   const [domain, setDomain] = useState<string | null>(null);

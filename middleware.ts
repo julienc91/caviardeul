@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextFetchEvent, NextRequest } from "next/server";
-import { BASE_URL, DEPRECATED_DOMAIN } from "./utils/config";
+
+import { BASE_URL, DEPRECATED_DOMAIN } from "@caviardeul/utils/config";
 
 export const middleware = async (req: NextRequest, event: NextFetchEvent) => {
   if (

@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { UserContext } from "../utils/user";
 import { getCookie, setCookie } from "cookies-next";
-import { ScoreHistory, User } from "../types";
-import { BASE_URL } from "../utils/config";
-import SaveManagement from "../utils/save";
+import React, { useCallback, useEffect, useState } from "react";
+
+import { ScoreHistory, User } from "@caviardeul/types";
+import { BASE_URL } from "@caviardeul/utils/config";
+import SaveManagement from "@caviardeul/utils/save";
+import { UserContext } from "@caviardeul/utils/user";
 
 const UserManager: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [history, setHistory] = useState<ScoreHistory[] | null>(null);

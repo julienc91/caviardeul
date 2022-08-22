@@ -1,11 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { firstGameDate } from "../../utils/config";
-import SaveManagement from "../../utils/save";
-import { ScoreHistory } from "../../types";
-import Link from "next/link";
 import { GetStaticProps } from "next";
-import ConfirmModal from "../../components/confirmModal";
 import Head from "next/head";
+import Link from "next/link";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+
+import ConfirmModal from "@caviardeul/components/confirmModal";
+import { ScoreHistory } from "@caviardeul/types";
+import { firstGameDate } from "@caviardeul/utils/config";
+import SaveManagement from "@caviardeul/utils/save";
 
 const Archives: React.FC = () => {
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);

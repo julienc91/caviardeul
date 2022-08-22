@@ -1,5 +1,5 @@
-import { convertToMarkdown, stripArticle } from "./parsing";
-import { Article } from "../types";
+import { Article } from "@caviardeul/types";
+import { convertToMarkdown, stripArticle } from "@caviardeul/utils/parsing";
 
 export const getNextArticleCountdown = () => {
   const now = new Date();

@@ -1,6 +1,6 @@
-import React from "react";
 import Router from "next/router";
 import NProgress from "nprogress";
+import React from "react";
 
 let timer: NodeJS.Timeout | null = null;
 let state: "stop" | "loading" | null = null;

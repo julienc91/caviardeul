@@ -1,6 +1,7 @@
 import { createContext } from "react";
-import { SettingsState, Settings } from "../types";
-import SaveManagement from "./save";
+
+import { Settings, SettingsState } from "@caviardeul/types";
+import SaveManagement from "@caviardeul/utils/save";
 
 export const defaultSettings: Settings = {
   lightMode: false,

@@ -1,6 +1,7 @@
 import AES from "crypto-js/aes";
 import enc from "crypto-js/enc-utf8";
-import { Article, EncodedArticle } from "../types";
+
+import { Article, EncodedArticle } from "@caviardeul/types";
 
 /*
 Encryption is used to send the article to the client, to not

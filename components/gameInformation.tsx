@@ -1,8 +1,9 @@
-import React from "react";
-import { History } from "../types";
-import ExternalLink from "./externalLink";
-import { BASE_URL } from "../utils/config";
 import Link from "next/link";
+import React from "react";
+
+import ExternalLink from "@caviardeul/components/externalLink";
+import { History } from "@caviardeul/types";
+import { BASE_URL } from "@caviardeul/utils/config";
 
 const GameInformation: React.FC<{
   pageId?: string;

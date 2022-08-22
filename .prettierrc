@@ -1,0 +1,5 @@
+{
+    "importOrder": ["(^@caviardeul)", "^@caviardeul/", "^[./]" ],
+    "importOrderSeparation": true,
+    "importOrderSortSpecifiers": true
+}

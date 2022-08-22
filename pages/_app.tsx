@@ -1,10 +1,12 @@
-import "../styles/style.scss";
 import type { AppProps } from "next/app";
-import { QueryClient, QueryClientProvider } from "react-query";
-import Layout from "../components/layout";
-import "nprogress/nprogress.css";
 import dynamic from "next/dynamic";
-import LocalStorageMigrator from "../components/localStorageMigrator";
+import "nprogress/nprogress.css";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+import Layout from "@caviardeul/components/layout";
+import LocalStorageMigrator from "@caviardeul/components/localStorageMigrator";
+
+import "../styles/style.scss";
 
 const queryClient = new QueryClient();
 

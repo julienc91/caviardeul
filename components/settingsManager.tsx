@@ -1,7 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { SettingsContext, getInitialSettings } from "../utils/settings";
-import { Settings } from "../types";
-import SaveManagement from "../utils/save";
+
+import { Settings } from "@caviardeul/types";
+import SaveManagement from "@caviardeul/utils/save";
+import {
+  SettingsContext,
+  getInitialSettings,
+} from "@caviardeul/utils/settings";
 
 const getColorScheme = (lightMode: boolean): [string, string] => {
   return lightMode ? ["#eee", "#202020"] : ["#101010", "#ddd"];

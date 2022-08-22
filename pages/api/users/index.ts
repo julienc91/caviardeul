@@ -1,8 +1,9 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import { setCookie } from "cookies-next";
-import { User, Error } from "../../../types";
-import { applyCors } from "../../../utils/api";
-import prismaClient from "../../../prisma";
+import type { NextApiRequest, NextApiResponse } from "next";
+
+import prismaClient from "@caviardeul/prisma";
+import { Error, User } from "@caviardeul/types";
+import { applyCors } from "@caviardeul/utils/api";
 
 const handler = async (
   req: NextApiRequest,

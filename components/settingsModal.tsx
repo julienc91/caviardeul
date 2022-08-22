@@ -1,6 +1,7 @@
 import React, { useCallback, useContext } from "react";
-import Modal from "./modal";
-import { SettingsContext, defaultSettings } from "../utils/settings";
+
+import Modal from "@caviardeul/components/modal";
+import { SettingsContext, defaultSettings } from "@caviardeul/utils/settings";
 
 const SettingsModal: React.FC<{ open: boolean; onClose: () => void }> = ({
   open,

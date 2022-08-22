@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
-import { History } from "../types";
+
+import { History } from "@caviardeul/types";
 
 const HistoryContainer: React.FC<{
   history: History;

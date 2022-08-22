@@ -1,10 +1,11 @@
-import React from "react";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import Game from "../components/game";
-import { getEncodedArticle } from "../hooks/article";
-import { EncodedArticle } from "../types";
-import { decodeArticle } from "../utils/encryption";
+import React from "react";
+
+import Game from "@caviardeul/components/game";
+import { getEncodedArticle } from "@caviardeul/hooks/article";
+import { EncodedArticle } from "@caviardeul/types";
+import { decodeArticle } from "@caviardeul/utils/encryption";
 
 const Home: NextPage<{ encodedArticle: EncodedArticle }> = ({
   encodedArticle,

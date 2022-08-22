@@ -1,6 +1,7 @@
 import React from "react";
-import ExternalLink from "./externalLink";
-import Modal from "./modal";
+
+import ExternalLink from "@caviardeul/components/externalLink";
+import Modal from "@caviardeul/components/modal";
 
 const InfoModal: React.FC<{ open: boolean; onClose: () => void }> = ({
   open,

@@ -1,13 +1,14 @@
-import React, { useEffect, useMemo, useState } from "react";
 import type { GetServerSideProps, NextPage } from "next";
-import Game from "../../components/game";
-import { getEncodedArticle } from "../../hooks/article";
-import { EncodedArticle, ScoreHistory } from "../../types";
-import { decodeArticle } from "../../utils/encryption";
-import SaveManagement from "../../utils/save";
-import Loader from "../../components/loader";
-import { useRouter } from "next/router";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import React, { useEffect, useMemo, useState } from "react";
+
+import Game from "@caviardeul/components/game";
+import Loader from "@caviardeul/components/loader";
+import { getEncodedArticle } from "@caviardeul/hooks/article";
+import { EncodedArticle, ScoreHistory } from "@caviardeul/types";
+import { decodeArticle } from "@caviardeul/utils/encryption";
+import SaveManagement from "@caviardeul/utils/save";
 
 const ArchiveGame: NextPage<{
   pageId: string;

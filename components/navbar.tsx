@@ -1,7 +1,8 @@
-import React, { useCallback, useState } from "react";
 import Image from "next/image";
-import ExternalLink from "./externalLink";
 import Link from "next/link";
+import React, { useCallback, useState } from "react";
+
+import ExternalLink from "@caviardeul/components/externalLink";
 
 const Navbar: React.FC<{
   onShowInfoModal: () => void;

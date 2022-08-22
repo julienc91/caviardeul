@@ -1,12 +1,13 @@
-import React, { FormEvent, useCallback, useState } from "react";
-import { useCreateCustomGame } from "../../hooks/article";
-import { CustomGameCreation } from "../../types";
-import Loader from "../../components/loader";
-import { BASE_URL } from "../../utils/config";
-import { copyToClipboard } from "../../utils/clipboard";
 import { GetStaticProps } from "next";
-import { useRouter } from "next/router";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import React, { FormEvent, useCallback, useState } from "react";
+
+import Loader from "@caviardeul/components/loader";
+import { useCreateCustomGame } from "@caviardeul/hooks/article";
+import { CustomGameCreation } from "@caviardeul/types";
+import { copyToClipboard } from "@caviardeul/utils/clipboard";
+import { BASE_URL } from "@caviardeul/utils/config";
 
 const NewCustomGame: React.FC = () => {
   const [pageName, setPageName] = useState("");

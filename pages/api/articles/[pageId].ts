@@ -1,9 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import prismaClient from "../../../prisma";
-import { EncodedArticle, Error } from "../../../types";
-import { encode, generateKey } from "../../../utils/encryption";
-import { getArticle } from "../../../utils/article";
-import { applyCors } from "../../../utils/api";
+
+import prismaClient from "@caviardeul/prisma";
+import { EncodedArticle, Error } from "@caviardeul/types";
+import { applyCors } from "@caviardeul/utils/api";
+import { getArticle } from "@caviardeul/utils/article";
+import { encode, generateKey } from "@caviardeul/utils/encryption";
 
 const handler = async (
   req: NextApiRequest,

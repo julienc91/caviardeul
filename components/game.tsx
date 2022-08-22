@@ -6,22 +6,23 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { Article, History } from "../types";
-import ArticleContainer from "./article";
-import Input from "./input";
+
+import ArticleContainer from "@caviardeul/components/article";
+import GameInformation from "@caviardeul/components/gameInformation";
+import HistoryContainer from "@caviardeul/components/history";
+import Input from "@caviardeul/components/input";
+import Loader from "@caviardeul/components/loader";
+import { Article, History } from "@caviardeul/types";
 import {
   countOccurrences,
   isCommonWord,
   isWord,
   splitWords,
   standardizeText,
-} from "../utils/caviarding";
-import HistoryContainer from "./history";
-import Loader from "./loader";
-import SaveManagement from "../utils/save";
-import { GameContext } from "../utils/game";
-import GameInformation from "./gameInformation";
-import { UserContext } from "../utils/user";
+} from "@caviardeul/utils/caviarding";
+import { GameContext } from "@caviardeul/utils/game";
+import SaveManagement from "@caviardeul/utils/save";
+import { UserContext } from "@caviardeul/utils/user";
 
 const Game: React.FC<{
   article: Article | null;

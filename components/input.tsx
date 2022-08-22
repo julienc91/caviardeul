@@ -1,7 +1,8 @@
-import React, { ChangeEvent, useCallback, useState } from "react";
-import { isWord, splitWords } from "../utils/caviarding";
-import { ArrowUp } from "../assets/inlineImages";
 import Image from "next/image";
+import React, { ChangeEvent, useCallback, useState } from "react";
+
+import { ArrowUp } from "@caviardeul/assets/inlineImages";
+import { isWord, splitWords } from "@caviardeul/utils/caviarding";
 
 const Input: React.FC<{
   disabled: boolean;

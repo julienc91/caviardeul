@@ -1,6 +1,7 @@
 import { useMutation } from "react-query";
-import { BASE_URL } from "../utils/config";
-import { EncodedArticle } from "../types";
+
+import { EncodedArticle } from "@caviardeul/types";
+import { BASE_URL } from "@caviardeul/utils/config";
 
 export const getEncodedArticle = (
   pageId?: string,

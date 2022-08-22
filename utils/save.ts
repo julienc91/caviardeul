@@ -1,5 +1,5 @@
-import { History, ScoreHistory, Settings } from "../types";
-import { decode, encode, generateKey } from "./encryption";
+import { History, ScoreHistory, Settings } from "@caviardeul/types";
+import { decode, encode, generateKey } from "@caviardeul/utils/encryption";
 
 class SaveManagement {
   static getIsTutorialSkipped() {
