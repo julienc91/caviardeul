@@ -35,21 +35,29 @@ Router.events.on("routeChangeComplete", stop);
 Router.events.on("routeChangeError", stop);
 
 const originalFetch = window.fetch;
-window.fetch = async function (...args) {
-  if (activeRequests === 0) {
+window.fetch = async (
+  input: RequestInfo | URL,
+  init?: RequestInit
+): Promise<Response> => {
+  const ignoreLoading = init?.method === "POST";
+  if (activeRequests === 0 && !ignoreLoading) {
     load();
   }
 
-  activeRequests++;
+  if (!ignoreLoading) {
+    activeRequests++;
+  }
 
   try {
-    return await originalFetch(...args);
+    return await originalFetch(input, init);
   } catch (error) {
     return Promise.reject(error);
   } finally {
-    activeRequests -= 1;
-    if (activeRequests === 0) {
-      stop();
+    if (!ignoreLoading) {
+      activeRequests -= 1;
+      if (activeRequests === 0) {
+        stop();
+      }
     }
   }
 };
