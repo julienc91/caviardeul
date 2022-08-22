@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import prismaClient from "../../../../../prisma";
 import { ArticleStats, Error } from "../../../../../types";
 import { applyCors } from "../../../../../utils/api";
+import { isSameDay } from "../../../../../utils/date";
 
 const handler = async (
   req: NextApiRequest,
@@ -54,8 +55,7 @@ const handler = async (
     return;
   }
 
-  const isCurrentArticle =
-    article.date.toDateString() === new Date().toDateString();
+  const isCurrentArticle = isSameDay(article.date, new Date());
 
   try {
     await prismaClient.dailyArticleScore.create({
