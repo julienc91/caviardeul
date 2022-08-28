@@ -9,7 +9,10 @@ import { ArticleInfo } from "@caviardeul/types";
 import { BASE_URL } from "@caviardeul/utils/config";
 import SaveManagement from "@caviardeul/utils/save";
 
-const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
+const Archives: React.FC<{ articles: ArticleInfo[] }> = ({
+  articles: originalArticles,
+}) => {
+  const [articles, setArticles] = useState<ArticleInfo[]>(originalArticles);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
 
   const nbGames = articles.length;
@@ -55,8 +58,13 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
     SaveManagement.clearHistory();
     SaveManagement.clearProgress();
     deleteCookie("userId");
+    setArticles(
+      articles.map((articleInfo) => ({
+        articleId: articleInfo.articleId,
+      }))
+    );
     handleCloseConfirmModal();
-  }, [handleCloseConfirmModal]);
+  }, [handleCloseConfirmModal, articles]);
 
   const gamesContainer = articles.map((articleInfo, i) => {
     const isOver = !!articleInfo.userScore;
