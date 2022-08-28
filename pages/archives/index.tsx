@@ -1,32 +1,30 @@
-import { GetStaticProps } from "next";
+import { deleteCookie, getCookie } from "cookies-next";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
 import ConfirmModal from "@caviardeul/components/confirmModal";
-import { ScoreHistory } from "@caviardeul/types";
-import { firstGameDate } from "@caviardeul/utils/config";
+import { ArticleInfo } from "@caviardeul/types";
+import { BASE_URL } from "@caviardeul/utils/config";
 import SaveManagement from "@caviardeul/utils/save";
 
-const Archives: React.FC = () => {
+const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
-  const [history, setHistory] = useState<ScoreHistory[]>([]);
-  const now = new Date();
-  const diff = now.getTime() - firstGameDate.getTime();
 
-  const nbGames = Math.floor(diff / (1000 * 3600 * 24)) + 1;
-
-  const finishedGames = useMemo(
-    () => history.filter(({ isOver }) => isOver),
-    [history]
+  const nbGames = articles.length;
+  const finishedGames = articles.filter(
+    (articleInfo) => !!articleInfo.userScore
   );
-  const nbFinishedGames = useMemo(() => finishedGames.length, [finishedGames]);
+  const nbFinishedGames = finishedGames.length;
 
   const avgTrials = useMemo(
     () =>
       Math.floor(
-        finishedGames.reduce((acc, { nbTrials }) => acc + nbTrials, 0) /
-          Math.max(nbFinishedGames, 1)
+        finishedGames.reduce(
+          (acc, { userScore }) => acc + (userScore?.nbAttempts || 0),
+          0
+        ) / Math.max(nbFinishedGames, 1)
       ),
     [finishedGames, nbFinishedGames]
   );
@@ -34,17 +32,15 @@ const Archives: React.FC = () => {
     () =>
       Math.floor(
         finishedGames.reduce(
-          (acc, { accuracy, nbTrials }) =>
-            acc + (accuracy * 100) / Math.max(nbTrials, 1),
+          (acc, { userScore }) =>
+            acc +
+            ((userScore?.nbCorrect || 0) * 100) /
+              Math.max(userScore?.nbAttempts || 0, 1),
           0
         ) / Math.max(nbFinishedGames, 1)
       ),
     [finishedGames, nbFinishedGames]
   );
-
-  useEffect(() => {
-    setHistory(SaveManagement.loadHistory());
-  }, []);
 
   const handleShowConfirmModal = useCallback(
     () => setShowConfirmModal(true),
@@ -58,38 +54,30 @@ const Archives: React.FC = () => {
   const handleReset = useCallback(() => {
     SaveManagement.clearHistory();
     SaveManagement.clearProgress();
-    setHistory([]);
+    deleteCookie("userId");
     handleCloseConfirmModal();
   }, [handleCloseConfirmModal]);
 
-  const finishedGamesById = useMemo(() => {
-    return history
-      .filter(({ isOver }) => isOver)
-      .reduce((acc: { [id: number]: ScoreHistory }, item) => {
-        acc[item.puzzleId] = item;
-        return acc;
-      }, {});
-  }, [history]);
-
-  const gamesContainer = [];
-  for (let i = nbGames; i >= 1; i--) {
-    const scoreHistory = finishedGamesById[i];
-    const isOver = scoreHistory?.isOver ?? false;
-    const url = i < nbGames ? `/archives/${i}` : `/`;
+  const gamesContainer = articles.map((articleInfo, i) => {
+    const isOver = !!articleInfo.userScore;
+    const url = i === 0 ? "/" : `/archives/${articleInfo.articleId}`;
 
     let container = (
-      <div className={"archive-item" + (isOver ? " completed" : "")} key={i}>
+      <div
+        className={"archive-item" + (isOver ? " completed" : "")}
+        key={articleInfo.articleId}
+      >
         <h3>
-          N°{i} - {scoreHistory?.isOver ? scoreHistory.title : "?"}
+          N°{articleInfo.articleId} - {isOver ? articleInfo.pageName : "?"}
         </h3>
-        {scoreHistory?.isOver ? (
+        {isOver && !!articleInfo.userScore ? (
           <>
-            <span>Essais&nbsp;: {scoreHistory.nbTrials}</span>
+            <span>Essais&nbsp;: {articleInfo.userScore.nbAttempts}</span>
             <span>
               Précision&nbsp;:{" "}
               {Math.floor(
-                (scoreHistory.accuracy * 100) /
-                  Math.max(scoreHistory.nbTrials, 1)
+                (articleInfo.userScore.nbCorrect * 100) /
+                  Math.max(articleInfo.userScore.nbAttempts, 1)
               )}
               %
             </span>
@@ -107,8 +95,8 @@ const Archives: React.FC = () => {
         </Link>
       );
     }
-    gamesContainer.push(container);
-  }
+    return container;
+  });
 
   return (
     <>
@@ -158,8 +146,17 @@ const Archives: React.FC = () => {
 
 export default Archives;
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const userId = getCookie("userId", { req, res }) || "";
+  const response = await fetch(`${BASE_URL}/api/articles`, {
+    headers: {
+      Cookie: `userId=${userId}`,
+    },
+  });
+  const articles = await response.json();
   return {
-    props: {},
+    props: {
+      articles: articles.reverse(),
+    },
   };
 };

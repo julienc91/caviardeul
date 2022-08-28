@@ -10,6 +10,7 @@ datasource db {
 model DailyArticle {
   id Int @id @default(sequence())
   pageId String @unique
+  pageName String @default("")
   date DateTime @unique
   nbDailyWinners Int @default(0)
   nbWinners Int @default(0)

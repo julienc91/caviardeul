@@ -18,6 +18,15 @@ export type EncodedArticle = {
   title: string;
 };
 
+export type ArticleInfo = {
+  articleId: number;
+  pageName?: string;
+  userScore?: {
+    nbAttempts: number;
+    nbCorrect: number;
+  };
+};
+
 export type CustomGameCreation = {
   pageId: string;
   title: string;

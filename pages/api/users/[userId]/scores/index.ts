@@ -1,9 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import prismaClient from "@caviardeul/prisma";
-import { ArticleStats, Error } from "@caviardeul/types";
+import { ArticleStats, Error, User } from "@caviardeul/types";
 import { applyCors } from "@caviardeul/utils/api";
-import { isSameDay } from "@caviardeul/utils/date";
 
 const handler = async (
   req: NextApiRequest,
@@ -34,6 +33,14 @@ const handler = async (
     return;
   }
 
+  await postHandler(req, res, user);
+};
+
+const postHandler = async (
+  req: NextApiRequest,
+  res: NextApiResponse<{} | Error>,
+  user: User
+) => {
   const nbAttempts = parseInt(req.body.nbAttempts, 10);
   const nbCorrect = parseInt(req.body.nbCorrect, 10);
   if (
@@ -56,7 +63,11 @@ const handler = async (
     return;
   }
 
-  const isCurrentArticle = isSameDay(article.date, new Date());
+  const currentArticle = await prismaClient.dailyArticle.findFirstOrThrow({
+    where: { date: { lt: new Date() } },
+    orderBy: { date: "desc" },
+  });
+  const isCurrentArticle = article.id === currentArticle.id;
 
   try {
     await prismaClient.dailyArticleScore.create({

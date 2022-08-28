@@ -1,3 +1,4 @@
+import prismaClient from "@caviardeul/prisma";
 import { Article } from "@caviardeul/types";
 import { convertToMarkdown, stripArticle } from "@caviardeul/utils/parsing";
 
@@ -35,4 +36,10 @@ export const getArticle = async (
     title,
     article,
   };
+};
+
+export const getTotalGames = async (): Promise<number> => {
+  return await prismaClient.dailyArticle.count({
+    where: { date: { lt: new Date() } },
+  });
 };
