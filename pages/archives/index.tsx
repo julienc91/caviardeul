@@ -98,7 +98,7 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({
 
     if (!isOver) {
       container = (
-        <Link href={url} key={i}>
+        <Link href={url} key={i} prefetch={false}>
           {container}
         </Link>
       );
