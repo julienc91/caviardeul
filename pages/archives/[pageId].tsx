@@ -12,11 +12,11 @@ import SaveManagement from "@caviardeul/utils/save";
 
 const ArchiveGame: NextPage<{
   pageId: string;
-  encodedArticle: EncodedArticle | null;
+  encodedArticle: EncodedArticle;
 }> = ({ encodedArticle, ...props }) => {
   const [history, setHistory] = useState<ScoreHistory[] | null>(null);
   const router = useRouter();
-  const article = encodedArticle ? decodeArticle(encodedArticle) : null;
+  const article = decodeArticle(encodedArticle);
 
   useEffect(() => {
     setHistory(SaveManagement.loadHistory());
@@ -35,7 +35,7 @@ const ArchiveGame: NextPage<{
   });
 
   const isOver = useMemo<boolean>(() => {
-    if (!history || !article) {
+    if (!history) {
       return false;
     }
     return (
@@ -44,7 +44,7 @@ const ArchiveGame: NextPage<{
     );
   }, [history, article]);
 
-  if (!history || !article || isOver) {
+  if (!article || isOver) {
     return <Loader />;
   }
 
@@ -67,6 +67,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   try {
     const data = await getEncodedArticle(pageId, false);
     return { props: { pageId, encodedArticle: data } };
-  } catch (error) {}
-  return { props: { pageId, encodedArticle: null } };
+  } catch (error) {
+    return { notFound: true };
+  }
 };

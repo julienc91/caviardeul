@@ -9,9 +9,9 @@ import { decodeArticle } from "@caviardeul/utils/encryption";
 
 const CustomGame: NextPage<{
   pageId: string;
-  encodedArticle: EncodedArticle | null;
+  encodedArticle: EncodedArticle;
 }> = ({ encodedArticle, ...props }) => {
-  const article = encodedArticle ? decodeArticle(encodedArticle) : null;
+  const article = decodeArticle(encodedArticle);
   return (
     <>
       <Head>
@@ -29,6 +29,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   try {
     const data = await getEncodedArticle(pageId, true);
     return { props: { pageId, encodedArticle: data } };
-  } catch (error) {}
-  return { props: { pageId, encodedArticle: null } };
+  } catch (error) {
+    return { notFound: true };
+  }
 };

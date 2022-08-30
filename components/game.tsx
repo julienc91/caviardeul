@@ -25,7 +25,7 @@ import SaveManagement from "@caviardeul/utils/save";
 import { UserContext } from "@caviardeul/utils/user";
 
 const Game: React.FC<{
-  article: Article | null;
+  article: Article;
   pageId?: string;
   custom: boolean;
 }> = ({ article: articleObject, pageId, custom }) => {
@@ -38,11 +38,10 @@ const Game: React.FC<{
   const [saveLoaded, setSaveLoaded] = useState(false);
   const loading = isLoading || !saveLoaded;
 
-  const article = articleObject?.article ?? "";
-  const title = articleObject?.title ?? "";
-  const pageName = articleObject?.pageName ?? "";
-  const puzzleId = articleObject?.puzzleId ?? -1;
-  const error = puzzleId < 0;
+  const article = articleObject.article;
+  const title = articleObject.title;
+  const pageName = articleObject.pageName;
+  const puzzleId = articleObject.puzzleId;
 
   const { saveScore } = useContext(UserContext);
 
@@ -51,7 +50,7 @@ const Game: React.FC<{
   }, [title]);
 
   const standardizedArticle = useMemo(() => {
-    return standardizeText(article);
+    return standardizeText(article) || "";
   }, [article]);
 
   const handleContentLoaded = useCallback(() => {
@@ -182,14 +181,6 @@ const Game: React.FC<{
       }
     }
   }, [custom, puzzleId, title, history, isOver, saveLoaded, saveScore]);
-
-  if (error) {
-    return (
-      <main>
-        <div className="error">Impossible de charger l&apos;article.</div>
-      </main>
-    );
-  }
 
   return (
     <main id="game">
