@@ -1,6 +1,7 @@
 User-agent: *
 Disallow: /local-storage-migrator.html
 Disallow: /api/*
+Disallow: /debug
 Disallow: /login
 
 Sitemap: https://caviardeul/sitemap.xml

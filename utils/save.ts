@@ -10,15 +10,18 @@ class SaveManagement {
     localStorage.setItem("skipTutorial", "true");
   }
 
-  static getEncryptionKey(generate: boolean = false): string {
+  static getEncryptionKey(
+    generate: boolean = false,
+    raise: boolean = true
+  ): string {
     let key = localStorage.getItem("key");
     if (!key && generate) {
       key = generateKey();
       localStorage.setItem("key", key);
-    } else if (!key) {
+    } else if (!key && raise) {
       throw new Error("No encryption key found");
     }
-    return key;
+    return key ?? "";
   }
 
   static loadProgress(puzzleId: number, pageId?: string): History | null {
