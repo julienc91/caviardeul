@@ -27,7 +27,7 @@ const GameInformation: React.FC<{
   } else if (customGame) {
     shareUrl += `custom/${pageId}`;
   }
-  const shareLink = `http://twitter.com/share?text=${encodeURIComponent(
+  const shareLink = `https://twitter.com/share?text=${encodeURIComponent(
     shareSentence
   )}&url=${encodeURIComponent(shareUrl)}&hashtags=caviardeul`;
 
@@ -54,7 +54,10 @@ const GameInformation: React.FC<{
       {customGame && (
         <p>
           Créez votre nouvelle{" "}
-          <Link href="/custom/nouveau">partie personnalisée</Link>&nbsp;
+          <Link href="/custom/nouveau" prefetch={false}>
+            <a>partie personnalisée</a>
+          </Link>
+          &nbsp;
         </p>
       )}
       {!customGame && !archive && (

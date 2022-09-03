@@ -25,17 +25,23 @@ const Navbar: React.FC<{
         <span className="line" />
       </button>
       <h1>
-        <Link href="/">Caviardeul</Link>
+        <Link href="/" prefetch={false}>
+          <a>Caviardeul</a>
+        </Link>
       </h1>
 
       <div className={"nav-links" + (active ? " active" : "")}>
         <div className="nav-link-background" onClick={handleClick} />
         <ul>
           <li className="left">
-            <Link href="/archives/">Archives</Link>
+            <Link href="/archives/" prefetch={false}>
+              <a>Archives</a>
+            </Link>
           </li>
           <li className="left">
-            <Link href="/custom/nouveau">Partie personnalisée</Link>
+            <Link href="/custom/nouveau" prefetch={false}>
+              <a>Partie personnalisée</a>
+            </Link>
           </li>
           <li className="left" onClick={onShowInfoModal}>
             À propos
