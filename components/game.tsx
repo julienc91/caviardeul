@@ -170,15 +170,12 @@ const Game: React.FC<{
   }, [custom, puzzleId, pageId, history, saveLoaded]);
 
   useEffect((): void => {
-    if (!custom && puzzleId > 0 && saveLoaded) {
-      SaveManagement.saveHistory(puzzleId, title, history, isOver);
-      if (isOver) {
-        const nbAttempts = history.length;
-        const nbCorrect = history.filter(
-          ([, nbOccurrences]) => nbOccurrences > 0
-        ).length;
-        saveScore(puzzleId, nbAttempts, nbCorrect);
-      }
+    if (!custom && puzzleId > 0 && saveLoaded && isOver) {
+      const nbAttempts = history.length;
+      const nbCorrect = history.filter(
+        ([, nbOccurrences]) => nbOccurrences > 0
+      ).length;
+      saveScore(puzzleId, nbAttempts, nbCorrect);
     }
   }, [custom, puzzleId, title, history, isOver, saveLoaded, saveScore]);
 

@@ -18,13 +18,15 @@ export type EncodedArticle = {
   title: string;
 };
 
+export type UserScore = {
+  nbAttempts: number;
+  nbCorrect: number;
+};
+
 export type ArticleInfo = {
   articleId: number;
   pageName?: string;
-  userScore?: {
-    nbAttempts: number;
-    nbCorrect: number;
-  };
+  userScore?: UserScore;
 };
 
 export type CustomGameCreation = {
@@ -39,14 +41,6 @@ export type GameState = {
   words: Set<string>;
   isOver: boolean;
   selection: [string, number] | null;
-};
-
-export type ScoreHistory = {
-  puzzleId: number;
-  title: string;
-  isOver: boolean;
-  nbTrials: number;
-  accuracy: number;
 };
 
 export type ArticleStats = {

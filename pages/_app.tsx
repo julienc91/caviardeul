@@ -4,7 +4,6 @@ import "nprogress/nprogress.css";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import Layout from "@caviardeul/components/layout";
-import LocalStorageMigrator from "@caviardeul/components/localStorageMigrator";
 
 import "../styles/style.scss";
 
@@ -22,7 +21,6 @@ const Caviardeul = ({ Component, pageProps }: AppProps) => {
     <>
       <TopProgressBar />
       <QueryClientProvider client={queryClient}>
-        <LocalStorageMigrator />
         <Layout>
           <Component {...pageProps} />
         </Layout>

@@ -1,53 +1,19 @@
+import { getCookie } from "cookies-next";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import { useRouter } from "next/router";
-import React, { useEffect, useMemo, useState } from "react";
+import React from "react";
 
 import Game from "@caviardeul/components/game";
-import Loader from "@caviardeul/components/loader";
 import { getEncodedArticle } from "@caviardeul/hooks/article";
-import { EncodedArticle, ScoreHistory } from "@caviardeul/types";
+import prismaClient from "@caviardeul/prisma";
+import { EncodedArticle } from "@caviardeul/types";
 import { decodeArticle } from "@caviardeul/utils/encryption";
-import SaveManagement from "@caviardeul/utils/save";
 
 const ArchiveGame: NextPage<{
   pageId: string;
   encodedArticle: EncodedArticle;
 }> = ({ encodedArticle, ...props }) => {
-  const [history, setHistory] = useState<ScoreHistory[] | null>(null);
-  const router = useRouter();
   const article = decodeArticle(encodedArticle);
-
-  useEffect(() => {
-    setHistory(SaveManagement.loadHistory());
-  }, []);
-
-  useEffect(() => {
-    if (!isOver) {
-      return;
-    }
-
-    const redirect = async () => {
-      await router.push("/archives");
-    };
-
-    redirect().catch(console.error);
-  });
-
-  const isOver = useMemo<boolean>(() => {
-    if (!history) {
-      return false;
-    }
-    return (
-      history.find(({ puzzleId }) => puzzleId === article.puzzleId)?.isOver ??
-      false
-    );
-  }, [history, article]);
-
-  if (!article || isOver) {
-    return <Loader />;
-  }
-
   return (
     <>
       <Head>
@@ -62,11 +28,28 @@ const ArchiveGame: NextPage<{
 
 export default ArchiveGame;
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const pageId = (params?.pageId || "") as string;
+export const getServerSideProps: GetServerSideProps = async ({
+  params,
+  req,
+  res,
+}) => {
+  const articleId = parseInt(params?.pageId as string);
+  const userId = (getCookie("userId", { req, res }) || "") as string;
+
+  if (userId !== "") {
+    const userScore = await prismaClient.dailyArticleScore.findFirst({
+      where: { userId, dailyArticleId: articleId },
+    });
+    if (userScore) {
+      return { redirect: { permanent: false, destination: "/archives" } };
+    }
+  }
+
   try {
-    const data = await getEncodedArticle(pageId, false);
-    return { props: { pageId, encodedArticle: data } };
+    const data = await getEncodedArticle(articleId, false);
+    return {
+      props: { pageId: articleId, encodedArticle: data },
+    };
   } catch (error) {
     return { notFound: true };
   }

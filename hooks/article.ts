@@ -4,7 +4,7 @@ import { EncodedArticle } from "@caviardeul/types";
 import { BASE_URL } from "@caviardeul/utils/config";
 
 export const getEncodedArticle = (
-  pageId?: string,
+  pageId?: string | number,
   custom?: boolean
 ): Promise<EncodedArticle> => {
   let url = `${BASE_URL}/api/articles/`;

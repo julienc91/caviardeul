@@ -55,7 +55,6 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({
   );
 
   const handleReset = useCallback(() => {
-    SaveManagement.clearHistory();
     SaveManagement.clearProgress();
     deleteCookie("userId");
     setArticles(

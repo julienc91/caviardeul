@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import prismaClient from "@caviardeul/prisma";
-import { EncodedArticle, Error } from "@caviardeul/types";
+import { EncodedArticle, Error, UserScore } from "@caviardeul/types";
 import { applyCors } from "@caviardeul/utils/api";
 import { getArticle, getNextArticleCountdown } from "@caviardeul/utils/article";
 import { encode, generateKey } from "@caviardeul/utils/encryption";
