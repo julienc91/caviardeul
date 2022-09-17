@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import prismaClient from "@caviardeul/prisma";
 import { EncodedArticle, Error } from "@caviardeul/types";
 import { applyCors } from "@caviardeul/utils/api";
-import { getArticle } from "@caviardeul/utils/article";
+import { getArticleContent } from "@caviardeul/utils/article";
 import { encode, generateKey } from "@caviardeul/utils/encryption";
 
 const handler = async (
@@ -18,39 +18,40 @@ const handler = async (
     return;
   }
 
-  const { pageId: rawPageId } = req.query;
-  if (typeof rawPageId !== "string" || !rawPageId.match(/\d+/)) {
+  const rawArticleId = req.query.articleId as string;
+  if (!rawArticleId.match(/\d+/)) {
     res.status(404).json({ error: "La page n'a pas été trouvée" });
     return;
   }
 
-  const pageId = parseInt(rawPageId, 10);
+  const articleId = parseInt(rawArticleId, 10);
   const dailyArticle = await prismaClient.dailyArticle.findUnique({
-    where: { id: pageId },
+    where: { id: articleId },
   });
 
-  if (dailyArticle === null || dailyArticle.date > new Date()) {
+  if (!dailyArticle || dailyArticle.date > new Date()) {
     res.status(404).json({ error: "L'article n'est pas encore archivé" });
     return;
   }
 
-  const result = await getArticle(dailyArticle.pageId);
+  const result = await getArticleContent(dailyArticle.pageId);
   if (result === null) {
     res.status(503).json({ error: "L'article n'a pas été trouvé" });
     return;
   }
 
-  const { article, title } = result;
+  const { content } = result;
   const key = generateKey();
 
   res.status(200);
   res.setHeader("Cache-Control", `s-maxage=${24 * 60 * 60}`);
   res.json({
     key,
-    puzzleId: pageId,
-    pageName: encode(dailyArticle.pageId, key),
-    article: encode(article, key),
-    title: encode(title, key),
+    articleId,
+    archive: true,
+    custom: false,
+    pageName: encode(dailyArticle.pageName, key),
+    content: encode(content, key),
   });
 };
 

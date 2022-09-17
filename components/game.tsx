@@ -26,10 +26,7 @@ import { UserContext } from "@caviardeul/utils/user";
 
 const Game: React.FC<{
   article: Article;
-  pageId?: string;
-  custom: boolean;
-}> = ({ article: articleObject, pageId, custom }) => {
-  const archive = !!pageId && !custom;
+}> = ({ article }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [revealedWords, setRevealedWords] = useState<Set<string>>(new Set());
   const [selection, setSelection] = useState<[string, number] | null>(null);
@@ -38,20 +35,17 @@ const Game: React.FC<{
   const [saveLoaded, setSaveLoaded] = useState(false);
   const loading = isLoading || !saveLoaded;
 
-  const article = articleObject.article;
-  const title = articleObject.title;
-  const pageName = articleObject.pageName;
-  const puzzleId = articleObject.puzzleId;
+  const { articleId, archive, custom, pageName, content } = article;
 
   const { saveScore } = useContext(UserContext);
 
   const titleWords = useMemo(() => {
-    return splitWords(title).filter(isWord).map(standardizeText);
-  }, [title]);
+    return splitWords(pageName).filter(isWord).map(standardizeText);
+  }, [pageName]);
 
   const standardizedArticle = useMemo(() => {
-    return standardizeText(article) || "";
-  }, [article]);
+    return standardizeText(content) || "";
+  }, [content]);
 
   const handleContentLoaded = useCallback(() => {
     setIsLoading(false);
@@ -100,7 +94,7 @@ const Game: React.FC<{
       }
 
       const nbOccurrences = countOccurrences(
-        article,
+        content,
         standardizedArticle,
         word
       );
@@ -113,7 +107,7 @@ const Game: React.FC<{
       isOver,
       selection,
       handleChangeSelection,
-      article,
+      content,
       standardizedArticle,
     ]
   );
@@ -152,32 +146,34 @@ const Game: React.FC<{
 
   // Load history from save
   useEffect((): void => {
-    if (puzzleId >= 0) {
-      const savedHistory = SaveManagement.loadProgress(puzzleId, pageId);
-      if (savedHistory) {
-        setHistory(savedHistory);
-        setRevealedWords(new Set(savedHistory.map(([word]) => word)));
-      }
-      setSaveLoaded(true);
+    const savedHistory = SaveManagement.loadProgress(
+      articleId,
+      archive,
+      custom
+    );
+    if (savedHistory) {
+      setHistory(savedHistory);
+      setRevealedWords(new Set(savedHistory.map(([word]) => word)));
     }
-  }, [custom, puzzleId, pageId]);
+    setSaveLoaded(true);
+  }, [archive, custom, articleId]);
 
   // Save progress and history
   useEffect((): void => {
-    if (puzzleId >= 0 && saveLoaded) {
-      SaveManagement.saveProgress(puzzleId, history, pageId);
+    if (saveLoaded) {
+      SaveManagement.saveProgress(articleId, history, archive, custom);
     }
-  }, [custom, puzzleId, pageId, history, saveLoaded]);
+  }, [articleId, archive, custom, history, saveLoaded]);
 
   useEffect((): void => {
-    if (!custom && puzzleId > 0 && saveLoaded && isOver) {
+    if (saveLoaded && isOver) {
       const nbAttempts = history.length;
       const nbCorrect = history.filter(
         ([, nbOccurrences]) => nbOccurrences > 0
       ).length;
-      saveScore(puzzleId, nbAttempts, nbCorrect);
+      saveScore(articleId, custom, nbAttempts, nbCorrect);
     }
-  }, [custom, puzzleId, title, history, isOver, saveLoaded, saveScore]);
+  }, [custom, articleId, history, isOver, saveLoaded, saveScore]);
 
   return (
     <main id="game">
@@ -187,8 +183,8 @@ const Game: React.FC<{
         <div className="left-container">
           {saveLoaded && (
             <ArticleContainer
-              customGame={custom}
-              article={article}
+              custom={custom}
+              content={content}
               reveal={isOver}
               onContentLoaded={handleContentLoaded}
             />
@@ -199,11 +195,11 @@ const Game: React.FC<{
         <div className="right-container">
           {isOver && (
             <GameInformation
+              articleId={articleId}
               archive={archive}
-              pageId={pageId}
+              custom={custom}
               history={history}
               pageName={pageName}
-              puzzleId={puzzleId}
             />
           )}
           {!loading && (

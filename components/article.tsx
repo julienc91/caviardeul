@@ -58,14 +58,14 @@ const WordContainer = React.memo(_WordContainer);
 const MarkdownContainer = React.memo(_MarkdownContainer);
 
 const ArticleContainer: React.FC<{
-  article: string;
-  customGame: boolean;
+  content: string;
+  custom: boolean;
   reveal: boolean;
   onContentLoaded: () => void;
-}> = ({ article, customGame, reveal, onContentLoaded }) => {
+}> = ({ content, custom, reveal, onContentLoaded }) => {
   return (
     <div id="article" className="article-container">
-      {customGame && <CustomGameBanner />}
+      {custom && <CustomGameBanner />}
       <MarkdownContainer
         components={{
           strong: ({ node }) => {
@@ -75,8 +75,8 @@ const ArticleContainer: React.FC<{
         onContentLoaded={onContentLoaded}
       >
         {reveal
-          ? article
-          : splitWords(article, true).reduce((value, word) => {
+          ? content
+          : splitWords(content, true).reduce((value, word) => {
               let currentValue;
               if (!isCommonWord(word) && isWord(word)) {
                 currentValue = `**${word}**`;

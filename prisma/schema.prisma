@@ -19,12 +19,26 @@ model DailyArticle {
   dailyArticleScores DailyArticleScore[]
 }
 
+model CustomArticle {
+  id String @id @default(cuid())
+  createdBy User @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById String @db.Uuid
+  pageId String
+  pageName String @default("")
+  createdAt DateTime @default(now())
+  nbWinners Int @default(0)
+  stats Json?
+
+  @@unique([createdById, pageId])
+}
+
 model User {
   id String @id @default(uuid()) @db.Uuid
   createdAt DateTime @default(now())
   lastSeenAt DateTime @default(now())
 
   dailyArticleScores DailyArticleScore[]
+  customArticles CustomArticle[]
 }
 
 model DailyArticleScore {

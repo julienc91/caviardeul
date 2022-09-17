@@ -2,30 +2,29 @@ import Link from "next/link";
 import React from "react";
 
 import ExternalLink from "@caviardeul/components/externalLink";
-import { History } from "@caviardeul/types";
+import { ArticleId, History } from "@caviardeul/types";
 import { BASE_URL } from "@caviardeul/utils/config";
 
 const GameInformation: React.FC<{
-  pageId?: string;
+  articleId: ArticleId;
   archive: boolean;
+  custom: boolean;
   history: History;
   pageName: string;
-  puzzleId: number;
-}> = ({ pageId, archive, history, pageName, puzzleId }) => {
-  const customGame = !!pageId && !archive;
+}> = ({ articleId, archive, custom, history, pageName }) => {
   const nbTrials = history.length;
   const accuracy = Math.round(
     (history.filter(([_, count]) => count > 0).length / nbTrials) * 100
   );
 
   const shareSentence = `J'ai déchiffré ${
-    customGame ? "ce Caviardeul" : `le Caviardeul n°${puzzleId}`
+    custom ? "ce Caviardeul" : `le Caviardeul n°${articleId}`
   } en ${nbTrials} coup${nbTrials > 1 ? "s" : ""}\u00A0!`;
   let shareUrl = `${BASE_URL}/`;
   if (archive) {
-    shareUrl += `archives/${pageId}`;
-  } else if (customGame) {
-    shareUrl += `custom/${pageId}`;
+    shareUrl += `archives/${articleId}`;
+  } else if (custom) {
+    shareUrl += `custom/${articleId}`;
   }
   const shareLink = `https://twitter.com/share?text=${encodeURIComponent(
     shareSentence
@@ -36,7 +35,7 @@ const GameInformation: React.FC<{
       <h2>Bravo&nbsp;!</h2>
       <p>
         Vous avez déchiffré{" "}
-        {customGame || archive ? "cet article" : "le Caviardeul du jour"} en{" "}
+        {archive || custom ? "cet article" : "le Caviardeul du jour"} en{" "}
         {nbTrials} coup{nbTrials > 1 ? "s" : ""} avec une précision de{" "}
         {accuracy}%.
       </p>
@@ -51,7 +50,7 @@ const GameInformation: React.FC<{
           Partager <ExternalLink href={shareLink}>sur Twitter</ExternalLink>
         </li>
       </ul>
-      {customGame && (
+      {custom && (
         <p>
           Créez votre nouvelle{" "}
           <Link href="/custom/nouveau" prefetch={false}>
@@ -60,7 +59,7 @@ const GameInformation: React.FC<{
           &nbsp;
         </p>
       )}
-      {!customGame && !archive && (
+      {!custom && !archive && (
         <p>Revenez demain pour une nouvelle page à déchiffrer&nbsp;!</p>
       )}
     </div>

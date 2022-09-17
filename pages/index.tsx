@@ -10,16 +10,15 @@ import { decodeArticle } from "@caviardeul/utils/encryption";
 
 const Home: NextPage<{ encodedArticle: EncodedArticle | null }> = ({
   encodedArticle,
-  ...props
 }) => {
-  const article = encodedArticle ? decodeArticle(encodedArticle) : "";
+  const dailyArticle = encodedArticle ? decodeArticle(encodedArticle) : null;
   return (
     <>
       <Head>
         <title>Caviardeul - Déchiffrez l&apos;article Wikipédia du jour</title>
       </Head>
-      {article ? (
-        <Game article={article} custom={false} {...props} />
+      {dailyArticle ? (
+        <Game article={dailyArticle} />
       ) : (
         <Error statusCode={500} title="Une erreur est survenue" />
       )}

@@ -3,19 +3,23 @@ export type Error = {
   debug?: string;
 };
 
+export type ArticleId = number | string;
+
 export type Article = {
-  puzzleId: number;
+  articleId: ArticleId;
   pageName: string;
-  article: string;
-  title: string;
+  archive: boolean;
+  custom: boolean;
+  content: string;
 };
 
 export type EncodedArticle = {
   key: string;
-  puzzleId: number;
+  articleId: ArticleId;
   pageName: string;
-  article: string;
-  title: string;
+  archive: boolean;
+  custom: boolean;
+  content: string;
 };
 
 export type UserScore = {
@@ -30,8 +34,8 @@ export type ArticleInfo = {
 };
 
 export type CustomGameCreation = {
-  pageId: string;
-  title: string;
+  articleId: string;
+  pageName: string;
 };
 
 export type History = [string, number][];
@@ -62,5 +66,10 @@ export type User = {
 };
 
 export type UserState = {
-  saveScore: (articleId: number, nbAttempts: number, nbCorrect: number) => void;
+  saveScore: (
+    articleId: ArticleId,
+    custom: boolean,
+    nbAttempts: number,
+    nbCorrect: number
+  ) => void;
 };

@@ -1,9 +1,11 @@
+import { User } from "@prisma/client";
+import { deleteCookie, getCookie } from "cookies-next";
 import type { NextApiRequest, NextApiResponse } from "next";
 
+import prismaClient from "@caviardeul/prisma";
 import { CustomGameCreation, Error } from "@caviardeul/types";
 import { applyCors } from "@caviardeul/utils/api";
-import { getArticle } from "@caviardeul/utils/article";
-import { encode, toBase64Url } from "@caviardeul/utils/encryption";
+import { getArticleContent } from "@caviardeul/utils/article";
 
 const handler = async (
   req: NextApiRequest,
@@ -17,36 +19,48 @@ const handler = async (
     return;
   }
 
-  const encryptionKey = process.env.ENCRYPTION_KEY;
-  if (!encryptionKey) {
-    throw Error("Missing encryption key");
-  }
-
-  res.setHeader("Cache-Control", `s-maxage=${24 * 60 * 60}`);
-
-  const { pageName } = req.body;
+  const { pageId } = req.body;
   if (
-    typeof pageName !== "string" ||
-    pageName.length === 0 ||
-    pageName.match(/[:/]/)
+    typeof pageId !== "string" ||
+    pageId.length === 0 ||
+    pageId.match(/[:/]/)
   ) {
-    res.status(400).json({ error: "La page est invalide", debug: pageName });
+    res.status(400).json({ error: "La page est invalide", debug: pageId });
     return;
   }
 
-  const result = await getArticle(pageName);
-  if (result === null) {
-    res.status(400).json({ error: "L'article n'a pas été trouvé" });
+  const userId = (getCookie("userId", { req, res }) || "") as string;
+  let user: User | null = null;
+  if (userId) {
+    user = await prismaClient.user.findUnique({ where: { id: userId } });
+  }
+
+  if (!user) {
+    deleteCookie("userId", { req, res });
+    res.status(401).json({ error: "Vous n'êtes pas authentifié" });
     return;
   }
 
-  const { title } = result;
-  const pageId = toBase64Url(encode(pageName, encryptionKey));
+  let customArticle = await prismaClient.customArticle.findFirst({
+    where: { pageId, createdById: userId },
+  });
+  if (!customArticle) {
+    const result = await getArticleContent(pageId);
+    if (result === null) {
+      res.status(400).json({ error: "L'article n'a pas été trouvé" });
+      return;
+    }
+
+    const { pageName } = result;
+    customArticle = await prismaClient.customArticle.create({
+      data: { pageId, pageName, createdById: user.id },
+    });
+  }
 
   res.status(201);
   res.json({
-    title,
-    pageId,
+    articleId: customArticle.id,
+    pageName: customArticle.pageName,
   });
 };
 

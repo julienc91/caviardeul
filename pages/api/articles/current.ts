@@ -1,9 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import prismaClient from "@caviardeul/prisma";
-import { EncodedArticle, Error, UserScore } from "@caviardeul/types";
+import { EncodedArticle, Error } from "@caviardeul/types";
 import { applyCors } from "@caviardeul/utils/api";
-import { getArticle, getNextArticleCountdown } from "@caviardeul/utils/article";
+import {
+  getArticleContent,
+  getNextArticleCountdown,
+} from "@caviardeul/utils/article";
 import { encode, generateKey } from "@caviardeul/utils/encryption";
 
 const handler = async (
@@ -18,36 +21,36 @@ const handler = async (
     return;
   }
 
-  const { id: puzzleId, pageId: pageName } =
-    await prismaClient.dailyArticle.findFirstOrThrow({
-      where: {
-        date: {
-          lt: new Date(),
-        },
+  const dailyArticle = await prismaClient.dailyArticle.findFirstOrThrow({
+    where: {
+      date: {
+        lt: new Date(),
       },
-      orderBy: {
-        id: "desc",
-      },
-    });
+    },
+    orderBy: {
+      id: "desc",
+    },
+  });
 
   const nextArticleCountdown = getNextArticleCountdown();
-  const result = await getArticle(pageName);
+  const result = await getArticleContent(dailyArticle.pageId);
   if (result === null) {
     res.status(503).json({ error: "L'article n'a pas été trouvé" });
     return;
   }
 
-  const { article, title } = result;
+  const { content } = result;
   const key = generateKey();
 
   res.status(200);
   res.setHeader("Cache-Control", `s-maxage=${nextArticleCountdown}`);
   res.json({
     key,
-    puzzleId: Number(puzzleId),
-    pageName: encode(pageName, key),
-    article: encode(article, key),
-    title: encode(title, key),
+    articleId: dailyArticle.id,
+    archive: false,
+    custom: false,
+    pageName: encode(dailyArticle.pageName, key),
+    content: encode(content, key),
   });
 };
 

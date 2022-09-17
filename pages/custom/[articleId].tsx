@@ -8,16 +8,15 @@ import { EncodedArticle } from "@caviardeul/types";
 import { decodeArticle } from "@caviardeul/utils/encryption";
 
 const CustomGame: NextPage<{
-  pageId: string;
   encodedArticle: EncodedArticle;
-}> = ({ encodedArticle, ...props }) => {
+}> = ({ encodedArticle }) => {
   const article = decodeArticle(encodedArticle);
   return (
     <>
       <Head>
         <title>Caviardeul - Déchiffrez une partie personnalisée</title>
       </Head>
-      <Game article={article} custom={true} {...props} />
+      <Game article={article} />
     </>
   );
 };
@@ -25,10 +24,10 @@ const CustomGame: NextPage<{
 export default CustomGame;
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const pageId = (params?.pageId || "") as string;
+  const articleId = (params?.articleId || "") as string;
   try {
-    const data = await getEncodedArticle(pageId, true);
-    return { props: { pageId, encodedArticle: data } };
+    const data = await getEncodedArticle(articleId, true);
+    return { props: { encodedArticle: data } };
   } catch (error) {
     return { notFound: true };
   }

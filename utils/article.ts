@@ -1,5 +1,3 @@
-import prismaClient from "@caviardeul/prisma";
-import { Article } from "@caviardeul/types";
 import { convertToMarkdown, stripArticle } from "@caviardeul/utils/parsing";
 
 export const getNextArticleCountdown = () => {
@@ -13,33 +11,23 @@ export const getNextArticleCountdown = () => {
   return Math.round(diff / 1000);
 };
 
-export const getArticle = async (
-  pageName: string
-): Promise<Omit<Article, "puzzleId"> | null> => {
+export const getArticleContent = async (
+  pageId: string
+): Promise<{ pageName: string; content: string } | null> => {
   const wikipediaResponse = await fetch(
-    `https://fr.wikipedia.org/w/api.php?action=parse&format=json&page=${pageName}&prop=text&formatversion=2&origin=*`
+    `https://fr.wikipedia.org/w/api.php?action=parse&format=json&page=${pageId}&prop=text&formatversion=2&origin=*`
   );
   if (wikipediaResponse.status !== 200) {
     return null;
   }
-  const content = await wikipediaResponse.json();
-  if (content?.error) {
+  const result = await wikipediaResponse.json();
+  if (result?.error) {
     return null;
   }
 
-  const title = content.parse.title;
-  const rawArticle = content.parse.text;
-  const article =
-    `# ${title}\n\n` + convertToMarkdown(stripArticle(rawArticle));
-  return {
-    pageName,
-    title,
-    article,
-  };
-};
-
-export const getTotalGames = async (): Promise<number> => {
-  return await prismaClient.dailyArticle.count({
-    where: { date: { lt: new Date() } },
-  });
+  const pageName = result.parse.title;
+  const rawArticle = result.parse.text;
+  const content =
+    `# ${pageName}\n\n` + convertToMarkdown(stripArticle(rawArticle));
+  return { pageName, content };
 };

@@ -1,8 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
+import prismaClient from "@caviardeul/prisma";
 import { EncodedArticle, Error } from "@caviardeul/types";
 import { applyCors } from "@caviardeul/utils/api";
-import { getArticle } from "@caviardeul/utils/article";
+import { getArticleContent } from "@caviardeul/utils/article";
 import {
   decode,
   encode,
@@ -29,37 +30,42 @@ const handler = async (
 
   res.setHeader("Cache-Control", `s-maxage=${24 * 60 * 60}`);
 
-  const { pageId } = req.query;
-  if (typeof pageId !== "string" || pageId.length === 0) {
-    res.status(404).json({ error: "La page n'a pas été trouvée" });
-    return;
+  const articleId = req.query.articleId as string;
+
+  let customArticle = await prismaClient.customArticle.findUnique({
+    where: { id: articleId },
+  });
+  let pageId;
+
+  if (customArticle) {
+    pageId = customArticle.pageId;
+  } else {
+    try {
+      pageId = decode(fromBase64Url(articleId), encryptionKey);
+    } catch (e) {
+      res.status(404).json({ error: "La page n'a pas été trouvée" });
+      return;
+    }
   }
 
-  let pageName;
-  try {
-    pageName = decode(fromBase64Url(pageId), encryptionKey);
-  } catch (e) {
-    res.status(404).json({ error: "La page n'a pas été trouvée" });
-    return;
-  }
-
-  const result = await getArticle(pageName);
+  const result = await getArticleContent(pageId);
   if (result === null) {
     res.status(404).json({ error: "L'article n'a pas été trouvé" });
     return;
   }
 
-  const { article, title } = result;
+  const { content, pageName } = result;
   const key = generateKey();
 
   res.status(200);
   res.setHeader("Cache-Control", `s-maxage=${24 * 60 * 60}`);
   res.json({
     key,
-    puzzleId: 0,
+    articleId,
+    archive: false,
+    custom: true,
     pageName: encode(pageName, key),
-    article: encode(article, key),
-    title: encode(title, key),
+    content: encode(content, key),
   });
 };
 

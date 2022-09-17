@@ -24,9 +24,22 @@ class SaveManagement {
     return key ?? "";
   }
 
-  static loadProgress(puzzleId: number, pageId?: string): History | null {
-    const isDaily = !pageId;
-    const storageKey = isDaily ? "progress" : "custom-game-progress";
+  static getProgressStorageKey(archive: boolean, custom: boolean) {
+    if (custom) {
+      return "custom-game-progress";
+    } else if (archive) {
+      return "archive-game-progress";
+    } else {
+      return "progress";
+    }
+  }
+
+  static loadProgress(
+    articleId: number | string,
+    archive: boolean,
+    custom: boolean
+  ): History | null {
+    const storageKey = SaveManagement.getProgressStorageKey(archive, custom);
     const data = localStorage.getItem(storageKey);
     if (!data) {
       return null;
@@ -35,48 +48,49 @@ class SaveManagement {
     try {
       const key = SaveManagement.getEncryptionKey();
       const decryptedData = decode(data, key);
-      const {
-        history,
-        puzzleId: savedPuzzleId,
-        pageId: savedPageId,
-      } = JSON.parse(decryptedData);
+      const { articleId: savedArticleId, history } = JSON.parse(decryptedData);
 
-      if (!history || savedPuzzleId !== puzzleId) {
-        SaveManagement.clearProgress(isDaily);
-        return null;
-      }
-      if (!isDaily && pageId !== savedPageId) {
-        SaveManagement.clearProgress(isDaily);
+      if (!history || savedArticleId !== articleId) {
+        SaveManagement.clearProgress(!archive && !custom, archive, custom);
         return null;
       }
       return history;
     } catch (e) {
-      SaveManagement.clearProgress(isDaily);
+      SaveManagement.clearProgress(!archive && !custom, archive, custom);
       return null;
     }
   }
 
   static saveProgress(
-    puzzleId: number,
+    articleId: number | string,
     history: History,
-    pageId?: string
+    archive: boolean,
+    custom: boolean
   ): void {
-    const isDaily = !pageId;
-    const data = {
-      puzzleId,
-      history,
-      pageId: isDaily ? null : pageId,
-    };
-    const storageKey = isDaily ? "progress" : "custom-game-progress";
+    const data = { articleId, history };
+    const storageKey = SaveManagement.getProgressStorageKey(archive, custom);
     const key = SaveManagement.getEncryptionKey(true);
     const json = JSON.stringify(data);
     const encryptedData = encode(json, key);
     localStorage.setItem(storageKey, encryptedData);
   }
 
-  static clearProgress(isDaily: boolean = true): void {
-    const storageKey = isDaily ? "progress" : "custom-game-progress";
-    localStorage.removeItem(storageKey);
+  static clearProgress(
+    daily: boolean,
+    archive: boolean,
+    custom: boolean
+  ): void {
+    const keys = [];
+    if (daily) {
+      keys.push(SaveManagement.getProgressStorageKey(false, false));
+    }
+    if (archive) {
+      keys.push(SaveManagement.getProgressStorageKey(true, false));
+    }
+    if (custom) {
+      keys.push(SaveManagement.getProgressStorageKey(false, true));
+    }
+    keys.forEach((key) => localStorage.removeItem(key));
   }
 
   static getSettings(): Settings | null {

@@ -1,7 +1,7 @@
 import { getCookie, setCookie } from "cookies-next";
 import React, { useCallback } from "react";
 
-import { User } from "@caviardeul/types";
+import { ArticleId, User } from "@caviardeul/types";
 import { BASE_URL } from "@caviardeul/utils/config";
 import { UserContext } from "@caviardeul/utils/user";
 
@@ -19,11 +19,16 @@ const UserManager: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }, []);
 
   const saveScore = useCallback(
-    async (articleId: number, nbAttempts: number, nbCorrect: number) => {
+    async (
+      articleId: ArticleId,
+      custom: boolean,
+      nbAttempts: number,
+      nbCorrect: number
+    ) => {
       const userId = await getUserId();
       await fetch(`${BASE_URL}/api/users/${userId}/scores`, {
         method: "POST",
-        body: JSON.stringify({ articleId, nbAttempts, nbCorrect }),
+        body: JSON.stringify({ articleId, custom, nbAttempts, nbCorrect }),
         headers: {
           "Content-Type": "application/json",
         },

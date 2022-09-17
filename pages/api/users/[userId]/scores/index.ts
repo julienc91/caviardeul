@@ -54,10 +54,59 @@ const postHandler = async (
     return;
   }
 
-  const { articleId } = req.body;
-  const article = await prismaClient.dailyArticle.findUnique({
+  const { articleId, custom } = req.body;
+  if (custom) {
+    return customArticleHandler(res, user, articleId, nbAttempts, nbCorrect);
+  } else {
+    return dailyArticleHandler(res, user, articleId, nbAttempts, nbCorrect);
+  }
+};
+
+const customArticleHandler = async (
+  res: NextApiResponse,
+  user: User,
+  articleId: string,
+  nbAttempts: number,
+  nbCorrect: number
+) => {
+  const article = await prismaClient.customArticle.findUnique({
     where: { id: articleId },
   });
+
+  if (!article) {
+    res.status(400).json({ error: "Article not found" });
+    return;
+  }
+
+  if (article.createdById !== user.id) {
+    const stats = (article.stats || { distribution: {} }) as ArticleStats;
+    const distributionKey = Math.min(Math.floor(nbAttempts / 10), 500);
+    stats.distribution[distributionKey] =
+      (stats.distribution[distributionKey] || 0) + 1;
+
+    await prismaClient.customArticle.update({
+      where: { id: article.id },
+      data: {
+        nbWinners: { increment: 1 },
+        stats,
+      },
+    });
+  }
+
+  res.status(204).json({});
+};
+
+const dailyArticleHandler = async (
+  res: NextApiResponse,
+  user: User,
+  articleId: string,
+  nbAttempts: number,
+  nbCorrect: number
+) => {
+  const article = await prismaClient.dailyArticle.findUnique({
+    where: { id: parseInt(articleId, 10) },
+  });
+
   if (!article || article.date > new Date()) {
     res.status(400).json({ error: "Article not found" });
     return;

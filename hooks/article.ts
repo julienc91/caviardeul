@@ -1,19 +1,19 @@
 import { useMutation } from "react-query";
 
-import { EncodedArticle } from "@caviardeul/types";
+import { ArticleId, EncodedArticle } from "@caviardeul/types";
 import { BASE_URL } from "@caviardeul/utils/config";
 
 export const getEncodedArticle = (
-  pageId?: string | number,
+  articleId?: ArticleId,
   custom?: boolean
 ): Promise<EncodedArticle> => {
   let url = `${BASE_URL}/api/articles/`;
-  if (!pageId) {
+  if (!articleId) {
     url += "current";
   } else if (custom) {
-    url += `custom/${pageId}`;
+    url += `custom/${articleId}`;
   } else {
-    url += `${pageId}`;
+    url += `${articleId}`;
   }
   return fetch(url)
     .then((res) => res.json())
@@ -21,34 +21,35 @@ export const getEncodedArticle = (
       if (res.error) {
         throw res.error;
       }
-      const { key, puzzleId, pageName, title, article } = res;
+      const { key, articleId, archive, custom, pageName, content } = res;
       return {
         key,
-        puzzleId,
+        articleId,
+        archive,
+        custom,
         pageName,
-        title,
-        article,
+        content,
       };
     });
 };
 
 export const useCreateCustomGame = () => {
   return useMutation(
-    (pageName: string) => {
+    (pageId: string) => {
       return fetch(`${BASE_URL}/api/articles/custom`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ pageName }),
+        body: JSON.stringify({ pageId }),
       })
         .then((res) => res.json())
         .then((res) => {
           if (res.error) {
             throw res.error;
           }
-          const { title, pageId } = res;
-          return { title, pageId };
+          const { articleId, pageName } = res;
+          return { articleId, pageName };
         });
     },
     {

@@ -10,7 +10,6 @@ import { EncodedArticle } from "@caviardeul/types";
 import { decodeArticle } from "@caviardeul/utils/encryption";
 
 const ArchiveGame: NextPage<{
-  pageId: string;
   encodedArticle: EncodedArticle;
 }> = ({ encodedArticle, ...props }) => {
   const article = decodeArticle(encodedArticle);
@@ -18,10 +17,10 @@ const ArchiveGame: NextPage<{
     <>
       <Head>
         <title>
-          Caviardeul - Déchiffrez le Caviardeul n°{article.puzzleId}
+          Caviardeul - Déchiffrez le Caviardeul n°{article.articleId}
         </title>
       </Head>
-      <Game article={article} custom={false} {...props} />
+      <Game article={article} {...props} />
     </>
   );
 };
@@ -33,7 +32,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   req,
   res,
 }) => {
-  const articleId = parseInt(params?.pageId as string);
+  const articleId = parseInt(params?.articleId as string);
   const userId = (getCookie("userId", { req, res }) || "") as string;
 
   if (userId !== "") {
@@ -48,7 +47,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   try {
     const data = await getEncodedArticle(articleId, false);
     return {
-      props: { pageId: articleId, encodedArticle: data },
+      props: { encodedArticle: data },
     };
   } catch (error) {
     return { notFound: true };

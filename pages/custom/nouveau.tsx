@@ -1,4 +1,3 @@
-import { GetStaticProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { FormEvent, useCallback, useState } from "react";
@@ -10,9 +9,9 @@ import { copyToClipboard } from "@caviardeul/utils/clipboard";
 import { BASE_URL } from "@caviardeul/utils/config";
 
 const NewCustomGame: React.FC = () => {
+  const [pageId, setPageId] = useState("");
+  const [gameId, setArticleId] = useState<string | null>(null);
   const [pageName, setPageName] = useState("");
-  const [gameId, setGameId] = useState<string | null>(null);
-  const [title, setTitle] = useState("");
   const mutation = useCreateCustomGame();
   const gameUrl = gameId ? BASE_URL + "/custom/" + gameId : "";
   const router = useRouter();
@@ -20,7 +19,7 @@ const NewCustomGame: React.FC = () => {
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value;
-      setPageName(newValue);
+      setPageId(newValue);
     },
     []
   );
@@ -37,16 +36,16 @@ const NewCustomGame: React.FC = () => {
         newValue = newValue.split(/[#?]/).shift() || "";
         newValue = decodeURI(newValue);
       }
-      setPageName(newValue);
+      setPageId(newValue);
       event.preventDefault();
     },
     []
   );
 
   const handleSubmissionCreated = useCallback(
-    async ({ pageId, title }: CustomGameCreation) => {
-      setGameId(pageId);
-      setTitle(title);
+    async ({ articleId, pageName }: CustomGameCreation) => {
+      setArticleId(articleId);
+      setPageName(pageName);
       await handleCopyToClipboard(gameUrl);
     },
     [handleCopyToClipboard, gameUrl]
@@ -58,16 +57,16 @@ const NewCustomGame: React.FC = () => {
       if (gameId) {
         return;
       }
-      mutation.mutate(pageName, {
+      mutation.mutate(pageId, {
         onSuccess: handleSubmissionCreated,
       });
     },
-    [gameId, handleSubmissionCreated, mutation, pageName]
+    [gameId, handleSubmissionCreated, mutation, pageId]
   );
 
   const handleReset = useCallback(() => {
-    setGameId(null);
-    setTitle("");
+    setArticleId(null);
+    setPageId("");
     setPageName("");
     mutation.reset();
   }, [mutation]);
@@ -93,7 +92,7 @@ const NewCustomGame: React.FC = () => {
                   type="text"
                   placeholder="Jeu"
                   readOnly={!!gameId}
-                  value={pageName}
+                  value={pageId}
                   onChange={handleChange}
                   onPaste={handlePaste}
                   required
@@ -101,7 +100,7 @@ const NewCustomGame: React.FC = () => {
               </label>
               <input
                 type="submit"
-                disabled={!pageName.length || mutation.isLoading || !!gameId}
+                disabled={!pageId.length || mutation.isLoading || !!gameId}
                 value="Créer"
               />
             </p>
@@ -131,7 +130,9 @@ const NewCustomGame: React.FC = () => {
                   }}
                 />
               </div>
-              <p>Le titre à trouver est &laquo;&nbsp;{title}&nbsp;&raquo;.</p>
+              <p>
+                Le titre à trouver est &laquo;&nbsp;{pageName}&nbsp;&raquo;.
+              </p>
               <div>
                 <input
                   type="button"
@@ -167,9 +168,3 @@ const NewCustomGame: React.FC = () => {
 };
 
 export default NewCustomGame;
-
-export const getStaticProps: GetStaticProps = async () => {
-  return {
-    props: {},
-  };
-};
