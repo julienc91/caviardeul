@@ -1,4 +1,4 @@
-import { deleteCookie, getCookie } from "cookies-next";
+import { deleteCookie } from "cookies-next";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -6,6 +6,7 @@ import React, { useCallback, useMemo, useState } from "react";
 
 import ConfirmModal from "@caviardeul/components/confirmModal";
 import { ArticleInfo } from "@caviardeul/types";
+import { getUser } from "@caviardeul/utils/api";
 import { BASE_URL } from "@caviardeul/utils/config";
 import SaveManagement from "@caviardeul/utils/save";
 
@@ -154,11 +155,9 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({
 export default Archives;
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const userId = getCookie("userId", { req, res }) || "";
+  const user = await getUser(req, res);
   const response = await fetch(`${BASE_URL}/api/articles`, {
-    headers: {
-      Cookie: `userId=${userId}`,
-    },
+    headers: user ? { Cookie: `userId=${user.id}` } : {},
   });
   const articles = await response.json();
   return {

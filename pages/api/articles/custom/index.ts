@@ -1,10 +1,8 @@
-import { User } from "@prisma/client";
-import { deleteCookie, getCookie } from "cookies-next";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import prismaClient from "@caviardeul/prisma";
 import { CustomGameCreation, Error } from "@caviardeul/types";
-import { applyCors } from "@caviardeul/utils/api";
+import { applyCors, getOrCreateUser, getUser } from "@caviardeul/utils/api";
 import { getArticleContent } from "@caviardeul/utils/article";
 
 const handler = async (
@@ -29,21 +27,16 @@ const handler = async (
     return;
   }
 
-  const userId = (getCookie("userId", { req, res }) || "") as string;
-  let user: User | null = null;
-  if (userId) {
-    user = await prismaClient.user.findUnique({ where: { id: userId } });
+  let user = await getUser(req, res);
+  let customArticle = null;
+  let pageName;
+
+  if (user) {
+    customArticle = await prismaClient.customArticle.findFirst({
+      where: { pageId, createdById: user.id },
+    });
   }
 
-  if (!user) {
-    deleteCookie("userId", { req, res });
-    res.status(401).json({ error: "Vous n'êtes pas authentifié" });
-    return;
-  }
-
-  let customArticle = await prismaClient.customArticle.findFirst({
-    where: { pageId, createdById: userId },
-  });
   if (!customArticle) {
     const result = await getArticleContent(pageId);
     if (result === null) {
@@ -51,7 +44,14 @@ const handler = async (
       return;
     }
 
-    const { pageName } = result;
+    pageName = result.pageName;
+  }
+
+  if (!user) {
+    user = await getOrCreateUser(req, res);
+  }
+
+  if (!customArticle) {
     customArticle = await prismaClient.customArticle.create({
       data: { pageId, pageName, createdById: user.id },
     });

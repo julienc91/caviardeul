@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import prismaClient from "@caviardeul/prisma";
 import { ArticleStats, Error, User } from "@caviardeul/types";
-import { applyCors } from "@caviardeul/utils/api";
+import { applyCors, getOrCreateUser } from "@caviardeul/utils/api";
 
 const handler = async (
   req: NextApiRequest,
@@ -16,23 +16,7 @@ const handler = async (
     return;
   }
 
-  const { userId } = req.query;
-  if (
-    typeof userId !== "string" ||
-    !userId.match(
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
-    )
-  ) {
-    res.status(404).json({ error: "Page not found" });
-    return;
-  }
-
-  const user = await prismaClient.user.findUnique({ where: { id: userId } });
-  if (!user) {
-    res.status(404).json({ error: "User not found" });
-    return;
-  }
-
+  const user = await getOrCreateUser(req, res);
   await postHandler(req, res, user);
 };
 
