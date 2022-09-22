@@ -586,9 +586,10 @@ main {
   .archive-grid {
     display: grid;
     grid-auto-rows: 1fr;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    grid-gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-gap: 50px;
     margin-bottom: 50px;
+    padding: 0 30px;
     width: 100%;
 
     .archive-item {
@@ -598,6 +599,7 @@ main {
       display: flex;
       flex-flow: column;
       justify-content: center;
+      min-height: 150px;
       padding: 10px;
       width: 100%;
       transition: background-color 0.2s ease-in-out;
