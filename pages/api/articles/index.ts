@@ -4,6 +4,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import prismaClient from "@caviardeul/prisma";
 import { ArticleInfo, Error } from "@caviardeul/types";
 import { applyCors, getUser } from "@caviardeul/utils/api";
+import { getArticleInfoStats } from "@caviardeul/utils/stats";
 
 const handler = async (
   req: NextApiRequest,
@@ -35,6 +36,7 @@ const handler = async (
   const result = dailyArticles.map((dailyArticle) => {
     const data: ArticleInfo = {
       articleId: dailyArticle.id,
+      stats: getArticleInfoStats(dailyArticle),
     };
     if (scoreIndex < dailyArticleScores.length) {
       const articleScore = dailyArticleScores[scoreIndex];

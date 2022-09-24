@@ -5,10 +5,26 @@ import Link from "next/link";
 import React, { useCallback, useMemo, useState } from "react";
 
 import ConfirmModal from "@caviardeul/components/confirmModal";
-import { ArticleInfo } from "@caviardeul/types";
+import { ArticleInfo, ArticleInfoStats } from "@caviardeul/types";
 import { getUser } from "@caviardeul/utils/api";
 import { BASE_URL } from "@caviardeul/utils/config";
 import SaveManagement from "@caviardeul/utils/save";
+
+const Difficulty: React.FC<{ stats: ArticleInfoStats }> = ({ stats }) => {
+  const { category, median } = stats;
+  return (
+    <div className="article-difficulty" title={`${median} coups en moyenne`}>
+      {[0, 1, 2, 3, 4].map((level) => (
+        <span
+          key={level}
+          className={
+            `difficulty level-${level}` + (category >= level ? " active" : "")
+          }
+        />
+      ))}
+    </div>
+  );
+};
 
 const Archives: React.FC<{ articles: ArticleInfo[] }> = ({
   articles: originalArticles,
@@ -61,44 +77,51 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({
     setArticles(
       articles.map((articleInfo) => ({
         articleId: articleInfo.articleId,
+        stats: articleInfo.stats,
       }))
     );
     handleCloseConfirmModal();
   }, [handleCloseConfirmModal, articles]);
 
-  const gamesContainer = articles.map((articleInfo, i) => {
+  const gamesContainer = articles.slice(1).map((articleInfo) => {
     const isOver = !!articleInfo.userScore;
-    const url = i === 0 ? "/" : `/archives/${articleInfo.articleId}`;
 
     let container = (
       <div
         className={"archive-item" + (isOver ? " completed" : "")}
         key={articleInfo.articleId}
       >
-        <h3>
-          N°{articleInfo.articleId} - {isOver ? articleInfo.pageName : "?"}
-        </h3>
-        {isOver && !!articleInfo.userScore ? (
-          <>
-            <span>Essais&nbsp;: {articleInfo.userScore.nbAttempts}</span>
-            <span>
-              Précision&nbsp;:{" "}
-              {Math.floor(
-                (articleInfo.userScore.nbCorrect * 100) /
-                  Math.max(articleInfo.userScore.nbAttempts, 1)
-              )}
-              %
-            </span>
-          </>
-        ) : (
-          <span>► Jouer</span>
-        )}
+        <div className="archive-info">
+          <h3>
+            N°{articleInfo.articleId} - {isOver ? articleInfo.pageName : "?"}
+          </h3>
+          {isOver && !!articleInfo.userScore ? (
+            <>
+              <span>Essais&nbsp;: {articleInfo.userScore.nbAttempts}</span>
+              <span>
+                Précision&nbsp;:{" "}
+                {Math.floor(
+                  (articleInfo.userScore.nbCorrect * 100) /
+                    Math.max(articleInfo.userScore.nbAttempts, 1)
+                )}
+                %
+              </span>
+            </>
+          ) : (
+            <span>► Jouer</span>
+          )}
+        </div>
+        {<Difficulty stats={articleInfo.stats} />}
       </div>
     );
 
     if (!isOver) {
       container = (
-        <Link href={url} key={i} prefetch={false}>
+        <Link
+          href={`/archives/${articleInfo.articleId}`}
+          key={articleInfo.articleId}
+          prefetch={false}
+        >
           {container}
         </Link>
       );

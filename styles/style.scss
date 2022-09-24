@@ -593,22 +593,61 @@ main {
     width: 100%;
 
     .archive-item {
-      align-items: center;
       background-color: $dark1;
       border: 1px solid $light3;
       display: flex;
-      flex-flow: column;
-      justify-content: center;
+      flex-flow: row;
+      justify-content: space-between;
       min-height: 150px;
-      padding: 10px;
-      width: 100%;
       transition: background-color 0.2s ease-in-out;
-      h3 {
-        margin: 0 0 15px 0;
-      }
+      width: 100%;
+
       &:not(.completed):hover {
         background-color: $grey1;
         cursor: pointer;
+      }
+
+      .archive-info {
+        align-items: flex-start;
+        display: flex;
+        flex-flow: column;
+        justify-content: flex-start;
+        padding: 10px;
+
+        h3 {
+          margin: 0 0 15px 0;
+        }
+      }
+
+      .article-difficulty {
+        height: 100%;
+        width: 10px;
+        display: flex;
+        flex-flow: column;
+
+        .difficulty {
+          display: flex;
+          flex: 1;
+
+          &.active {
+            border: 1px solid $light3;
+            &.level-0 {
+              background-color: greenyellow;
+            }
+            &.level-1 {
+              background-color: gold;
+            }
+            &.level-2 {
+              background-color: orange;
+            }
+            &.level-3 {
+              background-color: tomato;
+            }
+            &.level-4 {
+              background-color: crimson;
+            }
+          }
+        }
       }
     }
   }

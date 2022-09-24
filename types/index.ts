@@ -27,10 +27,20 @@ export type UserScore = {
   nbCorrect: number;
 };
 
+export type StatsCategory = 0 | 1 | 2 | 3 | 4;
+
+export type ArticleInfoStats = {
+  category: StatsCategory;
+  mean: number;
+  median: number;
+  nbWinners: number;
+};
+
 export type ArticleInfo = {
   articleId: number;
   pageName?: string;
   userScore?: UserScore;
+  stats: ArticleInfoStats;
 };
 
 export type CustomGameCreation = {
