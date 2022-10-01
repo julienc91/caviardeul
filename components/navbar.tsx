@@ -5,9 +5,8 @@ import React, { useCallback, useState } from "react";
 import ExternalLink from "@caviardeul/components/externalLink";
 
 const Navbar: React.FC<{
-  onShowInfoModal: () => void;
   onShowSettingsModal: () => void;
-}> = ({ onShowInfoModal, onShowSettingsModal }) => {
+}> = ({ onShowSettingsModal }) => {
   const [active, setActive] = useState<boolean>(false);
 
   const handleClick = useCallback(() => {
@@ -43,8 +42,10 @@ const Navbar: React.FC<{
               <a>Partie personnalisée</a>
             </Link>
           </li>
-          <li className="left" onClick={onShowInfoModal}>
-            À propos
+          <li className="left">
+            <Link href="/a-propos" prefetch={false}>
+              <a>À propos</a>
+            </Link>
           </li>
           <li className="left" onClick={onShowSettingsModal}>
             Options

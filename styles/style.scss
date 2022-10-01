@@ -697,6 +697,16 @@ main {
   }
 }
 
+// about
+#about {
+  .left-container {
+    color: var(--color-text);
+    a {
+      color: $lightBlue;
+    }
+  }
+}
+
 // footer
 footer {
   height: $footerHeight;
