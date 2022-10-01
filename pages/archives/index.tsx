@@ -26,11 +26,102 @@ const Difficulty: React.FC<{ stats: ArticleInfoStats }> = ({ stats }) => {
   );
 };
 
-const Archives: React.FC<{ articles: ArticleInfo[] }> = ({
-  articles: originalArticles,
-}) => {
-  const [articles, setArticles] = useState<ArticleInfo[]>(originalArticles);
+type SortType = "id" | "median" | "userScore";
+
+const SortSelection: React.FC<{
+  sortBy: SortType;
+  onChange: (value: SortType) => void;
+}> = ({ sortBy, onChange }) => {
+  return (
+    <>
+      <label>
+        Trier
+        <select
+          value={sortBy}
+          onChange={({ target: { value } }) => {
+            onChange(value as SortType);
+          }}
+        >
+          <option value="id">Date</option>
+          <option value="median">Difficulté</option>
+          <option value="userScore">Mon score</option>
+        </select>
+      </label>
+      <button onClick={() => onChange(sortBy)}>↑↓</button>
+    </>
+  );
+};
+
+type FilterType = "finished" | "not_finished" | "all";
+
+const FilterSelection: React.FC<{
+  filterBy: FilterType;
+  onChange: (value: FilterType) => void;
+}> = ({ filterBy, onChange }) => {
+  return (
+    <div className="filter-selection">
+      <label>
+        Fitrer
+        <select
+          value={filterBy}
+          onChange={({ target: { value } }) => {
+            onChange(value as FilterType);
+          }}
+        >
+          <option value="all">Tous</option>
+          <option value="not_finished">À faire</option>
+          <option value="finished">Terminés</option>
+        </select>
+      </label>
+    </div>
+  );
+};
+
+const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
+  const [sortBy, setSortBy] = useState<SortType>("id");
+  const [sortOrder, setSortOrder] = useState<boolean>(false);
+  const [filterBy, setFilterBy] = useState<FilterType>("all");
+  const [reset, setReset] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
+
+  const displayArticles = useMemo(
+    () =>
+      articles
+        .slice(1)
+        .filter(
+          (article) =>
+            filterBy === "all" ||
+            (filterBy === "not_finished" && !article.userScore) ||
+            (filterBy === "finished" && !!article.userScore)
+        )
+        .sort((a, b) => {
+          let sortValue = 0;
+          if (sortBy === "median") {
+            sortValue = a.stats.median - b.stats.median;
+          } else if (sortBy === "userScore") {
+            sortValue =
+              (a?.userScore?.nbAttempts ?? 0) - (b?.userScore?.nbAttempts ?? 0);
+          } else if (sortBy === "id") {
+            sortValue = a.articleId - b.articleId;
+          }
+
+          if (sortValue === 0) {
+            sortValue = a.articleId - b.articleId;
+          } else {
+            sortValue *= sortOrder ? 1 : -1;
+          }
+          return sortValue;
+        })
+        .map((article) =>
+          reset
+            ? {
+                articleId: article.articleId,
+                stats: article.stats,
+              }
+            : article
+        ),
+    [articles, sortBy, sortOrder, filterBy, reset]
+  );
 
   const nbGames = articles.length;
   const finishedGames = articles.filter(
@@ -74,16 +165,30 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({
   const handleReset = useCallback(() => {
     SaveManagement.clearProgress(true, true, true);
     deleteCookie("userId");
-    setArticles(
-      articles.map((articleInfo) => ({
-        articleId: articleInfo.articleId,
-        stats: articleInfo.stats,
-      }))
-    );
+    setReset(true);
     handleCloseConfirmModal();
-  }, [handleCloseConfirmModal, articles]);
+  }, [handleCloseConfirmModal, setReset]);
 
-  const gamesContainer = articles.slice(1).map((articleInfo) => {
+  const handleSortByChanged = useCallback(
+    (value: SortType) => {
+      let newSortOrder;
+      if (value === sortBy) {
+        newSortOrder = !sortOrder;
+      } else {
+        setSortBy(value);
+        newSortOrder = false;
+      }
+      setSortOrder(newSortOrder);
+    },
+    [sortOrder, sortBy]
+  );
+
+  const handleFilterByChanged = useCallback(
+    (filterBy: FilterType) => setFilterBy(filterBy),
+    []
+  );
+
+  const gamesContainer = displayArticles.map((articleInfo) => {
     const isOver = !!articleInfo.userScore;
 
     let container = (
@@ -137,7 +242,33 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({
       <main id="archives">
         <div className="left-container">
           <h1>Archives</h1>
+
+          <div className="list-filters">
+            <FilterSelection
+              filterBy={filterBy}
+              onChange={handleFilterByChanged}
+            />
+            <SortSelection sortBy={sortBy} onChange={handleSortByChanged} />
+          </div>
+
           <div className="archive-grid">{gamesContainer}</div>
+
+          {displayArticles.length === 0 && (
+            <div className="empty-state">
+              {filterBy === "finished" && (
+                <div>
+                  Vous n&apos;avez terminé aucune partie archivée, c&apos;est le
+                  moment de commencer&nbsp;!
+                </div>
+              )}
+              {filterBy === "not_finished" && (
+                <div>
+                  Félicitations, vous avez terminé toutes les parties
+                  archivées&nbsp;!
+                </div>
+              )}
+            </div>
+          )}
         </div>
         <div className="right-container">
           <h1>Score</h1>
