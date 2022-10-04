@@ -25,7 +25,7 @@ const Navbar: React.FC<{
       </button>
       <h1>
         <Link href="/" prefetch={false}>
-          <a>Caviardeul</a>
+          <a onClick={handleClick}>Caviardeul</a>
         </Link>
       </h1>
 
@@ -34,20 +34,26 @@ const Navbar: React.FC<{
         <ul>
           <li className="left">
             <Link href="/archives/" prefetch={false}>
-              <a>Archives</a>
+              <a onClick={handleClick}>Archives</a>
             </Link>
           </li>
           <li className="left">
             <Link href="/custom/nouveau" prefetch={false}>
-              <a>Partie personnalisée</a>
+              <a onClick={handleClick}>Partie personnalisée</a>
             </Link>
           </li>
           <li className="left">
             <Link href="/a-propos" prefetch={false}>
-              <a>À propos</a>
+              <a onClick={handleClick}>À propos</a>
             </Link>
           </li>
-          <li className="left" onClick={onShowSettingsModal}>
+          <li
+            className="left"
+            onClick={() => {
+              onShowSettingsModal();
+              handleClick();
+            }}
+          >
             Options
           </li>
           <li className="divider" />
