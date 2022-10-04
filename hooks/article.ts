@@ -21,10 +21,12 @@ export const getEncodedArticle = (
       if (res.error) {
         throw res.error;
       }
-      const { key, articleId, archive, custom, pageName, content } = res;
+      const { key, articleId, safety, archive, custom, pageName, content } =
+        res;
       return {
         key,
         articleId,
+        safety,
         archive,
         custom,
         pageName,

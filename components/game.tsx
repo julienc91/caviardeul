@@ -8,6 +8,7 @@ import React, {
 } from "react";
 
 import ArticleContainer from "@caviardeul/components/article";
+import CustomGameBanner from "@caviardeul/components/customGameBanner";
 import GameInformation from "@caviardeul/components/gameInformation";
 import HistoryContainer from "@caviardeul/components/history";
 import Input from "@caviardeul/components/input";
@@ -181,6 +182,7 @@ const Game: React.FC<{
         value={{ history, words: revealedWords, isOver, selection }}
       >
         <div className="left-container">
+          {custom && <CustomGameBanner safetyLevel={article.safety} />}
           {saveLoaded && (
             <ArticleContainer
               custom={custom}

@@ -65,7 +65,6 @@ const ArticleContainer: React.FC<{
 }> = ({ content, custom, reveal, onContentLoaded }) => {
   return (
     <div id="article" className="article-container">
-      {custom && <CustomGameBanner />}
       <MarkdownContainer
         components={{
           strong: ({ node }) => {

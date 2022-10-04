@@ -48,6 +48,7 @@ const handler = async (
   res.json({
     key,
     articleId,
+    safety: "SAFE",
     archive: true,
     custom: false,
     pageName: encode(dailyArticle.pageName, key),

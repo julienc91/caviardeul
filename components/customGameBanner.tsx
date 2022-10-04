@@ -1,8 +1,11 @@
+import { ArticleSafety } from "@prisma/client";
 import React, { useState } from "react";
 
-const CustomGameBanner: React.FC = () => {
+const CustomGameBanner: React.FC<{ safetyLevel: ArticleSafety }> = ({
+  safetyLevel,
+}) => {
   const [show, setShow] = useState(true);
-  if (!show) {
+  if (!show || safetyLevel === "SAFE") {
     return null;
   }
   return (
@@ -13,7 +16,10 @@ const CustomGameBanner: React.FC = () => {
       <h3>Mise en garde</h3>
       <p>
         L&apos;article caché n&apos;a pas été sélectionné par l&apos;auteur du
-        jeu. Son contenu peut ne pas être adapté à tous les publics.
+        jeu.{" "}
+        {safetyLevel === "UNSAFE"
+          ? "Son contenu n'est pas adapté à tous les publics."
+          : "Son contenu peut ne pas être adapté à tous les publics."}
       </p>
     </div>
   );

@@ -1,3 +1,5 @@
+import { ArticleSafety } from "@prisma/client";
+
 export type Error = {
   error: string;
   debug?: string;
@@ -7,6 +9,7 @@ export type ArticleId = number | string;
 
 export type Article = {
   articleId: ArticleId;
+  safety: ArticleSafety;
   pageName: string;
   archive: boolean;
   custom: boolean;
@@ -16,6 +19,7 @@ export type Article = {
 export type EncodedArticle = {
   key: string;
   articleId: ArticleId;
+  safety: ArticleSafety;
   pageName: string;
   archive: boolean;
   custom: boolean;

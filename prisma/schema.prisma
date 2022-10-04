@@ -19,12 +19,19 @@ model DailyArticle {
   dailyArticleScores DailyArticleScore[]
 }
 
+enum ArticleSafety {
+    SAFE
+    UNSAFE
+    UNKNOWN
+}
+
 model CustomArticle {
   id String @id @default(cuid())
   createdBy User @relation(fields: [createdById], references: [id], onDelete: Cascade)
   createdById String @db.Uuid
   pageId String
   pageName String @default("")
+  safety ArticleSafety @default(UNKNOWN)
   createdAt DateTime @default(now())
   nbWinners Int @default(0)
   stats Json?

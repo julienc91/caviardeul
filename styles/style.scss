@@ -349,6 +349,21 @@ main {
     }
   }
 
+  .banner {
+    background-color: $dark1;
+    color: $light4;
+    margin: 20px;
+    padding: 10px;
+    position: relative;
+
+    .close {
+      cursor: pointer;
+      position: absolute;
+      right: 20px;
+      top: 20px;
+    }
+  }
+
   .article-container {
     color: var(--color-text);
     font-family: monospace;
@@ -416,21 +431,6 @@ main {
           opacity: 1;
         }
       }
-    }
-  }
-
-  .banner {
-    background-color: $dark1;
-    color: $light4;
-    margin: 20px 0;
-    padding: 10px;
-    position: relative;
-
-    .close {
-      cursor: pointer;
-      position: absolute;
-      right: 20px;
-      top: 20px;
     }
   }
 

@@ -45,9 +45,11 @@ export const generateKey = (): string => {
  * Decrypt an EncodedArticle object.
  */
 export const decodeArticle = (encodedArticle: EncodedArticle): Article => {
-  const { key, articleId, archive, custom, pageName, content } = encodedArticle;
+  const { key, articleId, safety, archive, custom, pageName, content } =
+    encodedArticle;
   return {
     articleId,
+    safety,
     archive,
     custom,
     pageName: decode(pageName, key),
