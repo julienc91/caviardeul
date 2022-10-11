@@ -15,6 +15,9 @@ import { SettingsContext } from "@caviardeul/utils/settings";
 const _WordContainer: React.FC<{ node: any }> = ({ node }) => {
   const word = node.children[0].value;
   const { settings } = useContext(SettingsContext);
+  if (word === undefined) {
+    return null;
+  }
   return (
     <GameContext.Consumer>
       {({ words, selection }) => {
