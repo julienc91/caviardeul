@@ -42,7 +42,7 @@ const deleteHandler = async (
   } else {
     await prismaClient.user.delete({ where: { id: user.id } });
     res.status(204);
-    res.json({});
+    res.end();
   }
 };
 

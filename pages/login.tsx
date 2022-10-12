@@ -1,19 +1,40 @@
 import { setCookie } from "cookies-next";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 
+import { getUser } from "@caviardeul/utils/api";
+import { BASE_URL } from "@caviardeul/utils/config";
+
 const LoginPage: React.FC = () => {
   const router = useRouter();
-  const { user } = router.query;
 
   useEffect(() => {
-    if (user) {
-      setCookie("userId", user);
-    }
     router.push("/");
-  }, [user, router]);
+  }, [router]);
 
   return <>Chargement...</>;
+};
+
+export const getServerSideProps: GetServerSideProps = async ({
+  query,
+  req,
+  res,
+}) => {
+  const user = await getUser(req, res);
+  const targetUserId = query.user;
+  if (user && targetUserId) {
+    await fetch(`${BASE_URL}/api/me/merge`, {
+      method: "POST",
+      body: JSON.stringify({ userId: targetUserId }),
+      headers: {
+        Cookie: `userId=${user.id}`,
+        "Content-Type": "application/json",
+      },
+    });
+  }
+  setCookie("userId", targetUserId, { req, res });
+  return { props: {} };
 };
 
 export default LoginPage;

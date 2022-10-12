@@ -77,7 +77,7 @@ const customArticleHandler = async (
     });
   }
 
-  res.status(204).json({});
+  res.status(204).end();
 };
 
 const dailyArticleHandler = async (
@@ -130,7 +130,7 @@ const dailyArticleHandler = async (
     },
   });
 
-  res.status(204).json({});
+  res.status(204).end();
 };
 
 export default handler;
