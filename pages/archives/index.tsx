@@ -1,10 +1,13 @@
-import { deleteCookie } from "cookies-next";
+import { deleteCookie, getCookie } from "cookies-next";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import React, { useCallback, useMemo, useState } from "react";
+import { QRCodeSVG } from "qrcode.react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 import ConfirmModal from "@caviardeul/components/confirmModal";
+import Modal from "@caviardeul/components/modal";
 import { ArticleInfo, ArticleInfoStats } from "@caviardeul/types";
 import { getUser } from "@caviardeul/utils/api";
 import { BASE_URL } from "@caviardeul/utils/config";
@@ -77,12 +80,66 @@ const FilterSelection: React.FC<{
   );
 };
 
+const SynchronizationModal: React.FC<{
+  open: boolean;
+  onClose: () => void;
+}> = ({ open, onClose }) => {
+  const [reveal, setReveal] = useState<boolean>(false);
+  const userId = getCookie("userId");
+  const url = `${BASE_URL}/login?user=${userId}`;
+  return (
+    <Modal className="sync-modal" open={open} onClose={onClose}>
+      <h1>Synchronisation entre appareils</h1>
+
+      <p>
+        Si vous jouez à Caviardeul sur plusieurs appareils à la fois, vous
+        pouvez les synchroniser pour retrouver vos scores et votre progression
+        sur chacun d&apos;entre eux.
+      </p>
+
+      <p>
+        Notez tout de même que l&apos;historique de vos essais n&apos;est pas
+        synchronisé, vous ne pourrez donc pas commencer une partie sur un
+        appareil puis la reprendre où vous l&apos;aviez laissée sur un second.
+      </p>
+
+      <p>
+        Pour commencer la synchronisation, utilisez le lien suivant depuis votre
+        second appareil&nbsp;:
+        <div className="button-input">
+          <button onClick={() => setReveal(!reveal)}>
+            {reveal ? <FaEyeSlash /> : <FaEye />}
+          </button>
+          <input value={url} type={reveal ? "text" : "password"} readOnly />
+        </div>
+        Ou scannez ce QR Code: <br />
+        <div className="qr-code">
+          {!reveal && (
+            <div className="mask" onClick={() => setReveal(true)}>
+              <FaEye />
+            </div>
+          )}
+          <QRCodeSVG value={url} />
+        </div>
+      </p>
+
+      <p>
+        <strong>Attention&nbsp;:</strong> Ce lien et ce code sont spécifiques à
+        votre compte, ne les partagez pas&nbsp;!
+      </p>
+    </Modal>
+  );
+};
+
 const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
   const [sortBy, setSortBy] = useState<SortType>("id");
   const [sortOrder, setSortOrder] = useState<boolean>(false);
   const [filterBy, setFilterBy] = useState<FilterType>("all");
   const [reset, setReset] = useState<boolean>(false);
+  const [showSynchronizationModal, setShowSynchronizationModal] =
+    useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>();
 
   const displayArticles = useMemo(
     () =>
@@ -153,21 +210,20 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
     [finishedGames, nbFinishedGames]
   );
 
-  const handleShowConfirmModal = useCallback(
-    () => setShowConfirmModal(true),
-    []
-  );
-  const handleCloseConfirmModal = useCallback(
-    () => setShowConfirmModal(false),
-    []
-  );
+  useEffect(() => {
+    if (getCookie("userId")) {
+      setIsLoggedIn(true);
+    }
+  }, []);
 
   const handleReset = useCallback(() => {
     SaveManagement.clearProgress(true, true, true);
     deleteCookie("userId");
     setReset(true);
-    handleCloseConfirmModal();
-  }, [handleCloseConfirmModal, setReset]);
+    setIsLoggedIn(false);
+    setShowConfirmModal(false);
+    setShowSynchronizationModal(false);
+  }, [setReset]);
 
   const handleSortByChanged = useCallback(
     (value: SortType) => {
@@ -282,24 +338,48 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
             <li>Précision moyenne&nbsp;: {avgAccuracy}%</li>
           </ul>
 
-          <button className="danger" onClick={handleShowConfirmModal}>
-            Réinitialiser
-          </button>
-          <ConfirmModal
-            message={
-              <>
-                Cette action réinitialisera vos scores et votre progression de
-                manière irréversible.
-                <br />
-                Voulez-vous continuer&nbsp;?
-              </>
-            }
-            open={showConfirmModal}
-            danger={true}
-            confirmLabel="Confirmer"
-            onConfirm={handleReset}
-            onCancel={handleCloseConfirmModal}
-          />
+          {isLoggedIn && (
+            <>
+              <div>
+                <h3>Vous jouez sur plusieurs appareils&nbsp;?</h3>
+                <button
+                  className="action"
+                  onClick={() => setShowSynchronizationModal(true)}
+                >
+                  Synchroniser un appareil
+                </button>
+                <SynchronizationModal
+                  open={showSynchronizationModal}
+                  onClose={() => setShowSynchronizationModal(false)}
+                />
+              </div>
+
+              <div className="separator" />
+              <div className="reset-account">
+                <button
+                  className="danger"
+                  onClick={() => setShowConfirmModal(true)}
+                >
+                  Réinitialiser
+                </button>
+                <ConfirmModal
+                  message={
+                    <>
+                      Cette action réinitialisera vos scores et votre
+                      progression de manière irréversible.
+                      <br />
+                      Voulez-vous continuer&nbsp;?
+                    </>
+                  }
+                  open={showConfirmModal}
+                  danger={true}
+                  confirmLabel="Confirmer"
+                  onConfirm={handleReset}
+                  onCancel={() => setShowConfirmModal(false)}
+                />
+              </div>
+            </>
+          )}
         </div>
       </main>
     </>

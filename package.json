@@ -20,8 +20,10 @@
     "node-html-parser": "^6.1.1",
     "nprogress": "^0.2.0",
     "prisma": "^4.2.1",
+    "qrcode.react": "^3.1.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
+    "react-icons": "^4.6.0",
     "react-markdown": "^8.0.3",
     "react-query": "^3.39.0",
     "turndown": "^7.1.1"
