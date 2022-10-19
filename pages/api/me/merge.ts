@@ -52,6 +52,11 @@ const postHandler = async (
     return;
   }
 
+  if (targetUser.id === user.id) {
+    res.status(204).end();
+    return;
+  }
+
   /* Merge user scores */
   await mergeUserScores(user, targetUser);
 
