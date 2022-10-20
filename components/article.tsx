@@ -2,15 +2,15 @@ import React, { useContext, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { ReactMarkdownOptions } from "react-markdown/lib/react-markdown";
 
-import CustomGameBanner from "@caviardeul/components/customGameBanner";
 import {
   isCommonWord,
+  isRevealed,
+  isSelected,
   isWord,
   splitWords,
-  standardizeText,
 } from "@caviardeul/utils/caviarding";
 import { GameContext } from "@caviardeul/utils/game";
-import { SettingsContext } from "@caviardeul/utils/settings";
+import { SettingsContext, defaultSettings } from "@caviardeul/utils/settings";
 
 const _WordContainer: React.FC<{ node: any }> = ({ node }) => {
   const word = node.children[0].value;
@@ -18,12 +18,15 @@ const _WordContainer: React.FC<{ node: any }> = ({ node }) => {
   if (word === undefined) {
     return null;
   }
+  const withCloseAlternatives =
+    settings?.withCloseAlternatives ?? defaultSettings.withCloseAlternatives;
+
   return (
     <GameContext.Consumer>
       {({ words, selection }) => {
-        const standardizedWord = standardizeText(word);
-        const revealed = words.has(standardizedWord);
-        const selected = selection && selection[0] === standardizedWord;
+        const revealed = isRevealed(word, words);
+        const selected =
+          selection && isSelected(word, selection[0], withCloseAlternatives);
         if (revealed) {
           return (
             <span className={`word` + (selected ? " selected" : "")}>
@@ -65,7 +68,7 @@ const ArticleContainer: React.FC<{
   custom: boolean;
   reveal: boolean;
   onContentLoaded: () => void;
-}> = ({ content, custom, reveal, onContentLoaded }) => {
+}> = ({ content, reveal, onContentLoaded }) => {
   return (
     <div id="article" className="article-container">
       <MarkdownContainer

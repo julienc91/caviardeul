@@ -59,6 +59,7 @@ const commonWords = new Set<string>([
   "y",
 ]);
 
+export const closeAlternativesSuffixes = ["e", "s", "es", "r", "x"];
 const punctuationList = "{}()\\[\\]\\\\.…,;:!¡?¿/@#%\\^&*_~+\\-=<>«»\"'’\\s";
 const wordRegex = new RegExp(`^[^${punctuationList}]+$`, "i");
 const separatorRegex = new RegExp(`([${punctuationList}]+)`, "gim");
@@ -111,15 +112,19 @@ const getRelatedCommonWords = (word: string): string[] => {
 export const countOccurrences = (
   text: string,
   standardizedText: string,
-  word: string
+  word: string,
+  withCloseAlternatives: boolean
 ): number => {
   if (isCommonWord(word)) {
     throw new Error(`Cannot count occurrences of common word: ${word}`);
   }
 
   const standardizedWord = standardizeText(word);
+  const allowedSuffixes = withCloseAlternatives
+    ? `(${closeAlternativesSuffixes.join("|")})?`
+    : "";
   const regex = new RegExp(
-    `\([${punctuationList}]|^)(${standardizedWord})([${punctuationList}]|$)`,
+    `\([${punctuationList}]|^)(${standardizedWord})${allowedSuffixes}([${punctuationList}]|$)`,
     "gim"
   );
   const matches = Array.from(standardizedText.matchAll(regex));
@@ -137,6 +142,52 @@ export const countOccurrences = (
     })
     .reduce((a, b) => a + b, 0);
   return count;
+};
+
+/**
+ * Build a list of words that are considered close enough to the given word
+ * to be revealed simultaneously.
+ * @param standardizedWord
+ */
+export const buildAlternatives = (standardizedWord: string): string[] =>
+  closeAlternativesSuffixes.map((suffix) => `${standardizedWord}${suffix}`);
+
+/**
+ * Determine if a word (assumed not to be from the common word set) should be revealed
+ * or not.
+ * @param word
+ * @param revealedWords
+ */
+export const isRevealed = (
+  word: string,
+  revealedWords: Set<string>
+): boolean => {
+  return revealedWords.has(standardizeText(word));
+};
+
+/**
+ * Determine if a word is currently selected
+ * @param word
+ * @param selection
+ * @param withCloseAlternatives
+ */
+export const isSelected = (
+  word: string,
+  selection: string,
+  withCloseAlternatives: boolean
+): boolean => {
+  const standardizedWord = standardizeText(word);
+  if (standardizedWord === selection) {
+    return true;
+  }
+  if (withCloseAlternatives) {
+    if (
+      buildAlternatives(selection).some((alternative) => alternative === word)
+    ) {
+      return true;
+    }
+  }
+  return false;
 };
 
 const removeDiacritics = (word: string): string => {
