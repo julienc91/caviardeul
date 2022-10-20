@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import React, { useCallback, useState } from "react";
+import { FaGithub } from "react-icons/fa";
 
 import ExternalLink from "@caviardeul/components/externalLink";
 
@@ -59,7 +59,7 @@ const Navbar: React.FC<{
           <li className="divider" />
           <li>
             <ExternalLink href="https://github.com/julienc91/caviardeul">
-              <Image height={30} width={30} src="/github.png" alt="GitHub" />
+              <FaGithub />
             </ExternalLink>
           </li>
         </ul>

@@ -4,7 +4,12 @@ import Head from "next/head";
 import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import {
+  FaEye,
+  FaEyeSlash,
+  FaSortAmountDown,
+  FaSortAmountUp,
+} from "react-icons/fa";
 
 import ConfirmModal from "@caviardeul/components/confirmModal";
 import Modal from "@caviardeul/components/modal";
@@ -33,8 +38,9 @@ type SortType = "id" | "median" | "userScore";
 
 const SortSelection: React.FC<{
   sortBy: SortType;
+  sortOrder: boolean;
   onChange: (value: SortType) => void;
-}> = ({ sortBy, onChange }) => {
+}> = ({ sortBy, sortOrder, onChange }) => {
   return (
     <>
       <label>
@@ -50,7 +56,9 @@ const SortSelection: React.FC<{
           <option value="userScore">Mon score</option>
         </select>
       </label>
-      <button onClick={() => onChange(sortBy)}>↑↓</button>
+      <button onClick={() => onChange(sortBy)}>
+        {sortOrder ? <FaSortAmountDown /> : <FaSortAmountUp />}
+      </button>
     </>
   );
 };
@@ -106,22 +114,22 @@ const SynchronizationModal: React.FC<{
       <p>
         Pour commencer la synchronisation, utilisez le lien suivant depuis votre
         second appareil&nbsp;:
-        <div className="button-input">
-          <button onClick={() => setReveal(!reveal)}>
-            {reveal ? <FaEyeSlash /> : <FaEye />}
-          </button>
-          <input value={url} type={reveal ? "text" : "password"} readOnly />
-        </div>
-        Ou scannez ce QR Code: <br />
-        <div className="qr-code">
-          {!reveal && (
-            <div className="mask" onClick={() => setReveal(true)}>
-              <FaEye />
-            </div>
-          )}
-          <QRCodeSVG value={url} />
-        </div>
       </p>
+      <div className="button-input">
+        <button onClick={() => setReveal(!reveal)}>
+          {reveal ? <FaEyeSlash /> : <FaEye />}
+        </button>
+        <input value={url} type={reveal ? "text" : "password"} readOnly />
+      </div>
+      <p>Ou scannez ce QR Code&nbsp;:</p>
+      <div className="qr-code">
+        {!reveal && (
+          <div className="mask" onClick={() => setReveal(true)}>
+            <FaEye />
+          </div>
+        )}
+        <QRCodeSVG value={url} />
+      </div>
 
       <p>
         <strong>Attention&nbsp;:</strong> Ce lien et ce code sont spécifiques à
@@ -304,7 +312,11 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
               filterBy={filterBy}
               onChange={handleFilterByChanged}
             />
-            <SortSelection sortBy={sortBy} onChange={handleSortByChanged} />
+            <SortSelection
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+              onChange={handleSortByChanged}
+            />
           </div>
 
           <div className="archive-grid">{gamesContainer}</div>
