@@ -14,7 +14,7 @@ const CustomGame: NextPage<{
   return (
     <>
       <Head>
-        <title>Caviardeul - Déchiffrez une partie personnalisée</title>
+        <title>רדקטעל - פענח משחק מותאם אישית</title>
       </Head>
       <Game article={article} />
     </>

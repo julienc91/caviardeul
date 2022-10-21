@@ -15,12 +15,12 @@ const Home: NextPage<{ encodedArticle: EncodedArticle | null }> = ({
   return (
     <>
       <Head>
-        <title>Caviardeul - Déchiffrez l&apos;article Wikipédia du jour</title>
+        <title>רדקטעל - מחשק פענוח מאמר ויקיפדיה יומי</title>
       </Head>
       {dailyArticle ? (
         <Game article={dailyArticle} />
       ) : (
-        <Error statusCode={500} title="Une erreur est survenue" />
+        <Error statusCode={500} title="קרתה שגיאה" />
       )}
     </>
   );

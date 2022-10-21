@@ -17,7 +17,7 @@ const ArchiveGame: NextPage<{
     <>
       <Head>
         <title>
-          Caviardeul - Déchiffrez le Caviardeul n°{article.articleId}
+          -רדקטעל - פענח את הרדקטעל ה {article.articleId}
         </title>
       </Head>
       <Game article={article} {...props} />
