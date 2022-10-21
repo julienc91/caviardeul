@@ -81,7 +81,7 @@ const AboutPage: React.FC = () => {
             </ExternalLink>
           </p>
           <p>
-            פותח במקור ע"י {" "}
+            פותח במקור ע&quot;י {" "}
             <ExternalLink href="https://julienc.io">
               Julien Chaumont
             </ExternalLink>
