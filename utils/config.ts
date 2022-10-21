@@ -1,7 +1,7 @@
 export const BASE_URL =
   process.env.NEXT_PUBLIC_BASE_URL ||
   (process.env.NEXT_PUBLIC_VERCEL_ENV === "production"
-    ? "https://caviardeul.fr"
+    ? "https://redactle.vercel.app/"
     : `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`);
 
 export const DEPRECATED_DOMAIN =
