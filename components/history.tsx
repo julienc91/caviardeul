@@ -24,8 +24,8 @@ const HistoryContainer: React.FC<{
         <thead>
           <tr>
             <th>&nbsp;</th>
-            <th>Essai</th>
-            <th>Occurrences</th>
+            <th>ניחוש</th>
+            <th>מופעים</th>
           </tr>
         </thead>
         <tbody>

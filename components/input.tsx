@@ -48,9 +48,9 @@ const Input: React.FC<{
       <div
         className="article-navigation"
         onClick={handleScrollTop}
-        title="Retour au début"
+        title="חזרה למעלה"
       >
-        <Image src={ArrowUp} width={25} height={25} alt="Flèche vers le haut" />
+        <Image src={ArrowUp} width={25} height={25} alt="Arrow Up" />
       </div>
       <input
         type="text"
@@ -58,13 +58,13 @@ const Input: React.FC<{
         value={value}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
-        placeholder="Un mot ?"
+        placeholder="ניחוש?"
       />
       <input
         type="submit"
         disabled={disabled}
         onClick={handleSubmit}
-        value="Valider"
+        value="בדוק"
       />
     </div>
   );

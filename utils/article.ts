@@ -15,7 +15,7 @@ export const getArticleContent = async (
   pageId: string
 ): Promise<{ pageName: string; content: string } | null> => {
   const wikipediaResponse = await fetch(
-    `https://fr.wikipedia.org/w/api.php?action=parse&format=json&page=${pageId}&prop=text&formatversion=2&origin=*`
+    `https://he.wikipedia.org/w/api.php?action=parse&format=json&page=${pageId}&prop=text&formatversion=2&origin=*`
   );
   if (wikipediaResponse.status !== 200) {
     return null;

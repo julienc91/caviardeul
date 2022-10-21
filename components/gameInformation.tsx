@@ -42,7 +42,7 @@ const GameInformation: React.FC<{
       <ul>
         <li>
           Voir la page originale{" "}
-          <ExternalLink href={`https://fr.wikipedia.org/wiki/${pageName}`}>
+          <ExternalLink href={`https://he.wikipedia.org/wiki/${pageName}`}>
             sur Wikipédia
           </ExternalLink>
         </li>

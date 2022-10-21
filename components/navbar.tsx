@@ -25,7 +25,7 @@ const Navbar: React.FC<{
       </button>
       <h1>
         <Link href="/" prefetch={false}>
-          <a onClick={handleClick}>Caviardeul</a>
+          <a onClick={handleClick}>רדקטעל</a>
         </Link>
       </h1>
 
@@ -34,17 +34,17 @@ const Navbar: React.FC<{
         <ul>
           <li className="left">
             <Link href="/archives/" prefetch={false}>
-              <a onClick={handleClick}>Archives</a>
+              <a onClick={handleClick}>ארכיון</a>
             </Link>
           </li>
           <li className="left">
             <Link href="/custom/nouveau" prefetch={false}>
-              <a onClick={handleClick}>Partie personnalisée</a>
+              <a onClick={handleClick}>מותאם אישית</a>
             </Link>
           </li>
           <li className="left">
             <Link href="/a-propos" prefetch={false}>
-              <a onClick={handleClick}>À propos</a>
+              <a onClick={handleClick}>אודות</a>
             </Link>
           </li>
           <li
@@ -54,7 +54,7 @@ const Navbar: React.FC<{
               handleClick();
             }}
           >
-            Options
+            אפשרויות
           </li>
           <li className="divider" />
           <li>

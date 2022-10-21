@@ -24,7 +24,7 @@ const SettingsModal: React.FC<{ open: boolean; onClose: () => void }> = ({
 
   return (
     <Modal open={open} onClose={onClose}>
-      <h1>Options</h1>
+      <h1>אפשרויות</h1>
       <div>
         <label>
           <input
@@ -32,7 +32,7 @@ const SettingsModal: React.FC<{ open: boolean; onClose: () => void }> = ({
             checked={!lightMode}
             onChange={handleToggleLightMode}
           />
-          Activer le mode sombre
+          הפעל מצב כהה
         </label>
         <br />
         <label>
@@ -41,7 +41,7 @@ const SettingsModal: React.FC<{ open: boolean; onClose: () => void }> = ({
             checked={displayWordLength}
             onChange={handleToggleDisplayWordLength}
           />
-          Afficher le nombre de lettres au clic
+          הצג מספר אותיות במילה בלחיצה
         </label>
       </div>
     </Modal>

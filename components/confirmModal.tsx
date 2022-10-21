@@ -20,7 +20,7 @@ const ConfirmModal: React.FC<{
         </button>
       }
     >
-      <h1>Confirmation</h1>
+      <h1>אישור</h1>
       {message}
     </Modal>
   );

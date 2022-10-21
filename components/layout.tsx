@@ -21,10 +21,10 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <>
       <Head>
-        <title>Caviardeul - Déchiffrez l&apos;article Wikipédia du jour</title>
+        <title>רדקטעל - מחשק פענוח מאמר ויקיפדיה יומי</title>
         <meta
           name="description"
-          content="Chaque jour, un nouvel article Wikipédia à déchiffrer"
+          content="כל יום, מאמר חדש בוויקיפדיה לפענוח"
         />
         <meta name="author" content="@julienc91" />
 

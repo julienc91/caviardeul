@@ -8,30 +8,30 @@ const AboutPage: React.FC = () => {
   return (
     <>
       <Head>
-        <title>Caviardeul - À propos</title>
+        <title>רדקטעל - אודות</title>
       </Head>
       <main id="about">
         <div className="left-container">
-          <h1>À propos de Caviardeul</h1>
+          <h1>אודות רדקטעל</h1>
 
           <h2>Présentation</h2>
           <p>
-            Caviardeul est un jeu reprenant le concept de{" "}
+            רדקטעל הוא משחק המבוסס על {" "}
             <ExternalLink href="https://www.redactle.com/">
               Redactle
             </ExternalLink>{" "}
-            par{" "}
+            מאת {" "}
             <ExternalLink href="https://twitter.com/jhntrnr">
               John Turner
             </ExternalLink>
-            , mais en Français.
+            , אבל בעברית.
           </p>
           <p>
             Le but est de retrouver quotidiennement l&apos;article Wikipédia
             caché derrière les mots caviardés. Les articles sont choisis parmi
             la liste des{" "}
-            <ExternalLink href="https://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Articles_vitaux/Niveau_4">
-              10&nbsp;000 articles vitaux de Wikipédia
+            <ExternalLink href="https://he.wikipedia.org/wiki/%D7%95%D7%99%D7%A7%D7%99%D7%A4%D7%93%D7%99%D7%94:%D7%A2%D7%A8%D7%9B%D7%99%D7%9D_%D7%A9%D7%A6%D7%A8%D7%99%D7%9B%D7%99%D7%9D_%D7%9C%D7%94%D7%99%D7%95%D7%AA_%D7%A7%D7%99%D7%99%D7%9E%D7%99%D7%9D_%D7%91%D7%9B%D7%9C_%D7%9E%D7%94%D7%93%D7%95%D7%A8%D7%95%D7%AA_%D7%95%D7%99%D7%A7%D7%99%D7%A4%D7%93%D7%99%D7%94">
+              10&nbsp;000 ערכי ליבה בויקיפדיה
             </ExternalLink>{" "}
             de niveau 4.
           </p>

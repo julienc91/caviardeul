@@ -74,20 +74,19 @@ const NewCustomGame: React.FC = () => {
   return (
     <>
       <Head>
-        <title>Caviardeul - Créez une partie personnalisée</title>
+        <title>רדקטעל - צור משחק מותאם אישית</title>
       </Head>
       <main id="new-custom-game">
         <div className="left-container">
-          <h1>Créer une partie personnalisée</h1>
+          <h1>צור משחק מותאם אישית</h1>
 
           <form onSubmit={handleSubmit}>
             <p>
-              Saisissez l&apos;adresse de l&apos;article Wikipédia de votre
-              choix&nbsp;:
+              הזן את הכתובת של המאמר בויקיפדיה:
             </p>
             <p>
               <label className="url-input">
-                <span>fr.wikipedia.org/wiki/</span>
+                <span>he.wikipedia.org/wiki/</span>
                 <input
                   type="text"
                   placeholder="Jeu"
@@ -107,36 +106,35 @@ const NewCustomGame: React.FC = () => {
             {mutation.isLoading && <Loader />}
             {mutation.isError && (
               <p>
-                Impossibe de créer une partie personnalisée à partir de cet
-                article.
+                לא ניתן ליצור משחק עבור מאמר זה
               </p>
             )}
           </form>
           {gameId && (
             <>
-              <p>Voici le lien de votre partie personnalisée&nbsp;:</p>
+              <p>הנה הקישור למשחק המותאם אישית שלך:</p>
               <div className="url-copy">
                 <input
                   type="button"
-                  value="Copier"
+                  value="העתק"
                   onClick={() => handleCopyToClipboard(gameUrl)}
                 />
                 <input type="text" readOnly value={gameUrl} />
                 <input
                   type="button"
-                  value="Ouvrir"
+                  value="פתח"
                   onClick={async () => {
                     await router.push(gameUrl);
                   }}
                 />
               </div>
               <p>
-                Le titre à trouver est &laquo;&nbsp;{pageName}&nbsp;&raquo;.
+                הכותרת היא &laquo;&nbsp;{pageName}&nbsp;&raquo;.
               </p>
               <div>
                 <input
                   type="button"
-                  value="Créer une autre partie"
+                  value="צור משחק אחר"
                   onClick={handleReset}
                 />
               </div>

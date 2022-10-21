@@ -13,13 +13,12 @@ const CustomGameBanner: React.FC<{ safetyLevel: ArticleSafety }> = ({
       <span className="close" onClick={() => setShow(false)} title="Masquer">
         X
       </span>
-      <h3>Mise en garde</h3>
+      <h3>אזהרה</h3>
       <p>
-        L&apos;article caché n&apos;a pas été sélectionné par l&apos;auteur du
-        jeu.{" "}
+       המאמר המוסתר לא נבחר ע&quot;י המחבר של המשחק{" "}
         {safetyLevel === "UNSAFE"
-          ? "Son contenu n'est pas adapté à tous les publics."
-          : "Son contenu peut ne pas être adapté à tous les publics."}
+          ? "התוכן אינו מתאים לכל הקהלים."
+          : "ייתכן והתוכן לא יתאים לכל הקהלים."}
       </p>
     </div>
   );

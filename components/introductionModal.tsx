@@ -24,7 +24,7 @@ const IntroductionfoModal: React.FC = () => {
 
   return (
     <Modal open={open} onClose={handleClose} closeLabel="Commencer">
-      <h1>Caviardeul</h1>
+      <h1>רדקטעל</h1>
       <p>
         Caviardeul est un jeu de réflexion. Le but est de trouver l&apos;article
         Wikipédia qui se cache derrière les mots caviardés. Proposez des mots
