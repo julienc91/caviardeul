@@ -576,6 +576,10 @@ main {
     border: 1px solid $light4;
     padding: 10px 0 10px 10px;
 
+    span {
+      direction: ltr;
+    }
+
     input {
       border: 0;
       height: 40px;

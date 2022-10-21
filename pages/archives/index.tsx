@@ -16,7 +16,7 @@ import SaveManagement from "@caviardeul/utils/save";
 const Difficulty: React.FC<{ stats: ArticleInfoStats }> = ({ stats }) => {
   const { category, median } = stats;
   return (
-    <div className="article-difficulty" title={`${median} coups en moyenne`}>
+    <div className="article-difficulty" title={`${median} חציון ניחושים`}>
       {[0, 1, 2, 3, 4].map((level) => (
         <span
           key={level}
@@ -38,16 +38,16 @@ const SortSelection: React.FC<{
   return (
     <>
       <label>
-        Trier
+        מיין לפי
         <select
           value={sortBy}
           onChange={({ target: { value } }) => {
             onChange(value as SortType);
           }}
         >
-          <option value="id">Date</option>
-          <option value="median">Difficulté</option>
-          <option value="userScore">Mon score</option>
+          <option value="id">תאריך</option>
+          <option value="median">רמת קושי</option>
+          <option value="userScore">הניקוד שלי</option>
         </select>
       </label>
       <button onClick={() => onChange(sortBy)}>↑↓</button>
@@ -64,16 +64,16 @@ const FilterSelection: React.FC<{
   return (
     <div className="filter-selection">
       <label>
-        Fitrer
+        סנן
         <select
           value={filterBy}
           onChange={({ target: { value } }) => {
             onChange(value as FilterType);
           }}
         >
-          <option value="all">Tous</option>
-          <option value="not_finished">À faire</option>
-          <option value="finished">Terminés</option>
+          <option value="all">הכל</option>
+          <option value="not_finished">לא הושלמו</option>
+          <option value="finished">הושלמו</option>
         </select>
       </label>
     </div>
@@ -89,30 +89,29 @@ const SynchronizationModal: React.FC<{
   const url = `${BASE_URL}/login?user=${userId}`;
   return (
     <Modal className="sync-modal" open={open} onClose={onClose}>
-      <h1>Synchronisation entre appareils</h1>
+      <h1>סנכרון בין מכשירים</h1>
 
       <p>
-        Si vous jouez à Caviardeul sur plusieurs appareils à la fois, vous
-        pouvez les synchroniser pour retrouver vos scores et votre progression
-        sur chacun d&apos;entre eux.
+        אם אתם משחקים רדקטעל בכמה מכשירים בו זמנית, ניתן
+        לסנכרן אותם כדי לעקוב אחר התוצאות וההתקדמות
+        על כל אחד מהם.
       </p>
 
       <p>
-        Notez tout de même que l&apos;historique de vos essais n&apos;est pas
-        synchronisé, vous ne pourrez donc pas commencer une partie sur un
-        appareil puis la reprendre où vous l&apos;aviez laissée sur un second.
+        שימו לב, עם זאת, ההיסטוריה של הניחושים שלכם לא
+        מסונכרנת, כך שלא תוכלו להתחיל משחק במכשיר אחד
+        ולאחר מכן להמשיך באחר מהמקום שבו הפסקתם.
       </p>
 
       <p>
-        Pour commencer la synchronisation, utilisez le lien suivant depuis votre
-        second appareil&nbsp;:
+       כדי להתחיל בסנכרון השתמשו בקישור הבא במכשיר השני:
         <div className="button-input">
           <button onClick={() => setReveal(!reveal)}>
             {reveal ? <FaEyeSlash /> : <FaEye />}
           </button>
           <input value={url} type={reveal ? "text" : "password"} readOnly />
         </div>
-        Ou scannez ce QR Code: <br />
+       או סרקו את קוד ה-QR: <br />
         <div className="qr-code">
           {!reveal && (
             <div className="mask" onClick={() => setReveal(true)}>
@@ -124,8 +123,8 @@ const SynchronizationModal: React.FC<{
       </p>
 
       <p>
-        <strong>Attention&nbsp;:</strong> Ce lien et ce code sont spécifiques à
-        votre compte, ne les partagez pas&nbsp;!
+        <strong>אזהרה:</strong> קישור וקוד זה ספציפיים 
+        לחשבון שלכם, אל תשתפו אותם!
       </p>
     </Modal>
   );
@@ -254,13 +253,13 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
       >
         <div className="archive-info">
           <h3>
-            N°{articleInfo.articleId} - {isOver ? articleInfo.pageName : "?"}
+            מספר {articleInfo.articleId} - {isOver ? articleInfo.pageName : "?"}
           </h3>
           {isOver && !!articleInfo.userScore ? (
             <>
-              <span>Essais&nbsp;: {articleInfo.userScore.nbAttempts}</span>
+              <span>ניחושים: {articleInfo.userScore.nbAttempts}</span>
               <span>
-                Précision&nbsp;:{" "}
+                רמת דיוק:{" "}
                 {Math.floor(
                   (articleInfo.userScore.nbCorrect * 100) /
                     Math.max(articleInfo.userScore.nbAttempts, 1)
@@ -269,7 +268,7 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
               </span>
             </>
           ) : (
-            <span>► Jouer</span>
+            <span>שחק ►</span>
           )}
         </div>
         {<Difficulty stats={articleInfo.stats} />}
@@ -293,11 +292,11 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
   return (
     <>
       <Head>
-        <title>Caviardeul - Archives</title>
+        <title>רדקטעל - ארכיון</title>
       </Head>
       <main id="archives">
         <div className="left-container">
-          <h1>Archives</h1>
+          <h1>ארכיון</h1>
 
           <div className="list-filters">
             <FilterSelection
@@ -327,26 +326,26 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
           )}
         </div>
         <div className="right-container">
-          <h1>Score</h1>
+          <h1>ציון</h1>
 
           <ul>
             <li>
-              Parties terminées&nbsp;: {nbFinishedGames}/{nbGames} (
+              משחקים שהושלמו: {nbFinishedGames}/{nbGames} (
               {Math.floor((nbFinishedGames * 100) / Math.max(nbGames, 1))}%)
             </li>
-            <li>Nombre d&apos;essais moyen&nbsp;: {avgTrials}</li>
-            <li>Précision moyenne&nbsp;: {avgAccuracy}%</li>
+            <li>מספר ניחושים ממוצע: {avgTrials}</li>
+            <li>רמת דיוק ממוצעת: {avgAccuracy}%</li>
           </ul>
 
           {isLoggedIn && (
             <>
               <div>
-                <h3>Vous jouez sur plusieurs appareils&nbsp;?</h3>
+                <h3>משחק על יותר ממכשיר אחד?</h3>
                 <button
                   className="action"
                   onClick={() => setShowSynchronizationModal(true)}
                 >
-                  Synchroniser un appareil
+                  סנכרן מכשיר נוסף
                 </button>
                 <SynchronizationModal
                   open={showSynchronizationModal}
@@ -360,20 +359,19 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
                   className="danger"
                   onClick={() => setShowConfirmModal(true)}
                 >
-                  Réinitialiser
+                  אתחול
                 </button>
                 <ConfirmModal
                   message={
                     <>
-                      Cette action réinitialisera vos scores et votre
-                      progression de manière irréversible.
+                      פעולה זו תאפס את הציונים וההתקדמות והיא בלתי הפיכה.
                       <br />
-                      Voulez-vous continuer&nbsp;?
+                      האם אתה רוצה להמשיך?
                     </>
                   }
                   open={showConfirmModal}
                   danger={true}
-                  confirmLabel="Confirmer"
+                  confirmLabel="אשר"
                   onConfirm={handleReset}
                   onCancel={() => setShowConfirmModal(false)}
                 />

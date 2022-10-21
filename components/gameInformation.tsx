@@ -17,9 +17,9 @@ const GameInformation: React.FC<{
     (history.filter(([_, count]) => count > 0).length / nbTrials) * 100
   );
 
-  const shareSentence = `J'ai déchiffré ${
-    custom ? "ce Caviardeul" : `le Caviardeul n°${articleId}`
-  } en ${nbTrials} coup${nbTrials > 1 ? "s" : ""}\u00A0!`;
+  const shareSentence = `פענחתי  ${
+    custom ? "רדקטעל" : `את הרדקטעל מספר ${articleId}`
+  } ב-${nbTrials} ${nbTrials > 1 ? "ניחושים" : "ניחוש יחיד"}!`;
   let shareUrl = `${BASE_URL}/`;
   if (archive) {
     shareUrl += `archives/${articleId}`;
@@ -32,35 +32,35 @@ const GameInformation: React.FC<{
 
   return (
     <div className="game-information">
-      <h2>Bravo&nbsp;!</h2>
+      <h2>כל הכבוד!</h2>
       <p>
-        Vous avez déchiffré{" "}
-        {archive || custom ? "cet article" : "le Caviardeul du jour"} en{" "}
-        {nbTrials} coup{nbTrials > 1 ? "s" : ""} avec une précision de{" "}
+        פענחת את{" "}
+        {archive || custom ? "המאמר" : "הרדקטעל היומי"} ב{"-"}
+        {nbTrials} {nbTrials > 1 ? "ניחושים" : "ניחוש יחיד"} עם רמת דיוק של {" "}
         {accuracy}%.
       </p>
       <ul>
         <li>
-          Voir la page originale{" "}
+          לדף המקורי{" "}
           <ExternalLink href={`https://he.wikipedia.org/wiki/${pageName}`}>
-            sur Wikipédia
+            בויקיפדיה
           </ExternalLink>
         </li>
         <li>
-          Partager <ExternalLink href={shareLink}>sur Twitter</ExternalLink>
+          שתף <ExternalLink href={shareLink}>ב-Twitter</ExternalLink>
         </li>
       </ul>
       {custom && (
         <p>
-          Créez votre nouvelle{" "}
+          צור{" "}
           <Link href="/custom/nouveau" prefetch={false}>
-            <a>partie personnalisée</a>
+            <a>משחק מותאם אישית</a>
           </Link>
           &nbsp;
         </p>
       )}
       {!custom && !archive && (
-        <p>Revenez demain pour une nouvelle page à déchiffrer&nbsp;!</p>
+        <p>חזור מחר לאתגר הבא!</p>
       )}
     </div>
   );

@@ -23,28 +23,21 @@ const IntroductionfoModal: React.FC = () => {
   }
 
   return (
-    <Modal open={open} onClose={handleClose} closeLabel="Commencer">
+    <Modal open={open} onClose={handleClose} closeLabel="התחל">
       <h1>רדקטעל</h1>
       <p>
-        Caviardeul est un jeu de réflexion. Le but est de trouver l&apos;article
-        Wikipédia qui se cache derrière les mots caviardés. Proposez des mots
-        dans la zone de texte, puis validez pour dévoiler les endroits où
-        celui-ci est utilisé. Pour vous aider, certains des mots les plus
-        courants sont déjà révélés.
+        רדקטעל הוא משחק פאזל. המטרה היא למצוא את מאמר
+        הויקיפדיה מאחורי המילים המוסתרות. הצע מילים
+        בתיבת הטקסט, ולאחר מכן לחץ אימות כדי לחשוף את המקומות שבהם
+        היא מופיעה. כדי לעזור לך, חלק מהמילים הכי נפוצות כבר נחשפו.      
       </p>
       <p>
-        Le jeu s&apos;arrête lorsque tous les mots du titre de l&apos;article
-        sont découverts. Vous pouvez faire autant de propositions que vous le
-        souhaitez, mais essayez d&apos;être efficace en terminant la partie au
-        plus vite&nbsp;!
+        המשחק מסתיים כאשר כל המילים בכותרת המאמר
+        מתגלות. ניתן להציע כמה הצעות שרוצים.
+        אבל נסו להיות יעילים ולסיים את המשחק מהר יותר!
       </p>
       <p>
-        Ni la casse, ni les caractères spéciaux ou les accents ne sont pris en
-        compte.
-      </p>
-      <p>
-        Chaque jour, une nouvelle partie démarre avec un nouvel article à
-        déchiffrer&nbsp;!
+        כל יום אתגר חדש לפענח!      
       </p>
     </Modal>
   );

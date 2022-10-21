@@ -86,21 +86,21 @@ const NewCustomGame: React.FC = () => {
             </p>
             <p>
               <label className="url-input">
-                <span>he.wikipedia.org/wiki/</span>
                 <input
                   type="text"
-                  placeholder="Jeu"
+                  placeholder="משחק"
                   readOnly={!!gameId}
                   value={pageId}
                   onChange={handleChange}
                   onPaste={handlePaste}
                   required
                 />
+                <span dir="ltr">he.wikipedia.org/wiki/</span>
               </label>
               <input
                 type="submit"
                 disabled={!pageId.length || mutation.isLoading || !!gameId}
-                value="Créer"
+                value="צור"
               />
             </p>
             {mutation.isLoading && <Loader />}
@@ -142,22 +142,22 @@ const NewCustomGame: React.FC = () => {
           )}
         </div>
         <div className="right-container">
-          <h1>Partie personnalisée</h1>
+          <h1>משחק מותאם אישית</h1>
 
           <p>
-            Les parties personnalisées sont des parties à partager, créées à
-            partir de l&apos;article Wikipédia de votre choix.
+            משחקים מותאמים אישית הם משחקים לשיתוף, שנוצרו
+            ממאמר ויקיפדיה לבחירתך.
           </p>
 
           <ol>
-            <li>Sélectionnez un article Wikipédia</li>
-            <li>Saisissez son adresse sur cette page et validez</li>
-            <li>Partagez le lien de la partie autour de vous&nbsp;!</li>
+            <li>בחרו מאמר בויקיפדיה</li>
+            <li>הזינו את כתובתו בעמוד זה</li>
+            <li>שתפו את הקישור למשחק!</li>
           </ol>
 
           <p>
-            Conseil&nbsp;: évitez les articles trop courts qui peuvent être plus
-            difficiles à trouver.
+            טיפ: הימנעו ממאמרים קצרים מדי שיכולים להיות יותר
+            קשים לפענוח.
           </p>
         </div>
       </main>
