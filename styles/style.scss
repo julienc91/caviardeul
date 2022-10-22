@@ -82,13 +82,14 @@ body {
 
 // navbar
 nav {
+  direction: rtl;
   align-items: center;
   background-color: $dark1;
   color: $light4;
   display: flex;
   flex-flow: row wrap;
   height: $navbarHeight;
-  justify-content: left;
+  justify-content: right;
   padding: 0 20px;
   min-width: 100%;
 
@@ -106,7 +107,7 @@ nav {
       font-weight: normal;
       height: 2.3rem;
       justify-content: space-evenly;
-      margin: 0 10px 0 0;
+      margin: 0 0 0 10px;
       padding: 5px;
       transition: transform 0.2s ease-in-out;
       width: 2.5rem;
