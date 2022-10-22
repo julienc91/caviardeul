@@ -58,7 +58,7 @@ const Navbar: React.FC<{
           </li>
           <li className="divider" />
           <li>
-            <ExternalLink href="https://github.com/julienc91/caviardeul">
+            <ExternalLink href="https://github.com/perkio/caviardeul">
               <Image height={30} width={30} src="/github.png" alt="GitHub" />
             </ExternalLink>
           </li>
