@@ -41,9 +41,11 @@ $breakpoint: 800px;
 
 // mixins
 @mixin media-max($_max-width) {
-    @media screen and (max-width: $_max-width) {
-        &{ @content; }
+  @media screen and (max-width: $_max-width) {
+    & {
+      @content;
     }
+  }
 }
 
 // webkit scrollbar style
@@ -231,8 +233,12 @@ nav {
   }
 
   @keyframes modal-animation {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   .modal {
@@ -306,7 +312,8 @@ button {
   align-items: center;
   margin: 20px auto;
 
-  button, input {
+  button,
+  input {
     height: 30px;
     margin: 0;
   }
@@ -379,7 +386,7 @@ main {
       background-color: var(--color-text);
 
       border-radius: 100%;
-      animation: animation 1.0s infinite ease-in-out;
+      animation: animation 1s infinite ease-in-out;
     }
 
     @keyframes animation {
@@ -387,7 +394,7 @@ main {
         transform: scale(0);
       }
       100% {
-        transform: scale(1.0);
+        transform: scale(1);
         opacity: 0;
       }
     }
@@ -471,18 +478,22 @@ main {
           transition: opacity 0.2s ease-in-out;
           width: 100%;
         }
-        &:active::after, &:focus::after, &:focus-within::after {
+        &:active::after,
+        &:focus::after,
+        &:focus-within::after {
           opacity: 1;
         }
       }
     }
   }
 
-  .right-container, .left-container {
+  .right-container,
+  .left-container {
     padding: 0;
   }
 
-  .guess-history, .game-information {
+  .guess-history,
+  .game-information {
     color: $light3;
     max-height: 100%;
     width: 100%;
@@ -507,7 +518,8 @@ main {
       tbody tr {
         border-bottom: 1px solid $grey1;
 
-        &:hover, &.selected {
+        &:hover,
+        &.selected {
           background-color: $grey1;
           &.clickable {
             cursor: pointer;
@@ -516,7 +528,8 @@ main {
         }
       }
 
-      td, th {
+      td,
+      th {
         padding: 10px;
       }
     }
@@ -609,11 +622,12 @@ main {
       border: 1px solid $light3;
       color: $dark1;
       height: 41px;
-      padding:  10px;
+      padding: 10px;
     }
   }
 
-  input[type="submit"], input[type="button"] {
+  input[type="submit"],
+  input[type="button"] {
     background-color: $dark2;
     border: 1px solid $light3;
     color: $light4;
