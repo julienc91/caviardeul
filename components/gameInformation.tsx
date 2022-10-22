@@ -28,7 +28,7 @@ const GameInformation: React.FC<{
   }
   const shareLink = `https://twitter.com/share?text=${encodeURIComponent(
     shareSentence
-  )}&url=${encodeURIComponent(shareUrl)}&hashtags=caviardeul`;
+  )}&url=${encodeURIComponent(shareUrl)}&hashtags=רדקטעל`;
 
   return (
     <div className="game-information">
