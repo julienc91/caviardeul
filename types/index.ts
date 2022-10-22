@@ -1,6 +1,6 @@
 import { ArticleSafety } from "@prisma/client";
 
-export type Error = {
+export type ErrorDetail = {
   error: string;
   debug?: string;
 };

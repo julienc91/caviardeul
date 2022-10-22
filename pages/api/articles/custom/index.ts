@@ -1,13 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import prismaClient from "@caviardeul/prisma";
-import { CustomGameCreation, Error } from "@caviardeul/types";
+import { CustomGameCreation, ErrorDetail } from "@caviardeul/types";
 import { applyCors, getOrCreateUser, getUser } from "@caviardeul/utils/api";
 import { getArticleContent } from "@caviardeul/utils/article";
 
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<CustomGameCreation | Error>
+  res: NextApiResponse<CustomGameCreation | ErrorDetail>
 ) => {
   await applyCors(req, res);
   const { method } = req;

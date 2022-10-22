@@ -1,12 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import prismaClient from "@caviardeul/prisma";
-import { ArticleStats, Error, User } from "@caviardeul/types";
+import { ArticleStats, ErrorDetail, User } from "@caviardeul/types";
 import { applyCors, getOrCreateUser } from "@caviardeul/utils/api";
 
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<{} | Error>
+  res: NextApiResponse<{} | ErrorDetail>
 ) => {
   await applyCors(req, res);
   const { method } = req;
@@ -22,7 +22,7 @@ const handler = async (
 
 const postHandler = async (
   req: NextApiRequest,
-  res: NextApiResponse<{} | Error>,
+  res: NextApiResponse<{} | ErrorDetail>,
   user: User
 ) => {
   const nbAttempts = parseInt(req.body.nbAttempts, 10);

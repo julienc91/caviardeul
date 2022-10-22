@@ -2,12 +2,12 @@ import { User } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import prismaClient from "@caviardeul/prisma";
-import { Error } from "@caviardeul/types";
+import { ErrorDetail } from "@caviardeul/types";
 import { applyCors, getUser } from "@caviardeul/utils/api";
 
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<{ id: string } | {} | Error>
+  res: NextApiResponse<{ id: string } | {} | ErrorDetail>
 ) => {
   await applyCors(req, res);
   const { method } = req;
@@ -33,7 +33,7 @@ const handler = async (
  */
 const deleteHandler = async (
   req: NextApiRequest,
-  res: NextApiResponse<{} | Error>,
+  res: NextApiResponse<{} | ErrorDetail>,
   user: User | null
 ) => {
   if (!user) {
@@ -54,7 +54,7 @@ const deleteHandler = async (
  */
 const getHandler = async (
   req: NextApiRequest,
-  res: NextApiResponse<{ id: string } | Error>,
+  res: NextApiResponse<{ id: string } | ErrorDetail>,
   user: User | null
 ) => {
   if (!user) {
