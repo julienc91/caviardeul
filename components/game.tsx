@@ -29,12 +29,13 @@ import { UserContext } from "@caviardeul/utils/user";
 
 const Game: React.FC<{
   article: Article;
-}> = ({ article }) => {
+  userScore?: { nbAttempts: number; nbCorrect: number };
+}> = ({ article, userScore }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [revealedWords, setRevealedWords] = useState<Set<string>>(new Set());
   const [selection, setSelection] = useState<[string, number] | null>(null);
   const [history, setHistory] = useState<History>([]);
-  const [isOver, setIsOver] = useState(false);
+  const [isOver, setIsOver] = useState(!!userScore);
   const [saveLoaded, setSaveLoaded] = useState(false);
   const loading = isLoading || !saveLoaded;
 
@@ -247,6 +248,7 @@ const Game: React.FC<{
               custom={custom}
               history={history}
               pageName={pageName}
+              userScore={userScore}
             />
           )}
           {!loading && (

@@ -11,11 +11,15 @@ const GameInformation: React.FC<{
   custom: boolean;
   history: History;
   pageName: string;
-}> = ({ articleId, archive, custom, history, pageName }) => {
-  const nbTrials = history.length;
-  const accuracy = Math.round(
-    (history.filter(([_, count]) => count > 0).length / nbTrials) * 100
-  );
+  userScore?: { nbAttempts: number; nbCorrect: number };
+}> = ({ articleId, archive, custom, history, pageName, userScore }) => {
+  const nbTrials = userScore?.nbAttempts ?? history.length;
+  const accuracy =
+    (userScore
+      ? userScore.nbCorrect / Math.max(userScore.nbAttempts, 1)
+      : Math.round(
+          history.filter(([_, count]) => count > 0).length / nbTrials
+        )) * 100;
 
   const shareSentence = `J'ai déchiffré ${
     custom ? "ce Caviardeul" : `le Caviardeul n°${articleId}`
@@ -36,7 +40,7 @@ const GameInformation: React.FC<{
       <p>
         Vous avez déchiffré{" "}
         {archive || custom ? "cet article" : "le Caviardeul du jour"} en{" "}
-        {nbTrials} coup{nbTrials > 1 ? "s" : ""} avec une précision de{" "}
+        {nbTrials} coup{nbTrials !== 1 ? "s" : ""} avec une précision de{" "}
         {accuracy}%.
       </p>
       <ul>
