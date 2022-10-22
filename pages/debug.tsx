@@ -26,8 +26,7 @@ const DebugPage: React.FC = () => {
           </pre>
         ) : (
           <div>
-            Les informations de debug peuvent contenir des données sensibles. Ne
-            les partagez pas avec n&apos;importe qui&nbsp;!
+              מידע לניפוי באגים, עלול להכיל נתוניים רגישים, אל תשתף אותם עם אחרים!
           </div>
         )}
         <button onClick={() => setReady(!ready)}>

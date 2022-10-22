@@ -207,6 +207,7 @@ nav {
 
 // info modal
 .modal-container {
+  direction: rtl;
   animation: 0.2s modal-animation;
   position: absolute;
   top: 0;
@@ -748,6 +749,7 @@ main {
 }
 
 .modal.sync-modal {
+  direction: rtl;
   input {
     font-family: monospace;
     width: 90%;
@@ -775,6 +777,7 @@ main {
 
 // about
 #about {
+  direction: rtl;
   .left-container {
     color: var(--color-text);
     a {
