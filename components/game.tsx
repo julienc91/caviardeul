@@ -24,6 +24,7 @@ import {
 import { GameContext } from "@caviardeul/utils/game";
 import SaveManagement from "@caviardeul/utils/save";
 import { UserContext } from "@caviardeul/utils/user";
+import { SettingsContext } from "@caviardeul/utils/settings";
 
 const Game: React.FC<{
   article: Article;
@@ -37,7 +38,7 @@ const Game: React.FC<{
   const loading = isLoading || !saveLoaded;
 
   const { articleId, archive, custom, pageName, content } = article;
-
+  const { settings } = useContext(SettingsContext);  
   const { saveScore } = useContext(UserContext);
 
   const titleWords = useMemo(() => {
@@ -94,14 +95,21 @@ const Game: React.FC<{
         return;
       }
 
-      const nbOccurrences = countOccurrences(
+      const { count: nbOccurrences, extra } = countOccurrences(
         content,
         standardizedArticle,
-        word
+        word,
+        settings?.guessWithPrefix ?? false,
       );
+
       const newRevealedWords = revealedWords.add(standardizedWord);
+      Object.keys(extra).forEach((word) => newRevealedWords.add(word));
+
       setRevealedWords(new Set(newRevealedWords));
-      setHistory((prev) => [...prev, [standardizedWord, nbOccurrences]]);
+      setHistory((prev) => [
+        ...prev,
+        [standardizedWord, nbOccurrences],
+        ...Object.entries(extra).map<[ string, number ]>((e) => ([ e[0], e[1] ])) ]);
     },
     [
       revealedWords,
@@ -110,6 +118,7 @@ const Game: React.FC<{
       handleChangeSelection,
       content,
       standardizedArticle,
+      settings,
     ]
   );
 

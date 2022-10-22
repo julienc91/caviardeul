@@ -8,7 +8,7 @@ const SettingsModal: React.FC<{ open: boolean; onClose: () => void }> = ({
   onClose,
 }) => {
   const { settings, onChangeSettings } = useContext(SettingsContext);
-  const { lightMode, displayWordLength } = settings ?? defaultSettings;
+  const { lightMode, displayWordLength, guessWithPrefix } = settings ?? defaultSettings;
 
   const handleToggleLightMode = useCallback(() => {
     onChangeSettings({ lightMode: !lightMode });
@@ -17,6 +17,10 @@ const SettingsModal: React.FC<{ open: boolean; onClose: () => void }> = ({
   const handleToggleDisplayWordLength = useCallback(() => {
     onChangeSettings({ displayWordLength: !displayWordLength });
   }, [displayWordLength, onChangeSettings]);
+
+  const handleToggleGuessWithPrefixLength = useCallback(() => {
+    onChangeSettings({ guessWithPrefix: !guessWithPrefix });
+  }, [guessWithPrefix, onChangeSettings]);
 
   if (!open) {
     return null;
@@ -42,6 +46,15 @@ const SettingsModal: React.FC<{ open: boolean; onClose: () => void }> = ({
             onChange={handleToggleDisplayWordLength}
           />
           הצג מספר אותיות במילה בלחיצה
+        </label>
+        <br />
+        <label>
+          <input
+            type="checkbox"
+            checked={guessWithPrefix}
+            onChange={handleToggleGuessWithPrefixLength}
+          />
+          נחש בתוספת אותיות השימוש (נסיוני)
         </label>
       </div>
     </Modal>

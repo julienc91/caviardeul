@@ -68,6 +68,7 @@ export type ArticleStats = {
 export type Settings = {
   lightMode: boolean;
   displayWordLength: boolean;
+  guessWithPrefix: boolean;
 };
 
 export type SettingsState = {

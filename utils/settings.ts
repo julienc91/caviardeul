@@ -6,6 +6,7 @@ import SaveManagement from "@caviardeul/utils/save";
 export const defaultSettings: Settings = {
   lightMode: false,
   displayWordLength: true,
+  guessWithPrefix: false,
 };
 
 export const getInitialSettings = (): Settings => {
@@ -19,6 +20,7 @@ export const getInitialSettings = (): Settings => {
     lightMode: settings?.lightMode ?? defaultSettings.lightMode,
     displayWordLength:
       settings?.displayWordLength ?? defaultSettings.displayWordLength,
+    guessWithPrefix: settings?.guessWithPrefix ?? defaultSettings.guessWithPrefix,
   };
 };
 

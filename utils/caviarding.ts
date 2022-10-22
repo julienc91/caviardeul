@@ -27,9 +27,17 @@ const commonWords = new Set<string>([
   "את",
   "זו",
   "אצל",
-  "כמו"
+  "כמו",
+  "ה",
+  "ב",
+  "ל",
+  "כ",
+  "ו",
+  "מ",
+  "ש",
 ]);
 
+const prefixList = "בהלמכשו";
 const punctuationList = "{}()\\[\\]\\\\.…,;:!¡?¿/@#%\\^&*_~+\\-=<>«»\"'’\\s";
 const wordRegex = new RegExp(`^[^${punctuationList}]+$`, "i");
 const separatorRegex = new RegExp(`([${punctuationList}]+)`, "gim");
@@ -82,19 +90,30 @@ const getRelatedCommonWords = (word: string): string[] => {
 export const countOccurrences = (
   text: string,
   standardizedText: string,
-  word: string
-): number => {
+  word: string,
+  guessWithPrefix: boolean
+): { count :number, extra: { [word: string]: number } } => {
   if (isCommonWord(word)) {
     throw new Error(`Cannot count occurrences of common word: ${word}`);
   }
 
   const standardizedWord = standardizeText(word);
   const regex = new RegExp(
-    `\([${punctuationList}]|^)(${standardizedWord})([${punctuationList}]|$)`,
+    `(?:[${punctuationList}]|^)([${prefixList}]{0,${guessWithPrefix ? 1 : 0}}${standardizedWord}){1}(?:[${punctuationList}]|$)`,
     "gim"
   );
   const matches = Array.from(standardizedText.matchAll(regex));
   let count = matches.length;
+
+  const extra: { [word: string]: number } = {};
+  for (const match of matches) {
+    const m = match[1];
+    if (m !== standardizedWord) {
+      const extraCount = extra[m] ?? 0;
+      count--;
+      extra[m] = extraCount + 1;
+    }    
+  }
 
   // Substract matches of the related common words, if they exist
   const relatedCommonWords = getRelatedCommonWords(standardizedWord);
@@ -107,7 +126,7 @@ export const countOccurrences = (
       return Array.from(text.matchAll(regex)).length;
     })
     .reduce((a, b) => a + b, 0);
-  return count;
+  return { count, extra };
 };
 
 const removeDiacritics = (word: string): string => {
