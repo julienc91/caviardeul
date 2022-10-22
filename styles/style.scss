@@ -13,7 +13,6 @@ a {
 
 * {
   box-sizing: border-box;
-  direction: rtl;
 }
 
 // variables
@@ -304,6 +303,7 @@ button {
 
 // main
 main {
+  direction: rtl;
   display: flex;
   flex-flow: row wrap;
   align-items: center;

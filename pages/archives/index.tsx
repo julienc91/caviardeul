@@ -38,7 +38,7 @@ const SortSelection: React.FC<{
   return (
     <>
       <label>
-        מיין לפי
+        מיון 
         <select
           value={sortBy}
           onChange={({ target: { value } }) => {
@@ -312,14 +312,12 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
             <div className="empty-state">
               {filterBy === "finished" && (
                 <div>
-                  Vous n&apos;avez terminé aucune partie archivée, c&apos;est le
-                  moment de commencer&nbsp;!
+                  טרם השלמת משחק בארכיון, זה הזמן להתחיל!
                 </div>
               )}
               {filterBy === "not_finished" && (
                 <div>
-                  Félicitations, vous avez terminé toutes les parties
-                  archivées&nbsp;!
+                  ברכות, השלמת את כל המשחקים בארכיון!
                 </div>
               )}
             </div>
