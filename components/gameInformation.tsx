@@ -14,12 +14,13 @@ const GameInformation: React.FC<{
   userScore?: { nbAttempts: number; nbCorrect: number };
 }> = ({ articleId, archive, custom, history, pageName, userScore }) => {
   const nbTrials = userScore?.nbAttempts ?? history.length;
-  const accuracy =
+  const accuracy = Math.round(
     (userScore
       ? userScore.nbCorrect / Math.max(userScore.nbAttempts, 1)
       : Math.round(
           history.filter(([_, count]) => count > 0).length / nbTrials
-        )) * 100;
+        )) * 100
+  );
 
   const shareSentence = `J'ai déchiffré ${
     custom ? "ce Caviardeul" : `le Caviardeul n°${articleId}`
