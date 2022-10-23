@@ -16,6 +16,8 @@ const NewCustomGame: React.FC = () => {
   const gameUrl = gameId ? BASE_URL + "/custom/" + gameId : "";
   const router = useRouter();
 
+  const title = "Caviardeul - Créez une partie personnalisée";
+
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value;
@@ -74,7 +76,9 @@ const NewCustomGame: React.FC = () => {
   return (
     <>
       <Head>
-        <title>Caviardeul - Créez une partie personnalisée</title>
+        <title>{title}</title>
+        <meta key="og:title" property="og:title" content={title} />
+        <meta key="twitter:title" name="twitter:title" content={title} />
       </Head>
       <main id="new-custom-game">
         <div className="left-container">

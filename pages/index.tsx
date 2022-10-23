@@ -1,6 +1,5 @@
 import type { GetServerSideProps, NextPage } from "next";
 import Error from "next/error";
-import Head from "next/head";
 import React from "react";
 
 import Game from "@caviardeul/components/game";
@@ -15,17 +14,10 @@ const Home: NextPage<{
   userScore?: { nbAttempts: number; nbCorrect: number };
 }> = ({ encodedArticle, userScore }) => {
   const dailyArticle = encodedArticle ? decodeArticle(encodedArticle) : null;
-  return (
-    <>
-      <Head>
-        <title>Caviardeul - Déchiffrez l&apos;article Wikipédia du jour</title>
-      </Head>
-      {dailyArticle ? (
-        <Game article={dailyArticle} userScore={userScore} />
-      ) : (
-        <Error statusCode={500} title="Une erreur est survenue" />
-      )}
-    </>
+  return dailyArticle ? (
+    <Game article={dailyArticle} userScore={userScore} />
+  ) : (
+    <Error statusCode={500} title="Une erreur est survenue" />
   );
 };
 

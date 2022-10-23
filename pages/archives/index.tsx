@@ -149,6 +149,8 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>();
 
+  const title = "Caviardeul - Archives";
+
   const displayArticles = useMemo(
     () =>
       articles
@@ -301,7 +303,9 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
   return (
     <>
       <Head>
-        <title>Caviardeul - Archives</title>
+        <title>{title}</title>
+        <meta key="og:title" property="og:title" content={title} />
+        <meta key="twitter:title" name="twitter:title" content={title} />
       </Head>
       <main id="archives">
         <div className="left-container">

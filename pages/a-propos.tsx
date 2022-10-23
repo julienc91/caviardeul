@@ -5,10 +5,13 @@ import React from "react";
 import ExternalLink from "@caviardeul/components/externalLink";
 
 const AboutPage: React.FC = () => {
+  const title = "Caviardeul - À propos";
   return (
     <>
       <Head>
-        <title>Caviardeul - À propos</title>
+        <title>{title}</title>
+        <meta key="og:title" property="og:title" content={title} />
+        <meta key="twitter:title" name="twitter:title" content={title} />
       </Head>
       <main id="about">
         <div className="left-container">
@@ -24,7 +27,7 @@ const AboutPage: React.FC = () => {
             <ExternalLink href="https://twitter.com/jhntrnr">
               John Turner
             </ExternalLink>
-            , mais en Français.
+            , mais en français.
           </p>
           <p>
             Le but est de retrouver quotidiennement l&apos;article Wikipédia

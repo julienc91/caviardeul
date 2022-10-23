@@ -13,12 +13,13 @@ const ArchiveGame: NextPage<{
   encodedArticle: EncodedArticle;
 }> = ({ encodedArticle, ...props }) => {
   const article = decodeArticle(encodedArticle);
+  const title = `Caviardeul - Déchiffrez le Caviardeul n°${article.articleId}`;
   return (
     <>
       <Head>
-        <title>
-          Caviardeul - Déchiffrez le Caviardeul n°{article.articleId}
-        </title>
+        <title key="title">{title}</title>
+        <meta key="og:title" property="og:title" content={title} />
+        <meta key="twitter:title" name="twitter:title" content={title} />
       </Head>
       <Game article={article} {...props} />
     </>
