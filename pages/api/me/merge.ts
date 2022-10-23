@@ -5,6 +5,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import prismaClient from "@caviardeul/prisma";
 import { ErrorDetail } from "@caviardeul/types";
 import { applyCors, getUser } from "@caviardeul/utils/api";
+import { COOKIE_MAX_AGE } from "@caviardeul/utils/config";
 
 const handler = async (
   req: NextApiRequest,
@@ -66,7 +67,7 @@ const postHandler = async (
   /* Delete current user */
   await prismaClient.user.delete({ where: { id: user.id } });
 
-  setCookie("userId", targetUser.id, { res, req });
+  setCookie("userId", targetUser.id, { res, req, maxAge: COOKIE_MAX_AGE });
   res.status(204).end();
 };
 

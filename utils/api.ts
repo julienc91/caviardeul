@@ -5,6 +5,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import prismaClient from "@caviardeul/prisma";
+import { COOKIE_MAX_AGE } from "@caviardeul/utils/config";
 
 const cors = Cors();
 
@@ -46,7 +47,7 @@ export const getOrCreateUser = async (
   let user = await getUser(req, res);
   if (!user) {
     user = await prismaClient.user.create({ data: {} });
-    setCookie("userId", user.id, { req, res });
+    setCookie("userId", user.id, { req, res, maxAge: COOKIE_MAX_AGE });
   }
   return user;
 };
