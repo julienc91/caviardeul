@@ -24,6 +24,7 @@ const commonWords = new Set<string>([
   "גם",
   "וגם",
   "הוא",
+  "היא",
   "את",
   "זו",
   "אצל",

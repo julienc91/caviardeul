@@ -33,6 +33,10 @@ const elementsToRemove = [
   "sup.reference",
 ];
 const elementsToStripAfter = [
+  "h2 #ראו_גם",
+  "h2 #לקריאה_נוספת",
+  "h2 #קישורים_חיצוניים",
+  "h2 #הערות_שוליים",
   "h2 #Annexes",
   "h2 #Bibliographie",
   "h2 #Notes_et_références",
@@ -80,6 +84,6 @@ export const stripArticle = (rawContent: string): string => {
     element.replaceWith(element.innerHTML);
   });
 
-  content?.querySelector("#Voir_aussi")?.closest("h2")?.remove();
+  content?.querySelector("#ראו_גם")?.closest("h2")?.remove();
   return (content || "").toString();
 };
