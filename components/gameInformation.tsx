@@ -17,9 +17,7 @@ const GameInformation: React.FC<{
   const accuracy = Math.round(
     (userScore
       ? userScore.nbCorrect / Math.max(userScore.nbAttempts, 1)
-      : Math.round(
-          history.filter(([_, count]) => count > 0).length / nbTrials
-        )) * 100
+      : history.filter(([_, count]) => count > 0).length / nbTrials) * 100
   );
 
   const shareSentence = `J'ai déchiffré ${
