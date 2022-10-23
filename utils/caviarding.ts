@@ -38,9 +38,11 @@ const commonWords = new Set<string>([
 ]);
 
 const prefixList = "בהלמכשו";
-const punctuationList = "{}()\\[\\]\\\\.…,;:!¡?¿/@#%\\^&*_~+\\-=<>«»\"'’\\s";
+const nonHebrewCharacters = "[^א-ת]";
+const nonHebrewPhoneticApostropheCharacters = "[^גזצת]";
+const punctuationList = "{}()\\[\\]\\\\.…,;:!¡?¿/@#%\\^&*_~+\\-=<>«»\\s";
 const wordRegex = new RegExp(`^[^${punctuationList}]+$`, "i");
-const separatorRegex = new RegExp(`([${punctuationList}]+)`, "gim");
+const separatorRegex = new RegExp(`([${punctuationList}]|${nonHebrewCharacters}[\"]${nonHebrewCharacters}|${nonHebrewPhoneticApostropheCharacters}['’])`, "gim");
 
 export const splitWords = (
   text: string,
