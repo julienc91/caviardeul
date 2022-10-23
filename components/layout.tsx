@@ -21,7 +21,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <>
       <Head>
-        <title>רדקטעל - מחשק פענוח מאמר ויקיפדיה יומי</title>
+        <title>רדקטעל - משחק פענוח מאמר ויקיפדיה יומי</title>
         <meta
           name="description"
           content="כל יום, מאמר חדש בוויקיפדיה לפענוח"

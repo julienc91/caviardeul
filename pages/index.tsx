@@ -15,7 +15,7 @@ const Home: NextPage<{ encodedArticle: EncodedArticle | null }> = ({
   return (
     <>
       <Head>
-        <title>רדקטעל - מחשק פענוח מאמר ויקיפדיה יומי</title>
+        <title>רדקטעל - משחק פענוח מאמר ויקיפדיה יומי</title>
       </Head>
       {dailyArticle ? (
         <Game article={dailyArticle} />
