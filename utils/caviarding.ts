@@ -182,7 +182,9 @@ export const isSelected = (
   }
   if (withCloseAlternatives) {
     if (
-      buildAlternatives(selection).some((alternative) => alternative === word)
+      buildAlternatives(selection).some(
+        (alternative) => alternative === standardizedWord
+      )
     ) {
       return true;
     }
