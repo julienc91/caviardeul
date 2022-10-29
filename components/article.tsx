@@ -80,7 +80,7 @@ const ArticleContainer: React.FC<{
           ? content
           : splitWords(content, true).reduce((value, word) => {
               let currentValue;
-              if (!isCommonWord(word) && isWord(word)) {
+              if (!isCommonWord(word) && isWord(word) && word !== `"`) {
                 currentValue = `**${word}**`;
               } else {
                 currentValue = word;
