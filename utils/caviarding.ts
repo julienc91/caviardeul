@@ -39,15 +39,16 @@ const commonWords = new Set<string>([
 ]);
 
 const prefixList = "בהלמכשו";
-const punctuationList = "{}()\\[\\]\\\\.…,;:!¡?¿/@#%\\^&*_~+\\-=<>«»\"\\s";
-const wordRegex = new RegExp(`^[^${punctuationList}]+$`, "i");
-const separatorRegex = new RegExp(`([${punctuationList}]+)`, "gim");
+const punctuationListWithoutQuotes = "–{}()\\[\\]\\\\.…,;:!¡?¿/@#%\\^&*_~+\\-=<>«»\\s";
+const punctuationList = `${punctuationListWithoutQuotes}\"`;
+const wordRegex = new RegExp(`^[^${punctuationListWithoutQuotes}]+$`, "i");
+const separatorRegex = new RegExp(`([${punctuationListWithoutQuotes}]+|(?<![א-ת])\"(?![א-ת])|\"+$|^\"+|(?<=[א-ת])\"+(?=[${punctuationListWithoutQuotes}])|(?<=[${punctuationListWithoutQuotes}])\"|(?<=[${punctuationListWithoutQuotes}][הב])\"|(?<=^[הב])\")`, "gim");
 
 export const splitWords = (
   text: string,
   isMarkdown: boolean = false
 ): string[] => {
-  const splittedText = text.split(separatorRegex);
+  const splittedText = text.split(separatorRegex).filter(s => s?.length);
   const result = [];
 
   if (splittedText.length >= 3 && isMarkdown) {
