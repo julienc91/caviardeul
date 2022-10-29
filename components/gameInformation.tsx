@@ -47,7 +47,7 @@ const GameInformation: React.FC<{
         <p>
           Créez votre nouvelle{" "}
           <Link href="/custom/nouveau" prefetch={false}>
-            <a>partie personnalisée</a>
+            partie personnalisée
           </Link>
           &nbsp;
         </p>

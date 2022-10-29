@@ -24,8 +24,8 @@ const Navbar: React.FC<{
         <span className="line" />
       </button>
       <h1>
-        <Link href="/" prefetch={false}>
-          <a onClick={handleClick}>Caviardeul</a>
+        <Link href="/" prefetch={false} onClick={handleClick}>
+          Caviardeul
         </Link>
       </h1>
 
@@ -33,18 +33,18 @@ const Navbar: React.FC<{
         <div className="nav-link-background" onClick={handleClick} />
         <ul>
           <li className="left">
-            <Link href="/archives/" prefetch={false}>
-              <a onClick={handleClick}>Archives</a>
+            <Link href="/archives/" prefetch={false} onClick={handleClick}>
+              Archives
             </Link>
           </li>
           <li className="left">
-            <Link href="/custom/nouveau" prefetch={false}>
-              <a onClick={handleClick}>Partie personnalisée</a>
+            <Link href="/custom/nouveau" prefetch={false} onClick={handleClick}>
+              Partie personnalisée
             </Link>
           </li>
           <li className="left">
-            <Link href="/a-propos" prefetch={false}>
-              <a onClick={handleClick}>À propos</a>
+            <Link href="/a-propos" prefetch={false} onClick={handleClick}>
+              À propos
             </Link>
           </li>
           <li

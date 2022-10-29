@@ -1,4 +1,3 @@
-import Image from "next/image";
 import React, { ChangeEvent, useCallback, useState } from "react";
 import { FaArrowUp } from "react-icons/fa";
 
