@@ -38,11 +38,13 @@ const commonWords = new Set<string>([
   "ש",
 ]);
 
-const prefixList = "בהלמכשו";
+
 const punctuationListWithoutQuotes = "–{}()\\[\\]\\\\.…,;:!¡?¿/@#%\\^&*_~+\\-=<>«»\\s";
 const punctuationList = `${punctuationListWithoutQuotes}\"`;
 const wordRegex = new RegExp(`^[^${punctuationListWithoutQuotes}]+$`, "i");
 const separatorRegex = new RegExp(`([${punctuationListWithoutQuotes}]+|(?<![א-ת])\"(?![א-ת])|\"+$|^\"+|(?<=[א-ת])\"+(?=[${punctuationListWithoutQuotes}])|(?<=[${punctuationListWithoutQuotes}])\"|(?<=[${punctuationListWithoutQuotes}][הב])\"|(?<=^[הב])\")`, "gim");
+export const closeAlternativesSuffixes = ["ים", "ות"];
+export const closeAlternativesPrefixes = ["ב","ה","מ","כ","ש","ו","ל"];
 
 export const splitWords = (
   text: string,
@@ -93,29 +95,25 @@ export const countOccurrences = (
   text: string,
   standardizedText: string,
   word: string,
-  guessWithPrefix: boolean
-): { count :number, extra: { [word: string]: number } } => {
+  withCloseAlternatives: boolean
+): number => {
   if (isCommonWord(word)) {
     throw new Error(`Cannot count occurrences of common word: ${word}`);
   }
 
   const standardizedWord = standardizeText(word);
+  const allowedPrefixes = withCloseAlternatives
+    ? `(${closeAlternativesPrefixes.join("|")})?`
+    : "";
+  const allowedSuffixes = withCloseAlternatives
+    ? `(${closeAlternativesSuffixes.join("|")})?`
+    : "";    
   const regex = new RegExp(
-    `(?:[${punctuationList}]|^)([${prefixList}]{0,${guessWithPrefix ? 1 : 0}}${standardizedWord}){1}(?:[${punctuationList}]|$)`,
+    `\([${punctuationList}]|^)(${allowedPrefixes}${standardizedWord})${allowedSuffixes}([${punctuationList}]|$)`,
     "gim"
   );
   const matches = Array.from(standardizedText.matchAll(regex));
   let count = matches.length;
-
-  const extra: { [word: string]: number } = {};
-  for (const match of matches) {
-    const m = match[1];
-    if (m !== standardizedWord) {
-      const extraCount = extra[m] ?? 0;
-      count--;
-      extra[m] = extraCount + 1;
-    }    
-  }
 
   // Substract matches of the related common words, if they exist
   const relatedCommonWords = getRelatedCommonWords(standardizedWord);
@@ -128,7 +126,58 @@ export const countOccurrences = (
       return Array.from(text.matchAll(regex)).length;
     })
     .reduce((a, b) => a + b, 0);
-  return { count, extra };
+  return count;
+};
+
+/**
+ * Build a list of words that are considered close enough to the given word
+ * to be revealed simultaneously.
+ * @param standardizedWord
+ */
+export const buildAlternatives = (standardizedWord: string): string[] =>
+  [
+    ...closeAlternativesPrefixes.map((prefix) => `${prefix}${standardizedWord}`),
+    ...closeAlternativesSuffixes.map((suffix) => `${standardizedWord}${suffix}`),
+  ];
+
+/**
+ * Determine if a word (assumed not to be from the common word set) should be revealed
+ * or not.
+ * @param word
+ * @param revealedWords
+ */
+export const isRevealed = (
+  word: string,
+  revealedWords: Set<string>
+): boolean => {
+  return revealedWords.has(standardizeText(word));
+};
+
+/**
+ * Determine if a word is currently selected
+ * @param word
+ * @param selection
+ * @param withCloseAlternatives
+ */
+export const isSelected = (
+  word: string,
+  selection: string,
+  withCloseAlternatives: boolean
+): boolean => {
+  const standardizedWord = standardizeText(word);
+  if (standardizedWord === selection) {
+    return true;
+  }
+  if (withCloseAlternatives) {
+    if (
+      buildAlternatives(selection).some(
+        (alternative) => alternative === standardizedWord
+      )
+    ) {
+      return true;
+    }
+  }
+  return false;
 };
 
 const removeDiacritics = (word: string): string => {

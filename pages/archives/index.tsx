@@ -4,7 +4,12 @@ import Head from "next/head";
 import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import {
+  FaEye,
+  FaEyeSlash,
+  FaSortAmountDown,
+  FaSortAmountUp,
+} from "react-icons/fa";
 
 import ConfirmModal from "@caviardeul/components/confirmModal";
 import Modal from "@caviardeul/components/modal";
@@ -33,8 +38,9 @@ type SortType = "id" | "median" | "userScore";
 
 const SortSelection: React.FC<{
   sortBy: SortType;
+  sortOrder: boolean;
   onChange: (value: SortType) => void;
-}> = ({ sortBy, onChange }) => {
+}> = ({ sortBy, sortOrder, onChange }) => {
   return (
     <>
       <label>
@@ -50,7 +56,9 @@ const SortSelection: React.FC<{
           <option value="userScore">הניקוד שלי</option>
         </select>
       </label>
-      <button onClick={() => onChange(sortBy)}>↑↓</button>
+      <button onClick={() => onChange(sortBy)}>
+        {sortOrder ? <FaSortAmountDown /> : <FaSortAmountUp />}
+      </button>
     </>
   );
 };
@@ -104,23 +112,23 @@ const SynchronizationModal: React.FC<{
       </p>
 
       <p>
-       כדי להתחיל בסנכרון השתמשו בקישור הבא במכשיר השני:
-        <div className="button-input">
-          <button onClick={() => setReveal(!reveal)}>
-            {reveal ? <FaEyeSlash /> : <FaEye />}
-          </button>
-          <input value={url} type={reveal ? "text" : "password"} readOnly />
-        </div>
-       או סרקו את קוד ה-QR: <br />
-        <div className="qr-code">
-          {!reveal && (
-            <div className="mask" onClick={() => setReveal(true)}>
-              <FaEye />
-            </div>
-          )}
-          <QRCodeSVG value={url} />
-        </div>
+        כדי להתחיל בסנכרון השתמשו בקישור הבא במכשיר השני:
       </p>
+      <div className="button-input">
+        <button onClick={() => setReveal(!reveal)}>
+          {reveal ? <FaEyeSlash /> : <FaEye />}
+        </button>
+        <input value={url} type={reveal ? "text" : "password"} readOnly />
+      </div>
+      <p> או סרקו את קוד ה-QR:</p>
+      <div className="qr-code">
+        {!reveal && (
+          <div className="mask" onClick={() => setReveal(true)}>
+            <FaEye />
+          </div>
+        )}
+        <QRCodeSVG value={url} />
+      </div>
 
       <p>
         <strong>אזהרה:</strong> קישור וקוד זה ספציפיים 
@@ -139,6 +147,8 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
     useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>();
+
+  const title = "רדקטעל - ארכיון";
 
   const displayArticles = useMemo(
     () =>
@@ -292,7 +302,9 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
   return (
     <>
       <Head>
-        <title>רדקטעל - ארכיון</title>
+        <title>{title}</title>
+        <meta key="og:title" property="og:title" content={title} />
+        <meta key="twitter:title" name="twitter:title" content={title} />
       </Head>
       <main id="archives">
         <div className="left-container">
@@ -303,7 +315,11 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
               filterBy={filterBy}
               onChange={handleFilterByChanged}
             />
-            <SortSelection sortBy={sortBy} onChange={handleSortByChanged} />
+            <SortSelection
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+              onChange={handleSortByChanged}
+            />
           </div>
 
           <div className="archive-grid">{gamesContainer}</div>

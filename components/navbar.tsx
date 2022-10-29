@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import React, { useCallback, useState } from "react";
+import { FaGithub } from "react-icons/fa";
 
 import ExternalLink from "@caviardeul/components/externalLink";
 
@@ -24,8 +24,8 @@ const Navbar: React.FC<{
         <span className="line" />
       </button>
       <h1>
-        <Link href="/" prefetch={false}>
-          <a onClick={handleClick}>רדקטעל</a>
+        <Link href="/" prefetch={false} onClick={handleClick}>
+          רדקטעל 
         </Link>
       </h1>
 
@@ -33,18 +33,18 @@ const Navbar: React.FC<{
         <div className="nav-link-background" onClick={handleClick} />
         <ul>
           <li className="left">
-            <Link href="/archives/" prefetch={false}>
-              <a onClick={handleClick}>ארכיון</a>
+            <Link href="/archives/" prefetch={false} onClick={handleClick}>
+              ארכיון
             </Link>
           </li>
           <li className="left">
-            <Link href="/custom/nouveau" prefetch={false}>
-              <a onClick={handleClick}>מותאם אישית</a>
+            <Link href="/custom/nouveau" prefetch={false} onClick={handleClick}>
+              מותאם אישית
             </Link>
           </li>
           <li className="left">
-            <Link href="/a-propos" prefetch={false}>
-              <a onClick={handleClick}>אודות</a>
+            <Link href="/a-propos" prefetch={false} onClick={handleClick}>
+              אודות
             </Link>
           </li>
           <li
@@ -59,7 +59,7 @@ const Navbar: React.FC<{
           <li className="divider" />
           <li>
             <ExternalLink href="https://github.com/perkio/caviardeul">
-              <Image height={30} width={30} src="/github.png" alt="GitHub" />
+              <FaGithub />
             </ExternalLink>
           </li>
         </ul>

@@ -8,7 +8,8 @@ const SettingsModal: React.FC<{ open: boolean; onClose: () => void }> = ({
   onClose,
 }) => {
   const { settings, onChangeSettings } = useContext(SettingsContext);
-  const { lightMode, displayWordLength, guessWithPrefix } = settings ?? defaultSettings;
+  const { lightMode, displayWordLength, withCloseAlternatives } =
+    settings ?? defaultSettings;
 
   const handleToggleLightMode = useCallback(() => {
     onChangeSettings({ lightMode: !lightMode });
@@ -18,16 +19,16 @@ const SettingsModal: React.FC<{ open: boolean; onClose: () => void }> = ({
     onChangeSettings({ displayWordLength: !displayWordLength });
   }, [displayWordLength, onChangeSettings]);
 
-  const handleToggleGuessWithPrefixLength = useCallback(() => {
-    onChangeSettings({ guessWithPrefix: !guessWithPrefix });
-  }, [guessWithPrefix, onChangeSettings]);
+  const handleToggleWithCloseAlternatives = useCallback(() => {
+    onChangeSettings({ withCloseAlternatives: !withCloseAlternatives });
+  }, [withCloseAlternatives, onChangeSettings]);
 
   if (!open) {
     return null;
   }
 
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={onClose} className="settings-modal">
       <h1>אפשרויות</h1>
       <div>
         <label>
@@ -51,10 +52,10 @@ const SettingsModal: React.FC<{ open: boolean; onClose: () => void }> = ({
         <label>
           <input
             type="checkbox"
-            checked={guessWithPrefix}
-            onChange={handleToggleGuessWithPrefixLength}
+            checked={withCloseAlternatives}
+            onChange={handleToggleWithCloseAlternatives}
           />
-          נחש בתוספת אותיות השימוש (נסיוני)
+          נחש בתוספת אותיות השימוש וסיומת רבים <span className="beta">בטא</span> 
         </label>
       </div>
     </Modal>
