@@ -66,6 +66,10 @@ const postHandler = async (
 
   /* Delete current user */
   await prismaClient.user.delete({ where: { id: user.id } });
+  await prismaClient.user.update({
+    where: { id: targetUser.id },
+    data: { lastSeenAt: new Date() },
+  });
 
   setCookie("userId", targetUser.id, { res, req, maxAge: COOKIE_MAX_AGE });
   res.status(204).end();

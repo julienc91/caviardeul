@@ -5,7 +5,10 @@ import { IncomingMessage, ServerResponse } from "http";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import prismaClient from "@caviardeul/prisma";
-import { COOKIE_MAX_AGE } from "@caviardeul/utils/config";
+import {
+  COOKIE_MAX_AGE,
+  LAST_SEEN_AT_UPDATE_THRESHOLD,
+} from "@caviardeul/utils/config";
 
 const cors = Cors();
 
@@ -35,6 +38,17 @@ export const getUser = async (
     user = await prismaClient.user.findUnique({ where: { id: userId } });
     if (!user) {
       deleteCookie("userId", { req, res });
+    } else {
+      const lastSeenAtThreshold = new Date();
+      lastSeenAtThreshold.setSeconds(
+        lastSeenAtThreshold.getSeconds() - LAST_SEEN_AT_UPDATE_THRESHOLD
+      );
+      if (user.lastSeenAt < lastSeenAtThreshold) {
+        await prismaClient.user.updateMany({
+          where: { id: user.id, lastSeenAt: { lt: lastSeenAtThreshold } },
+          data: { lastSeenAt: new Date() },
+        });
+      }
     }
   }
   return user;

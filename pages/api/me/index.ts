@@ -61,10 +61,6 @@ const getHandler = async (
     res.status(401);
     res.json({ error: "Unauthenticated" });
   } else {
-    await prismaClient.user.update({
-      where: { id: user.id },
-      data: { lastSeenAt: new Date() },
-    });
     res.status(200);
     res.json({ id: user.id });
   }
