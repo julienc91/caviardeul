@@ -5,10 +5,13 @@ import React from "react";
 import ExternalLink from "@caviardeul/components/externalLink";
 
 const AboutPage: React.FC = () => {
+  const title = "רדקטעל - אודות";
   return (
     <>
       <Head>
-        <title>רדקטעל - אודות</title>
+        <title>{title}</title>
+        <meta key="og:title" property="og:title" content={title} />
+        <meta key="twitter:title" name="twitter:title" content={title} />
       </Head>
       <main id="about">
         <div className="left-container">

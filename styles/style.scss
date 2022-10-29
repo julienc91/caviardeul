@@ -41,9 +41,11 @@ $breakpoint: 800px;
 
 // mixins
 @mixin media-max($_max-width) {
-    @media screen and (max-width: $_max-width) {
-        &{ @content; }
+  @media screen and (max-width: $_max-width) {
+    & {
+      @content;
     }
+  }
 }
 
 // webkit scrollbar style
@@ -202,6 +204,11 @@ nav {
         }
       }
     }
+
+    svg {
+      height: 32px;
+      width: 32px;
+    }
   }
 }
 
@@ -228,8 +235,12 @@ nav {
   }
 
   @keyframes modal-animation {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   .modal {
@@ -256,6 +267,18 @@ nav {
       flex-flow: row-reverse wrap;
       justify-content: space-between;
     }
+  }
+}
+
+// settings modal
+.modal.settings-modal {
+  .beta {
+    color: $light4;
+    background-color: $lightBlue;
+    border-radius: 4px;
+    display: inline-block;
+    font-size: 0.8rem;
+    padding: 0 6px;
   }
 }
 
@@ -291,7 +314,8 @@ button {
   align-items: center;
   margin: 20px auto;
 
-  button, input {
+  button,
+  input {
     height: 30px;
     margin: 0;
   }
@@ -300,6 +324,46 @@ button {
     align-items: center;
     display: flex;
     padding: 0 15px;
+  }
+}
+
+.loader {
+  align-items: center;
+  display: flex;
+  height: calc(100vh - #{$navbarHeight + $footerHeight + $guessInputHeight});
+  justify-content: center;
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    margin: 100px auto;
+    background-color: var(--color-text);
+
+    border-radius: 100%;
+    animation: animation 1s infinite ease-in-out;
+  }
+
+  @keyframes animation {
+    0% {
+      transform: scale(0);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 0;
+    }
+  }
+}
+
+.share-action {
+  .actions {
+    margin-left: 15px;
+  }
+  button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    padding: 5px 10px;
   }
 }
 
@@ -352,33 +416,6 @@ main {
 
 // game
 #game {
-  .loader {
-    align-items: center;
-    display: flex;
-    height: calc(100vh - #{$navbarHeight + $footerHeight + $guessInputHeight});
-    justify-content: center;
-
-    .spinner {
-      width: 40px;
-      height: 40px;
-      margin: 100px auto;
-      background-color: var(--color-text);
-
-      border-radius: 100%;
-      animation: animation 1.0s infinite ease-in-out;
-    }
-
-    @keyframes animation {
-      0% {
-        transform: scale(0);
-      }
-      100% {
-        transform: scale(1.0);
-        opacity: 0;
-      }
-    }
-  }
-
   .banner {
     background-color: $dark1;
     color: $light4;
@@ -457,18 +494,22 @@ main {
           transition: opacity 0.2s ease-in-out;
           width: 100%;
         }
-        &:active::after, &:focus::after, &:focus-within::after {
+        &:active::after,
+        &:focus::after,
+        &:focus-within::after {
           opacity: 1;
         }
       }
     }
   }
 
-  .right-container, .left-container {
+  .right-container,
+  .left-container {
     padding: 0;
   }
 
-  .guess-history, .game-information {
+  .guess-history,
+  .game-information {
     color: $light3;
     max-height: 100%;
     width: 100%;
@@ -493,7 +534,8 @@ main {
       tbody tr {
         border-bottom: 1px solid $grey1;
 
-        &:hover, &.selected {
+        &:hover,
+        &.selected {
           background-color: $grey1;
           &.clickable {
             cursor: pointer;
@@ -502,7 +544,8 @@ main {
         }
       }
 
-      td, th {
+      td,
+      th {
         padding: 10px;
       }
     }
@@ -599,11 +642,12 @@ main {
       border: 1px solid $light3;
       color: $dark1;
       height: 41px;
-      padding:  10px;
+      padding: 10px;
     }
   }
 
-  input[type="submit"], input[type="button"] {
+  input[type="submit"],
+  input[type="button"] {
     background-color: $dark2;
     border: 1px solid $light3;
     color: $light4;
@@ -693,7 +737,6 @@ main {
       }
 
       .article-difficulty {
-        height: 100%;
         width: 10px;
         display: flex;
         flex-flow: column;

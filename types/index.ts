@@ -1,6 +1,6 @@
 import { ArticleSafety } from "@prisma/client";
 
-export type Error = {
+export type ErrorDetail = {
   error: string;
   debug?: string;
 };
@@ -68,7 +68,7 @@ export type ArticleStats = {
 export type Settings = {
   lightMode: boolean;
   displayWordLength: boolean;
-  guessWithPrefix: boolean;
+  withCloseAlternatives: boolean;
 };
 
 export type SettingsState = {

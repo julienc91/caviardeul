@@ -3,12 +3,13 @@ import { setCookie } from "cookies-next";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import prismaClient from "@caviardeul/prisma";
-import { Error } from "@caviardeul/types";
+import { ErrorDetail } from "@caviardeul/types";
 import { applyCors, getUser } from "@caviardeul/utils/api";
+import { COOKIE_MAX_AGE } from "@caviardeul/utils/config";
 
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<{} | Error>
+  res: NextApiResponse<{} | ErrorDetail>
 ) => {
   await applyCors(req, res);
   const { method } = req;
@@ -35,7 +36,7 @@ const handler = async (
  */
 const postHandler = async (
   req: NextApiRequest,
-  res: NextApiResponse<{} | Error>,
+  res: NextApiResponse<{} | ErrorDetail>,
   user: User
 ) => {
   const targetUserId = req.body.userId;
@@ -65,8 +66,12 @@ const postHandler = async (
 
   /* Delete current user */
   await prismaClient.user.delete({ where: { id: user.id } });
+  await prismaClient.user.update({
+    where: { id: targetUser.id },
+    data: { lastSeenAt: new Date() },
+  });
 
-  setCookie("userId", targetUser.id, { res, req });
+  setCookie("userId", targetUser.id, { res, req, maxAge: COOKIE_MAX_AGE });
   res.status(204).end();
 };
 

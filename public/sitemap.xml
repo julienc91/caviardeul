@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://caviardeul.fr/</loc>
+        <loc>https://redactle.vercel.app/</loc>
     </url>
     <url>
-        <loc>https://caviardeul.fr/archives</loc>
+        <loc>https://redactle.vercel.app/archives</loc>
     </url>
     <url>
-        <loc>https://caviardeul.fr/a-propos</loc>
+        <loc>https://redactle.vercel.app/a-propos</loc>
     </url>
     <url>
-        <loc>https://caviardeul.fr/custom/nouveau</loc>
+        <loc>https://redactle.vercel.app/custom/nouveau</loc>
         <lastmod>2022-08-18T18:16:26+00:00</lastmod>
     </url>
 </urlset>

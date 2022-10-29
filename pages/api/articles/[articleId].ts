@@ -1,14 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import prismaClient from "@caviardeul/prisma";
-import { EncodedArticle, Error } from "@caviardeul/types";
+import { EncodedArticle, ErrorDetail } from "@caviardeul/types";
 import { applyCors } from "@caviardeul/utils/api";
 import { getArticleContent } from "@caviardeul/utils/article";
 import { encode, generateKey } from "@caviardeul/utils/encryption";
 
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<EncodedArticle | Error>
+  res: NextApiResponse<EncodedArticle | ErrorDetail>
 ) => {
   await applyCors(req, res);
   const { method } = req;

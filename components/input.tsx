@@ -1,7 +1,6 @@
-import Image from "next/image";
 import React, { ChangeEvent, useCallback, useState } from "react";
+import { FaArrowUp } from "react-icons/fa";
 
-import { ArrowUp } from "@caviardeul/assets/inlineImages";
 import { isWord, splitWords } from "@caviardeul/utils/caviarding";
 
 const Input: React.FC<{
@@ -50,7 +49,7 @@ const Input: React.FC<{
         onClick={handleScrollTop}
         title="חזרה למעלה"
       >
-        <Image src={ArrowUp} width={25} height={25} alt="Arrow Up" />
+        <FaArrowUp />
       </div>
       <input
         type="text"

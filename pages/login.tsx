@@ -3,8 +3,9 @@ import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 
+import Loader from "@caviardeul/components/loader";
 import { getUser } from "@caviardeul/utils/api";
-import { BASE_URL } from "@caviardeul/utils/config";
+import { BASE_URL, COOKIE_MAX_AGE } from "@caviardeul/utils/config";
 
 const LoginPage: React.FC = () => {
   const router = useRouter();
@@ -13,7 +14,7 @@ const LoginPage: React.FC = () => {
     router.push("/");
   }, [router]);
 
-  return <>Chargement...</>;
+  return <Loader />;
 };
 
 export const getServerSideProps: GetServerSideProps = async ({
@@ -33,7 +34,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       },
     });
   }
-  setCookie("userId", targetUserId, { req, res });
+  setCookie("userId", targetUserId, { req, res, maxAge: COOKIE_MAX_AGE });
   return { props: {} };
 };
 

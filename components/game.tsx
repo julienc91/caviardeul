@@ -15,31 +15,36 @@ import Input from "@caviardeul/components/input";
 import Loader from "@caviardeul/components/loader";
 import { Article, History } from "@caviardeul/types";
 import {
+  buildAlternatives,
   countOccurrences,
   isCommonWord,
   isWord,
   splitWords,
   standardizeText,
 } from "@caviardeul/utils/caviarding";
-import { GameContext } from "@caviardeul/utils/game";
+import { GameContext, getSelectedWord } from "@caviardeul/utils/game";
 import SaveManagement from "@caviardeul/utils/save";
+import { SettingsContext, defaultSettings } from "@caviardeul/utils/settings";
 import { UserContext } from "@caviardeul/utils/user";
-import { SettingsContext } from "@caviardeul/utils/settings";
 
 const Game: React.FC<{
   article: Article;
-}> = ({ article }) => {
+  userScore?: { nbAttempts: number; nbCorrect: number };
+}> = ({ article, userScore }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [revealedWords, setRevealedWords] = useState<Set<string>>(new Set());
   const [selection, setSelection] = useState<[string, number] | null>(null);
   const [history, setHistory] = useState<History>([]);
-  const [isOver, setIsOver] = useState(false);
+  const [isOver, setIsOver] = useState(!!userScore);
   const [saveLoaded, setSaveLoaded] = useState(false);
   const loading = isLoading || !saveLoaded;
 
   const { articleId, archive, custom, pageName, content } = article;
   const { settings } = useContext(SettingsContext);  
   const { saveScore } = useContext(UserContext);
+
+  const withCloseAlternatives =
+    settings?.withCloseAlternatives ?? defaultSettings.withCloseAlternatives;
 
   const titleWords = useMemo(() => {
     return splitWords(pageName).filter(isWord).map(standardizeText);
@@ -57,18 +62,21 @@ const Game: React.FC<{
     (word: string | null) => {
       if (!word || !word.length) {
         setSelection(null);
-      } else if (!selection) {
-        setSelection([word, 0]);
       } else {
-        const [selectedWord, index] = selection;
-        if (selectedWord !== word) {
+        word = getSelectedWord(word, history, withCloseAlternatives);
+        if (!selection) {
           setSelection([word, 0]);
         } else {
-          setSelection([word, index + 1]);
+          const [selectedWord, index] = selection;
+          if (selectedWord !== word) {
+            setSelection([word, 0]);
+          } else {
+            setSelection([word, index + 1]);
+          }
         }
       }
     },
-    [selection]
+    [selection, history, withCloseAlternatives]
   );
 
   const handleReveal = useCallback(
@@ -95,21 +103,24 @@ const Game: React.FC<{
         return;
       }
 
-      const { count: nbOccurrences, extra } = countOccurrences(
+      const nbOccurrences = countOccurrences(
         content,
         standardizedArticle,
         word,
-        settings?.guessWithPrefix ?? false,
+        withCloseAlternatives
       );
 
       const newRevealedWords = revealedWords.add(standardizedWord);
-      Object.keys(extra).forEach((word) => newRevealedWords.add(word));
-
+      if (withCloseAlternatives) {
+        buildAlternatives(standardizedWord).forEach((alternative) =>
+          newRevealedWords.add(alternative)
+        );
+      }
       setRevealedWords(new Set(newRevealedWords));
       setHistory((prev) => [
         ...prev,
         [standardizedWord, nbOccurrences],
-        ...Object.entries(extra).map<[ string, number ]>((e) => ([ e[0], e[1] ])) ]);
+      ]);
     },
     [
       revealedWords,
@@ -118,7 +129,7 @@ const Game: React.FC<{
       handleChangeSelection,
       content,
       standardizedArticle,
-      settings,
+      withCloseAlternatives,
     ]
   );
 
@@ -162,11 +173,40 @@ const Game: React.FC<{
       custom
     );
     if (savedHistory) {
-      setHistory(savedHistory);
-      setRevealedWords(new Set(savedHistory.map(([word]) => word)));
+      setHistory(
+        savedHistory.map(([word]) => [
+          word,
+          countOccurrences(
+            content,
+            standardizedArticle,
+            word,
+            withCloseAlternatives
+          ),
+        ])
+      );
+      setRevealedWords(
+        new Set(
+          savedHistory
+            .map(([word]) => {
+              const res = [word];
+              if (withCloseAlternatives) {
+                res.push(...buildAlternatives(word));
+              }
+              return res;
+            })
+            .flat()
+        )
+      );
     }
     setSaveLoaded(true);
-  }, [archive, custom, articleId]);
+  }, [
+    archive,
+    content,
+    standardizedArticle,
+    custom,
+    articleId,
+    withCloseAlternatives,
+  ]);
 
   // Save progress and history
   useEffect((): void => {
@@ -211,6 +251,7 @@ const Game: React.FC<{
               custom={custom}
               history={history}
               pageName={pageName}
+              userScore={userScore}
             />
           )}
           {!loading && (

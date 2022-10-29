@@ -2,13 +2,13 @@ import { DailyArticleScore } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import prismaClient from "@caviardeul/prisma";
-import { ArticleInfo, Error } from "@caviardeul/types";
+import { ArticleInfo, ErrorDetail } from "@caviardeul/types";
 import { applyCors, getUser } from "@caviardeul/utils/api";
 import { getArticleInfoStats } from "@caviardeul/utils/stats";
 
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<ArticleInfo[] | Error>
+  res: NextApiResponse<ArticleInfo[] | ErrorDetail>
 ) => {
   await applyCors(req, res);
   const { method } = req;

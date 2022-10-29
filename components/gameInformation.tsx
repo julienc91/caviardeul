@@ -2,8 +2,8 @@ import Link from "next/link";
 import React from "react";
 
 import ExternalLink from "@caviardeul/components/externalLink";
+import ShareAction from "@caviardeul/components/shareAction";
 import { ArticleId, History } from "@caviardeul/types";
-import { BASE_URL } from "@caviardeul/utils/config";
 
 const GameInformation: React.FC<{
   articleId: ArticleId;
@@ -11,50 +11,43 @@ const GameInformation: React.FC<{
   custom: boolean;
   history: History;
   pageName: string;
-}> = ({ articleId, archive, custom, history, pageName }) => {
-  const nbTrials = history.length;
+  userScore?: { nbAttempts: number; nbCorrect: number };
+}> = ({ articleId, archive, custom, history, pageName, userScore }) => {
+  const nbTrials = userScore?.nbAttempts ?? history.length;
   const accuracy = Math.round(
-    (history.filter(([_, count]) => count > 0).length / nbTrials) * 100
+    (userScore
+      ? userScore.nbCorrect / Math.max(userScore.nbAttempts, 1)
+      : history.filter(([_, count]) => count > 0).length / nbTrials) * 100
   );
-
-  const shareSentence = `פענחתי  ${
-    custom ? "רדקטעל" : `את הרדקטעל מספר ${articleId}`
-  } ב-${nbTrials} ${nbTrials > 1 ? "ניחושים" : "ניחוש יחיד"}!`;
-  let shareUrl = `${BASE_URL}/`;
-  if (archive) {
-    shareUrl += `archives/${articleId}`;
-  } else if (custom) {
-    shareUrl += `custom/${articleId}`;
-  }
-  const shareLink = `https://twitter.com/share?text=${encodeURIComponent(
-    shareSentence
-  )}&url=${encodeURIComponent(shareUrl)}&hashtags=רדקטעל`;
 
   return (
     <div className="game-information">
       <h2>כל הכבוד!</h2>
       <p>
         פענחת את{" "}
-        {archive || custom ? "המאמר" : "הרדקטעל היומי"} ב{"-"}
-        {nbTrials} {nbTrials > 1 ? "ניחושים" : "ניחוש יחיד"} עם רמת דיוק של {" "}
+        {archive || custom ? "המאמר" : "הרדקטעל היומי"} {" "}
+        {nbTrials !== 1 ? `ב-${nbTrials} ניחושים` : "בניחוש יחיד! "} עם רמת דיוק של {" "}
         {accuracy}%.
       </p>
-      <ul>
-        <li>
-          לדף המקורי{" "}
-          <ExternalLink href={`https://he.wikipedia.org/wiki/${pageName}`}>
-            בויקיפדיה
-          </ExternalLink>
-        </li>
-        <li>
-          שתף <ExternalLink href={shareLink}>ב-Twitter</ExternalLink>
-        </li>
-      </ul>
+      <p>
+        לדף המקורי{" "}
+        <ExternalLink href={`https://he.wikipedia.org/wiki/${pageName}`}>
+          בויקיפדיה
+        </ExternalLink>
+      </p>
+
+      <ShareAction
+        articleId={articleId}
+        custom={custom}
+        archive={archive}
+        nbTrials={nbTrials}
+      />
+
       {custom && (
         <p>
           צור{" "}
           <Link href="/custom/nouveau" prefetch={false}>
-            <a>משחק מותאם אישית</a>
+            משחק מותאם אישית
           </Link>
           &nbsp;
         </p>

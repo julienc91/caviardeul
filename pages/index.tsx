@@ -1,38 +1,55 @@
 import type { GetServerSideProps, NextPage } from "next";
 import Error from "next/error";
-import Head from "next/head";
 import React from "react";
 
 import Game from "@caviardeul/components/game";
 import { getEncodedArticle } from "@caviardeul/hooks/article";
+import prismaClient from "@caviardeul/prisma";
 import { EncodedArticle } from "@caviardeul/types";
+import { getUser } from "@caviardeul/utils/api";
 import { decodeArticle } from "@caviardeul/utils/encryption";
 
-const Home: NextPage<{ encodedArticle: EncodedArticle | null }> = ({
-  encodedArticle,
-}) => {
+const Home: NextPage<{
+  encodedArticle: EncodedArticle | null;
+  userScore?: { nbAttempts: number; nbCorrect: number };
+}> = ({ encodedArticle, userScore }) => {
   const dailyArticle = encodedArticle ? decodeArticle(encodedArticle) : null;
-  return (
-    <>
-      <Head>
-        <title>רדקטעל - משחק פענוח מאמר ויקיפדיה יומי</title>
-      </Head>
-      {dailyArticle ? (
-        <Game article={dailyArticle} />
-      ) : (
-        <Error statusCode={500} title="קרתה שגיאה" />
-      )}
-    </>
+
+  return dailyArticle ? (
+    <Game article={dailyArticle} userScore={userScore} />
+  ) : (
+    <Error statusCode={500} title="קרתה שגיאה" />
   );
 };
 
 export default Home;
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  let encodedArticle;
   try {
-    const encodedArticle = await getEncodedArticle();
-    return { props: { encodedArticle } };
+    encodedArticle = await getEncodedArticle();
   } catch (error) {
     return { props: { encodedArticle: null } };
   }
+
+  const user = await getUser(req, res);
+  let userScore;
+
+  if (user) {
+    userScore = await prismaClient.dailyArticleScore.findFirst({
+      where: {
+        userId: user.id,
+        dailyArticleId: encodedArticle.articleId as number,
+      },
+    });
+  }
+
+  return {
+    props: {
+      encodedArticle,
+      userScore: userScore
+        ? { nbAttempts: userScore.nbAttempts, nbCorrect: userScore.nbCorrect }
+        : null,
+    },
+  };
 };
