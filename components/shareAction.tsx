@@ -1,5 +1,11 @@
 import React, { useCallback, useMemo } from "react";
-import { FaFacebook, FaShareAlt, FaTwitter } from "react-icons/fa";
+import {
+  FaFacebookF,
+  FaShareAlt,
+  FaTelegramPlane,
+  FaTwitter,
+  FaWhatsapp,
+} from "react-icons/fa";
 
 import { ArticleId } from "@caviardeul/types";
 import { BASE_URL } from "@caviardeul/utils/config";
@@ -44,10 +50,27 @@ const ShareAction: React.FC<{
 
   const handleFacebookShare = useCallback(() => {
     window.open(
-      `http://www.facebook.com/sharer.php?u=${encodeURIComponent(
+      `https://www.facebook.com/sharer.php?u=${encodeURIComponent(
         shareUrl
-      )}&t=${encodeURIComponent(shareTitle)}`,
+      )}&quote=${encodeURIComponent(shareTitle)}`,
       "_blank"
+    );
+  }, [shareUrl, shareTitle]);
+
+  const handleWhatsAppShare = useCallback(() => {
+    window.open(
+      `http://api.whatsapp.com/send?text=${encodeURIComponent(
+        `${shareTitle} ${shareUrl}`
+      )}`,
+      "_blank"
+    );
+  }, [shareUrl, shareTitle]);
+
+  const handleTelegramShare = useCallback(() => {
+    window.open(
+      `https://t.me/share/url?url=${encodeURIComponent(
+        shareUrl
+      )}&text=${encodeURIComponent(shareTitle)}`
     );
   }, [shareUrl, shareTitle]);
 
@@ -65,7 +88,13 @@ const ShareAction: React.FC<{
               <FaTwitter onClick={handleTwitterShare} />
             </button>
             <button>
-              <FaFacebook onClick={handleFacebookShare} />
+              <FaFacebookF onClick={handleFacebookShare} />
+            </button>
+            <button>
+              <FaWhatsapp onClick={handleWhatsAppShare} />
+            </button>
+            <button>
+              <FaTelegramPlane onClick={handleTelegramShare} />
             </button>
           </>
         )}
