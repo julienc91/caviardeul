@@ -72,6 +72,10 @@ const AboutPage: React.FC = () => {
               <Link href="/archives">Archives</Link>
             </li>
           </ul>
+          <p>
+            L&apos;ensemble de ces informations est supprimé après 6 mois
+            d&apos;inactivité.
+          </p>
           <h2>Contact</h2>
           <p>
             Un bug à signaler ou une suggestion à faire&nbsp;? Utilisez{" "}

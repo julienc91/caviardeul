@@ -7,6 +7,7 @@ export const BASE_URL =
 export const DEPRECATED_DOMAIN =
   process.env.NEXT_PUBLIC_DEPRECATED_DOMAIN || "caviardeul.julienc.io";
 
-export const COOKIE_MAX_AGE = 60 * 60 * 24 * 366;
+export const COOKIE_MAX_AGE = 60 * 60 * 24 * 366; // 1 year in seconds
 
-export const LAST_SEEN_AT_UPDATE_THRESHOLD = 3600;
+export const LAST_SEEN_AT_UPDATE_THRESHOLD = 60 * 60; // 1h in seconds
+export const ADMIN_CLEANUP_LAST_SEEN_AT_THRESHOLD = 60 * 60 * 24 * 180; // 6 months in seconds

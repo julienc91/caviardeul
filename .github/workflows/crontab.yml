@@ -1,0 +1,11 @@
+name: Crontab
+on:
+  schedule:
+    - cron: '0 0 * * *'
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call admin API endpoint
+        run: |
+          curl -X POST -H "Authorization: Bearer ${{ env.ADMIN_TOKEN }}" https://caviardeul.fr/api/admin/cleaner

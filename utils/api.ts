@@ -23,6 +23,34 @@ export const applyCors = (req: NextApiRequest, res: NextApiResponse) => {
   });
 };
 
+export const authenticateAdmin = (
+  req: NextApiRequest,
+  res: NextApiResponse
+): boolean => {
+  if (!process.env.ADMIN_TOKEN) {
+    throw new Error("ADMIN_TOKEN isn't set");
+  }
+
+  const authenticationHeader = req.headers.authorization;
+  if (!authenticationHeader) {
+    res.status(401).json({ error: "Missing authorization header" });
+    return false;
+  }
+
+  const prefix = "Bearer ";
+  if (!authenticationHeader.startsWith(prefix)) {
+    res.status(401).json({ error: "Invalid authorization header" });
+    return false;
+  }
+
+  const token = authenticationHeader.slice(prefix.length);
+  if (token !== process.env.ADMIN_TOKEN) {
+    res.status(403).json({ error: "Invalid admin token" });
+    return false;
+  }
+  return true;
+};
+
 type ServerRequest = IncomingMessage & {
   cookies?: { [key: string]: string } | Partial<{ [key: string]: string }>;
 };
