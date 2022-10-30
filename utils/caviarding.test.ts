@@ -10,9 +10,10 @@ describe("caviarding", () => {
   })
 
   test("countOccurrences should support hebrew single quote", () => {
-    const text =  "בדיקה ג'ירף חתול ג'ירף גירף";
+    const text =  "בדיקה ג'ירף חתול ג'ירף גירף וג'ירף";
     const standardizedText = standardizeText(text);
-    expect(countOccurrences(text, standardizedText, "ג'ירף", false)).toEqual({ count: 2, extra: {} })
+    expect(countOccurrences(text, standardizedText, "ג'ירף", false)).toEqual(2)
+    expect(countOccurrences(text, standardizedText, "ג'ירף", true)).toEqual(3)
   })
 
   test("splitWords should support hebrew words", () => {
