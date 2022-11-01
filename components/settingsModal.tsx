@@ -55,7 +55,7 @@ const SettingsModal: React.FC<{ open: boolean; onClose: () => void }> = ({
             checked={withCloseAlternatives}
             onChange={handleToggleWithCloseAlternatives}
           />
-          <span className="beta">Beta</span> Révéler les mots proches
+          Révéler les mots proches
         </label>
       </div>
     </Modal>

@@ -6,7 +6,7 @@ import SaveManagement from "@caviardeul/utils/save";
 export const defaultSettings: Settings = {
   lightMode: false,
   displayWordLength: true,
-  withCloseAlternatives: false,
+  withCloseAlternatives: true,
 };
 
 export const getInitialSettings = (): Settings => {
