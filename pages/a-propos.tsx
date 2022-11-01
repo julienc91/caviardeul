@@ -43,6 +43,21 @@ const AboutPage: React.FC = () => {
             <ExternalLink href="https://vercel.com/">Vercel</ExternalLink>.
           </p>
 
+          <p>
+            מבוסס על הגרסה הצרפתית{" "}
+            <ExternalLink href="https://caviardeul.fr">
+             Caviardeul
+            </ExternalLink>
+            .
+          </p>
+          <p>
+            פותח במקור ע&quot;י {" "}
+            <ExternalLink href="https://julienc.io">
+              Julien Chaumont
+            </ExternalLink>
+            .
+          </p>
+
           <h2>מידע אישי</h2>
           <p>
             רדקטעל אינו משתמש או מבקש נתונים אישיים כלשהם.
@@ -70,19 +85,6 @@ const AboutPage: React.FC = () => {
             לדיווח על באגים או הצעות פנו ל{"-"}
             <ExternalLink href="https://github.com/perkio/caviardeul/issues">
               <i>בעיות</i> ב-GitHub
-            </ExternalLink>
-            .
-          </p>
-          <p>
-            מבוסס על הגרסה הצרפתית{" "}
-            <ExternalLink href="https://caviardeul.fr">
-             Caviardeul
-            </ExternalLink>
-          </p>
-          <p>
-            פותח במקור ע&quot;י {" "}
-            <ExternalLink href="https://julienc.io">
-              Julien Chaumont
             </ExternalLink>
             .
           </p>
