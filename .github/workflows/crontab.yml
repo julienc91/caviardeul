@@ -7,5 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Call admin API endpoint
+        env:
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
         run: |
-          curl -X POST -H "Authorization: Bearer ${{ env.ADMIN_TOKEN }}" https://caviardeul.fr/api/admin/cleaner
+          curl -X POST -H "Authorization: Bearer $ADMIN_TOKEN" https://caviardeul.fr/api/admin/cleaner
