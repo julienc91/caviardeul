@@ -36,6 +36,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <title>{title}</title>
         <meta key="description" name="description" content={description} />
         <meta name="author" content="@xperki" />
+        <meta name="google-site-verification" content="DFEgMiHtc0UMOIVRTNO1OFFWleYhaCzE63lYlQ1ITIY" />
 
         <meta key="og:title" property="og:title" content={title} />
         <meta property="og:site_name" content="רדקטעל" />
