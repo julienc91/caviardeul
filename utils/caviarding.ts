@@ -42,7 +42,7 @@ const commonWords = new Set<string>([
 const punctuationListWithoutQuotes = "–{}()\\[\\]\\\\.…,;:!¡?¿/@#%\\^&*_~+\\-=<>«»\\s";
 const punctuationList = `${punctuationListWithoutQuotes}\"`;
 const wordRegex = new RegExp(`^[^${punctuationListWithoutQuotes}]+$`, "i");
-const separatorRegex = new RegExp(`([${punctuationListWithoutQuotes}]+|(?<![א-ת])\"(?![א-ת])|\"+$|^\"+|(?<=[א-ת])\"+(?=[${punctuationListWithoutQuotes}])|(?<=[${punctuationListWithoutQuotes}])\"|(?<=[${punctuationListWithoutQuotes}][הב])\"|(?<=^[הב])\")`, "gim");
+const separatorRegex = new RegExp(`([${punctuationListWithoutQuotes}]+|(?<![א-ת])\"(?![א-ת])|\"+$|^\"+|(?<=[א-ת])\"+(?=[${punctuationListWithoutQuotes}])|(?<=[${punctuationListWithoutQuotes}])\"|(?<=[${punctuationListWithoutQuotes}][כלבומשה])\"(?=[א-ת]{2})|(?<=^[כלבומשה])\"(?=[א-ת]{2}))`, "gim");
 export const closeAlternativesSuffixes = ["ים", "ות"];
 export const closeAlternativesPrefixes = ["ב","ה","מ","כ","ש","ו","ל"];
 

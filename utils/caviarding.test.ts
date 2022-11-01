@@ -26,6 +26,7 @@ describe("caviarding", () => {
     expect(splitWords(`"באמצע ה"דקר" מילה".`)).toEqual([`"`, "באמצע", ` `, `ה`, `"`, `דקר`,  `"`, ` `, `מילה`, `"`, "."]);
     expect(splitWords(`ב"ביצה הלבנונית"`)).toEqual(["ב", `"`, "ביצה", ` `, `הלבנונית`, `"`]);
     expect(splitWords(`ה"ביצה הלבנונית"`)).toEqual(["ה", `"`, "ביצה", ` `, `הלבנונית`, `"`]);
+    expect(splitWords(`ה"ידוע" ל"לא ידוע"`)).toEqual(["ה", `"`, "ידוע", `"`, ` `, 'ל', `"`, "לא", " ", "ידוע", `"`]);
   })
 
   test("splitWords should support hebrew double quote initials", () => {
