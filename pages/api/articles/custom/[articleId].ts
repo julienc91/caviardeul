@@ -48,7 +48,7 @@ const handler = async (
     }
   }
 
-  const result = await getArticleContent(pageId);
+  const result = await getArticleContent(pageId, customArticle?.pageName);
   if (result === null) {
     res.status(404).json({ error: "L'article n'a pas été trouvé" });
     return;

@@ -33,7 +33,10 @@ const handler = async (
   });
 
   const nextArticleCountdown = getNextArticleCountdown();
-  const result = await getArticleContent(dailyArticle.pageId);
+  const result = await getArticleContent(
+    dailyArticle.pageId,
+    dailyArticle.pageName
+  );
   if (result === null) {
     res.status(503).json({ error: "L'article n'a pas été trouvé" });
     return;

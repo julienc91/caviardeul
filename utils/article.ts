@@ -12,7 +12,8 @@ export const getNextArticleCountdown = () => {
 };
 
 export const getArticleContent = async (
-  pageId: string
+  pageId: string,
+  pageTitle?: string
 ): Promise<{ pageName: string; content: string } | null> => {
   const wikipediaResponse = await fetch(
     `https://fr.wikipedia.org/w/api.php?action=parse&format=json&page=${pageId}&prop=text&formatversion=2&origin=*`
@@ -25,7 +26,7 @@ export const getArticleContent = async (
     return null;
   }
 
-  const pageName = result.parse.title;
+  const pageName = pageTitle ?? result.parse.title;
   const rawArticle = result.parse.text;
   const content =
     `# ${pageName}\n\n` + convertToMarkdown(stripArticle(rawArticle));
