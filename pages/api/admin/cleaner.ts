@@ -1,13 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import prismaClient from "@caviardeul/prisma";
-import { EncodedArticle, ErrorDetail } from "@caviardeul/types";
+import { ErrorDetail } from "@caviardeul/types";
 import { applyCors, authenticateAdmin } from "@caviardeul/utils/api";
 import { ADMIN_CLEANUP_LAST_SEEN_AT_THRESHOLD } from "@caviardeul/utils/config";
 
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<EncodedArticle | ErrorDetail>
+  res: NextApiResponse<{ count: number } | ErrorDetail>
 ) => {
   await applyCors(req, res);
   if (!authenticateAdmin(req, res)) {
@@ -25,11 +25,11 @@ const handler = async (
   thresholdDate.setSeconds(
     thresholdDate.getSeconds() - ADMIN_CLEANUP_LAST_SEEN_AT_THRESHOLD
   );
-  await prismaClient.user.deleteMany({
+  const { count } = await prismaClient.user.deleteMany({
     where: { lastSeenAt: { lt: thresholdDate } },
   });
 
-  res.status(204).end();
+  res.status(200).json({ count });
 };
 
 export default handler;
