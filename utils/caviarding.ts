@@ -115,10 +115,6 @@ export const countOccurrences = (
   word: string,
   withCloseAlternatives: boolean
 ): number => {
-  if (isCommonWord(word)) {
-    throw new Error(`Cannot count occurrences of common word: ${word}`);
-  }
-
   const standardizedWord = standardizeText(word);
   const allowedSuffixes = withCloseAlternatives
     ? `(${closeAlternativesSuffixes.join("|")})?`
