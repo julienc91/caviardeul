@@ -60,7 +60,7 @@ const commonWords = new Set<string>([
 ]);
 
 export const closeAlternativesSuffixes = ["e", "s", "es", "r", "x"];
-const punctuationList = "{}()\\[\\]\\\\.…,;:!¡?¿/@#%\\^&*_~+\\-=<>«»\"'’\\s";
+const punctuationList = "{}()\\[\\]\\\\.…,;:!¡?¿/@#%\\^&*_—~+\\-=<>«»\"'’\\s";
 const wordRegex = new RegExp(`^[^${punctuationList}]+$`, "i");
 const separatorRegex = new RegExp(`([${punctuationList}]+)`, "gim");
 
