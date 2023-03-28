@@ -19,11 +19,7 @@ const AboutPage: React.FC = () => {
 
           <h2>Présentation</h2>
           <p>
-            Caviardeul est un jeu reprenant le concept de{" "}
-            <ExternalLink href="https://www.redactle.com/">
-              Redactle
-            </ExternalLink>{" "}
-            par{" "}
+            Caviardeul est un jeu reprenant le concept de Redactle par{" "}
             <ExternalLink href="https://twitter.com/jhntrnr">
               John Turner
             </ExternalLink>
