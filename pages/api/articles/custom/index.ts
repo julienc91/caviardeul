@@ -2,18 +2,15 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import prismaClient from "@caviardeul/prisma";
 import { CustomGameCreation, ErrorDetail } from "@caviardeul/types";
-import { applyCors, getOrCreateUser, getUser } from "@caviardeul/utils/api";
+import { getOrCreateUser, getUser, initAPICall } from "@caviardeul/utils/api";
 import { getArticleContent } from "@caviardeul/utils/article";
 
 const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<CustomGameCreation | ErrorDetail>
 ) => {
-  await applyCors(req, res);
-  const { method } = req;
-  if (method !== "POST") {
-    res.setHeader("Allow", ["POST"]);
-    res.status(405).json({ error: `Method ${method} Not Allowed` });
+  const ok = await initAPICall(req, res, ["POST"]);
+  if (!ok) {
     return;
   }
 

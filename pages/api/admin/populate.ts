@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import prismaClient from "@caviardeul/prisma";
 import { ErrorDetail } from "@caviardeul/types";
-import { applyCors, authenticateAdmin } from "@caviardeul/utils/api";
+import { initAPICall } from "@caviardeul/utils/api";
 
 const data: [string, string][] = []; // list of [pageId, pageName], must be shuffled!
 const exceptions: Set<string> = new Set(); // exceptions to pageId <-> pageName mismatch
@@ -17,15 +17,8 @@ const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<{ count: number } | ErrorDetail>
 ) => {
-  await applyCors(req, res);
-  if (!authenticateAdmin(req, res)) {
-    return;
-  }
-
-  const { method } = req;
-  if (method !== "POST") {
-    res.setHeader("Allow", ["POST"]);
-    res.status(405).json({ error: `Method ${method} Not Allowed` });
+  const ok = await initAPICall(req, res, ["POST"], true);
+  if (!ok) {
     return;
   }
 

@@ -3,21 +3,19 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import prismaClient from "@caviardeul/prisma";
 import { ErrorDetail } from "@caviardeul/types";
-import { applyCors, getUser } from "@caviardeul/utils/api";
+import { getUser, initAPICall } from "@caviardeul/utils/api";
 
 const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<{ id: string } | {} | ErrorDetail>
 ) => {
-  await applyCors(req, res);
-  const { method } = req;
-  if (method !== "GET" && method !== "DELETE") {
-    res.setHeader("Allow", ["GET", "DELETE"]);
-    res.status(405).json({ error: `Method ${method} Not Allowed` });
+  const ok = await initAPICall(req, res, ["GET", "DELETE"]);
+  if (!ok) {
     return;
   }
 
   let user = await getUser(req, res);
+  const { method } = req;
   if (method === "DELETE") {
     await deleteHandler(req, res, user);
   } else {

@@ -3,18 +3,15 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import prismaClient from "@caviardeul/prisma";
 import { ArticleInfo, ErrorDetail } from "@caviardeul/types";
-import { applyCors, getUser } from "@caviardeul/utils/api";
+import { getUser, initAPICall } from "@caviardeul/utils/api";
 import { getArticleInfoStats } from "@caviardeul/utils/stats";
 
 const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ArticleInfo[] | ErrorDetail>
 ) => {
-  await applyCors(req, res);
-  const { method } = req;
-  if (method !== "GET") {
-    res.setHeader("Allow", ["GET"]);
-    res.status(405).json({ error: `Method ${method} Not Allowed` });
+  const ok = await initAPICall(req, res, ["GET"]);
+  if (!ok) {
     return;
   }
 

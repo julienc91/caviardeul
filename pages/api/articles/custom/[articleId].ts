@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import prismaClient from "@caviardeul/prisma";
 import { EncodedArticle, ErrorDetail } from "@caviardeul/types";
-import { applyCors } from "@caviardeul/utils/api";
+import { initAPICall } from "@caviardeul/utils/api";
 import { getArticleContent } from "@caviardeul/utils/article";
 import {
   decode,
@@ -15,11 +15,8 @@ const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<EncodedArticle | ErrorDetail>
 ) => {
-  await applyCors(req, res);
-  const { method } = req;
-  if (method !== "GET") {
-    res.setHeader("Allow", ["GET"]);
-    res.status(405).json({ error: `Method ${method} Not Allowed` });
+  const ok = await initAPICall(req, res, ["GET"]);
+  if (!ok) {
     return;
   }
 

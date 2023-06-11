@@ -12,7 +12,7 @@ import {
 
 const cors = Cors();
 
-export const applyCors = (req: NextApiRequest, res: NextApiResponse) => {
+const applyCors = (req: NextApiRequest, res: NextApiResponse) => {
   return new Promise((resolve, reject) => {
     cors(req, res, (result: any) => {
       if (result instanceof Error) {
@@ -23,7 +23,7 @@ export const applyCors = (req: NextApiRequest, res: NextApiResponse) => {
   });
 };
 
-export const authenticateAdmin = (
+const authenticateAdmin = (
   req: NextApiRequest,
   res: NextApiResponse
 ): boolean => {
@@ -53,6 +53,27 @@ export const authenticateAdmin = (
 
 type ServerRequest = IncomingMessage & {
   cookies?: { [key: string]: string } | Partial<{ [key: string]: string }>;
+};
+
+export const initAPICall = async (
+  req: NextApiRequest,
+  res: NextApiResponse,
+  allowedMethods: string[],
+  admin: boolean = false
+) => {
+  await applyCors(req, res);
+
+  const { method } = req;
+  if (!method || !allowedMethods.includes(method)) {
+    res.setHeader("Allow", ["POST"]);
+    res.status(405).json({ error: `Method ${method} Not Allowed` });
+    return false;
+  }
+
+  if (admin && !authenticateAdmin(req, res)) {
+    return false;
+  }
+  return true;
 };
 
 export const getUser = async (
