@@ -8,7 +8,7 @@ const SettingsModal: React.FC<{ open: boolean; onClose: () => void }> = ({
   onClose,
 }) => {
   const { settings, onChangeSettings } = useContext(SettingsContext);
-  const { lightMode, displayWordLength, withCloseAlternatives } =
+  const { lightMode, displayWordLength, withCloseAlternatives, autoScroll } =
     settings ?? defaultSettings;
 
   const handleToggleLightMode = useCallback(() => {
@@ -22,6 +22,10 @@ const SettingsModal: React.FC<{ open: boolean; onClose: () => void }> = ({
   const handleToggleWithCloseAlternatives = useCallback(() => {
     onChangeSettings({ withCloseAlternatives: !withCloseAlternatives });
   }, [withCloseAlternatives, onChangeSettings]);
+
+  const handleToggleAutoscroll = useCallback(() => {
+    onChangeSettings({ autoScroll: !autoScroll });
+  }, [autoScroll, onChangeSettings]);
 
   if (!open) {
     return null;
@@ -56,6 +60,15 @@ const SettingsModal: React.FC<{ open: boolean; onClose: () => void }> = ({
             onChange={handleToggleWithCloseAlternatives}
           />
           Révéler les mots proches
+        </label>
+        <br />
+        <label>
+          <input
+            type="checkbox"
+            checked={autoScroll}
+            onChange={handleToggleAutoscroll}
+          />
+          Défilement automatique vers le mot sélectionné
         </label>
       </div>
     </Modal>

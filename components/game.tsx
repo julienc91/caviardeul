@@ -46,6 +46,7 @@ const Game: React.FC<{
 
   const withCloseAlternatives =
     settings?.withCloseAlternatives ?? defaultSettings.withCloseAlternatives;
+  const autoScroll = settings?.autoScroll ?? defaultSettings.autoScroll;
 
   const titleWords = useMemo(() => {
     return splitWords(pageName).filter(isWord).map(standardizeText);
@@ -145,7 +146,7 @@ const Game: React.FC<{
 
   // Scroll to selection
   useEffect(() => {
-    if (selection) {
+    if (selection && autoScroll) {
       const [_, index] = selection;
       const articleContainer =
         document.querySelector<HTMLElement>(".article-container");
@@ -160,7 +161,7 @@ const Game: React.FC<{
         });
       }
     }
-  }, [selection]);
+  }, [selection, autoScroll]);
 
   // Load history from save
   useEffect((): void => {

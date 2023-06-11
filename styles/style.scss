@@ -270,7 +270,8 @@ nav {
 
 // settings modal
 .modal.settings-modal {
-  .beta {
+  .beta,
+  .new {
     color: $light4;
     background-color: $lightBlue;
     border-radius: 4px;

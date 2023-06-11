@@ -7,6 +7,7 @@ export const defaultSettings: Settings = {
   lightMode: false,
   displayWordLength: true,
   withCloseAlternatives: true,
+  autoScroll: true,
 };
 
 export const getInitialSettings = (): Settings => {
@@ -22,6 +23,7 @@ export const getInitialSettings = (): Settings => {
       settings?.displayWordLength ?? defaultSettings.displayWordLength,
     withCloseAlternatives:
       settings?.withCloseAlternatives ?? defaultSettings.withCloseAlternatives,
+    autoScroll: settings?.autoScroll ?? defaultSettings.autoScroll,
   };
 };
 

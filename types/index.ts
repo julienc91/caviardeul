@@ -69,6 +69,7 @@ export type Settings = {
   lightMode: boolean;
   displayWordLength: boolean;
   withCloseAlternatives: boolean;
+  autoScroll: boolean;
 };
 
 export type SettingsState = {
