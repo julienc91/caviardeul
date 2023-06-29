@@ -15,7 +15,11 @@ const Home: NextPage<{
 }> = ({ encodedArticle, userScore }) => {
   const dailyArticle = encodedArticle ? decodeArticle(encodedArticle) : null;
   return dailyArticle ? (
-    <Game article={dailyArticle} userScore={userScore} />
+    <Game
+      key={dailyArticle.articleId}
+      article={dailyArticle}
+      userScore={userScore}
+    />
   ) : (
     <Error statusCode={500} title="Une erreur est survenue" />
   );

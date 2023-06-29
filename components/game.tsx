@@ -165,6 +165,10 @@ const Game: React.FC<{
 
   // Load history from save
   useEffect((): void => {
+    if (saveLoaded) {
+      return;
+    }
+
     const savedHistory = SaveManagement.loadProgress(
       articleId,
       archive,
@@ -203,6 +207,7 @@ const Game: React.FC<{
     standardizedArticle,
     custom,
     articleId,
+    saveLoaded,
     withCloseAlternatives,
   ]);
 
