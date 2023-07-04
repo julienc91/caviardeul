@@ -33,7 +33,7 @@
     "@types/cors": "^2.8.12",
     "@types/crypto-js": "^4.1.1",
     "@types/latinize": "^0.2.15",
-    "@types/node": "^18.7.20",
+    "@types/node": "^20.3.3",
     "@types/nprogress": "^0.2.0",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
