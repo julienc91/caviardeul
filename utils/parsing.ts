@@ -10,6 +10,7 @@ export const convertToMarkdown = (htmlContent: string): string => {
 const elementsToRemove = [
   "audio",
   "video",
+  "figure",
   "img",
   "iframe",
   //
