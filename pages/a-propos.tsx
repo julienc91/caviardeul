@@ -27,12 +27,9 @@ const AboutPage: React.FC = () => {
           </p>
           <p>
             Le but est de retrouver quotidiennement l&apos;article Wikipédia
-            caché derrière les mots caviardés. Les articles sont choisis parmi
-            la liste des{" "}
-            <ExternalLink href="https://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Articles_vitaux/Niveau_4">
-              10&nbsp;000 articles vitaux de Wikipédia
-            </ExternalLink>{" "}
-            de niveau 4.
+            caché derrière les mots caviardés. Les articles sont choisis avec
+            soin, de sorte que la réponse soit connue et trouvable du plus grand
+            nombre.
           </p>
 
           <p>
