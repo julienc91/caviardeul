@@ -2,7 +2,7 @@ default_stages: [commit]
 
 repos:
   - repo: https://github.com/Woile/commitizen
-    rev: v2.42.1
+    rev: 3.8.1
     hooks:
       - id: commitizen
         stages: [commit-msg]
@@ -25,4 +25,11 @@ repos:
         entry: yarn --cwd run tsc --project tsconfig.json
         files: \.tsx?$
         pass_filenames: false
+        stages: [commit, push]
+
+  - repo: https://github.com/gitguardian/ggshield
+    rev: v1.18.1
+    hooks:
+      - id: ggshield
+        language_version: python3
         stages: [commit, push]
