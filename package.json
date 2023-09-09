@@ -11,8 +11,8 @@
     "prisma:generate": "prisma generate"
   },
   "dependencies": {
-    "@prisma/client": "^4.2.1",
-    "cookies-next": "^2.1.1",
+    "@prisma/client": "^5.2.0",
+    "cookies-next": "^3.0.0",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
     "latinize": "^0.5.0",
@@ -20,7 +20,7 @@
     "node-html-parser": "^6.1.1",
     "nodemailer": "^6.9.3",
     "nprogress": "^0.2.0",
-    "prisma": "^4.2.1",
+    "prisma": "^5.2.0",
     "qrcode.react": "^3.1.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
@@ -42,8 +42,8 @@
     "@types/turndown": "^5.0.1",
     "eslint": "^8.15.0",
     "eslint-config-next": "^13.0.0",
-    "eslint-config-prettier": "^8.5.0",
-    "prettier": "^2.6.2",
+    "eslint-config-prettier": "^9.0.0",
+    "prettier": "^3.0.3",
     "sass": "^1.52.1",
     "typescript": "^5.0.2"
   }
