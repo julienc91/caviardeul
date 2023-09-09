@@ -6,8 +6,13 @@ jobs:
   run:
     runs-on: ubuntu-latest
     steps:
-      - name: Call admin API endpoint
+      - name: Clear inactive users
         env:
           ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
         run: |
           curl -X POST -H "Authorization: Bearer $ADMIN_TOKEN" https://caviardeul.fr/api/admin/cleaner
+      - name: Check upcoming daily article
+        env:
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+        run: |
+          curl -X POST -H "Authorization: Bearer $ADMIN_TOKEN" https://caviardeul.fr/api/admin/checker
