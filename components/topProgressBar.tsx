@@ -14,7 +14,7 @@ const load = () => {
 
   state = "loading";
 
-  timer = setTimeout(function () {
+  timer = setTimeout(() => {
     NProgress.start();
   }, delay); // only show progress bar if it takes longer than the delay
 };
@@ -37,7 +37,7 @@ Router.events.on("routeChangeError", stop);
 const originalFetch = window.fetch;
 window.fetch = async (
   input: RequestInfo | URL,
-  init?: RequestInit
+  init?: RequestInit,
 ): Promise<Response> => {
   const ignoreLoading = init?.method === "POST";
   if (activeRequests === 0 && !ignoreLoading) {

@@ -2,7 +2,7 @@ import Link from "next/link";
 import React, { useCallback, useState } from "react";
 import { FaGithub } from "react-icons/fa";
 
-import ExternalLink from "@caviardeul/components/externalLink";
+import ExternalLink from "@caviardeul/components/utils/externalLink";
 
 const Navbar: React.FC<{
   onShowSettingsModal: () => void;

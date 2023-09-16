@@ -1,6 +1,6 @@
 import React from "react";
 
-import Modal from "@caviardeul/components/modal";
+import Modal from "@caviardeul/components/modals/modal";
 
 const ConfirmModal: React.FC<{
   message: React.ReactNode;

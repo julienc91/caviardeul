@@ -11,8 +11,8 @@ import {
   FaSortAmountUp,
 } from "react-icons/fa";
 
-import ConfirmModal from "@caviardeul/components/confirmModal";
-import Modal from "@caviardeul/components/modal";
+import ConfirmModal from "@caviardeul/components/modals/confirmModal";
+import Modal from "@caviardeul/components/modals/modal";
 import { ArticleInfo, ArticleInfoStats } from "@caviardeul/types";
 import { getUser } from "@caviardeul/utils/api";
 import { BASE_URL } from "@caviardeul/utils/config";
@@ -159,7 +159,7 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
           (article) =>
             filterBy === "all" ||
             (filterBy === "not_finished" && !article.userScore) ||
-            (filterBy === "finished" && !!article.userScore)
+            (filterBy === "finished" && !!article.userScore),
         )
         .sort((a, b) => {
           let sortValue = 0;
@@ -185,14 +185,14 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
                 articleId: article.articleId,
                 stats: article.stats,
               }
-            : article
+            : article,
         ),
-    [articles, sortBy, sortOrder, filterBy, reset]
+    [articles, sortBy, sortOrder, filterBy, reset],
   );
 
   const nbGames = articles.length;
   const finishedGames = articles.filter(
-    (articleInfo) => !!articleInfo.userScore
+    (articleInfo) => !!articleInfo.userScore,
   );
   const nbFinishedGames = finishedGames.length;
 
@@ -201,10 +201,10 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
       Math.floor(
         finishedGames.reduce(
           (acc, { userScore }) => acc + (userScore?.nbAttempts || 0),
-          0
-        ) / Math.max(nbFinishedGames, 1)
+          0,
+        ) / Math.max(nbFinishedGames, 1),
       ),
-    [finishedGames, nbFinishedGames]
+    [finishedGames, nbFinishedGames],
   );
   const avgAccuracy = useMemo(
     () =>
@@ -214,10 +214,10 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
             acc +
             ((userScore?.nbCorrect || 0) * 100) /
               Math.max(userScore?.nbAttempts || 0, 1),
-          0
-        ) / Math.max(nbFinishedGames, 1)
+          0,
+        ) / Math.max(nbFinishedGames, 1),
       ),
-    [finishedGames, nbFinishedGames]
+    [finishedGames, nbFinishedGames],
   );
 
   useEffect(() => {
@@ -246,12 +246,12 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
       }
       setSortOrder(newSortOrder);
     },
-    [sortOrder, sortBy]
+    [sortOrder, sortBy],
   );
 
   const handleFilterByChanged = useCallback(
     (filterBy: FilterType) => setFilterBy(filterBy),
-    []
+    [],
   );
 
   const gamesContainer = displayArticles.map((articleInfo) => {
@@ -273,7 +273,7 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
                 Précision&nbsp;:{" "}
                 {Math.floor(
                   (articleInfo.userScore.nbCorrect * 100) /
-                    Math.max(articleInfo.userScore.nbAttempts, 1)
+                    Math.max(articleInfo.userScore.nbAttempts, 1),
                 )}
                 %
               </span>
