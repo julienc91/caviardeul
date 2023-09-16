@@ -15,9 +15,9 @@ const datePlusNbDays = (date: Date, days: number): Date => {
 
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<{ count: number } | ErrorDetail>
+  res: NextApiResponse<{ count: number } | ErrorDetail>,
 ) => {
-  const ok = await initAPICall(req, res, ["POST"], true);
+  const ok = await initAPICall(req, res, ["POST"]);
   if (!ok) {
     return;
   }
@@ -26,7 +26,7 @@ const handler = async (
     orderBy: { id: "asc" },
   });
   const currentPageIds = new Set(
-    currentArticles.map(({ pageId }) => pageId.toLowerCase())
+    currentArticles.map(({ pageId }) => pageId.toLowerCase()),
   );
 
   const duplicates = [];
