@@ -8,9 +8,9 @@ import { sendAdminEmail } from "@caviardeul/utils/email";
 
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<{ status: string } | ErrorDetail>
+  res: NextApiResponse<{ status: string } | ErrorDetail>,
 ) => {
-  const ok = await initAPICall(req, res, ["POST"], true);
+  const ok = await initAPICall(req, res, ["POST"]);
   if (!ok) {
     return;
   }
@@ -33,7 +33,7 @@ const handler = async (
       "No daily article left",
       `Hi,
 We're running out of daily articles, please populate the table with new ones.
-Caviardeul Monitoring`
+Caviardeul Monitoring`,
     );
     res.json({ status: "missing" });
     return;
@@ -45,7 +45,7 @@ Caviardeul Monitoring`
       "Error when retrieving daily article",
       `Hi,
 The daily article for tomorrow ${article.pageId} cannot be retrieved, please have a look.
-Caviardeul Monitoring`
+Caviardeul Monitoring`,
     );
     res.json({ status: "error" });
     return;
@@ -57,7 +57,7 @@ Caviardeul Monitoring`
       "Error when retrieving daily article",
       `Hi,
 The daily article for tomorrow ${article.pageId} has a redirect, please have a look.
-Caviardeul Monitoring`
+Caviardeul Monitoring`,
     );
     res.json({ status: "error" });
     return;

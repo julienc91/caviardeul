@@ -1,6 +1,5 @@
 import { User } from "@prisma/client";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
-import Cors from "cors";
 import { IncomingMessage, ServerResponse } from "http";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -9,46 +8,28 @@ import {
   COOKIE_MAX_AGE,
   LAST_SEEN_AT_UPDATE_THRESHOLD,
 } from "@caviardeul/utils/config";
+import { NextRequest } from "next/server";
 
-const cors = Cors();
-
-const applyCors = (req: NextApiRequest, res: NextApiResponse) => {
-  return new Promise((resolve, reject) => {
-    cors(req, res, (result: any) => {
-      if (result instanceof Error) {
-        return reject(result);
-      }
-      return resolve(result);
-    });
-  });
-};
-
-const authenticateAdmin = (
-  req: NextApiRequest,
-  res: NextApiResponse
-): boolean => {
-  if (!process.env.ADMIN_TOKEN) {
-    throw new Error("ADMIN_TOKEN isn't set");
-  }
-
-  const authenticationHeader = req.headers.authorization;
-  if (!authenticationHeader) {
-    res.status(401).json({ error: "Missing authorization header" });
-    return false;
+export const getAuthorizationToken = (request: NextRequest): string | null => {
+  const headers = new Headers(request.headers);
+  const authorizationHeader = headers.get("authorization");
+  if (!authorizationHeader) {
+    return null;
   }
 
   const prefix = "Bearer ";
-  if (!authenticationHeader.startsWith(prefix)) {
-    res.status(401).json({ error: "Invalid authorization header" });
-    return false;
+  if (!authorizationHeader.startsWith(prefix)) {
+    return null;
   }
 
-  const token = authenticationHeader.slice(prefix.length);
-  if (token !== process.env.ADMIN_TOKEN) {
-    res.status(403).json({ error: "Invalid admin token" });
-    return false;
+  return authorizationHeader.slice(prefix.length);
+};
+
+export const checkAdminToken = (token: string): boolean => {
+  if (!process.env.ADMIN_TOKEN) {
+    throw new Error("ADMIN_TOKEN isn't set");
   }
-  return true;
+  return token === process.env.ADMIN_TOKEN;
 };
 
 type ServerRequest = IncomingMessage & {
@@ -59,18 +40,11 @@ export const initAPICall = async (
   req: NextApiRequest,
   res: NextApiResponse,
   allowedMethods: string[],
-  admin: boolean = false
 ) => {
-  await applyCors(req, res);
-
   const { method } = req;
   if (!method || !allowedMethods.includes(method)) {
     res.setHeader("Allow", ["POST"]);
     res.status(405).json({ error: `Method ${method} Not Allowed` });
-    return false;
-  }
-
-  if (admin && !authenticateAdmin(req, res)) {
     return false;
   }
   return true;
@@ -78,7 +52,7 @@ export const initAPICall = async (
 
 export const getUser = async (
   req: ServerRequest,
-  res: ServerResponse
+  res: ServerResponse,
 ): Promise<User | null> => {
   const userId = (getCookie("userId", { req, res }) || "") as string;
 
@@ -90,7 +64,7 @@ export const getUser = async (
     } else {
       const lastSeenAtThreshold = new Date();
       lastSeenAtThreshold.setSeconds(
-        lastSeenAtThreshold.getSeconds() - LAST_SEEN_AT_UPDATE_THRESHOLD
+        lastSeenAtThreshold.getSeconds() - LAST_SEEN_AT_UPDATE_THRESHOLD,
       );
       if (user.lastSeenAt < lastSeenAtThreshold) {
         await prismaClient.user.updateMany({
@@ -105,7 +79,7 @@ export const getUser = async (
 
 export const getOrCreateUser = async (
   req: ServerRequest,
-  res: ServerResponse
+  res: ServerResponse,
 ): Promise<User> => {
   let user = await getUser(req, res);
   if (!user) {
