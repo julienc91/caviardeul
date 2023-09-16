@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { FormEvent, useCallback, useState } from "react";
 
-import Loader from "@caviardeul/components/loader";
+import Loader from "@caviardeul/components/utils/loader";
 import { useCreateCustomGame } from "@caviardeul/hooks/article";
 import { CustomGameCreation } from "@caviardeul/types";
 import { copyToClipboard } from "@caviardeul/utils/clipboard";
@@ -23,7 +23,7 @@ const NewCustomGame: React.FC = () => {
       const newValue = event.target.value;
       setPageId(newValue);
     },
-    []
+    [],
   );
 
   const handleCopyToClipboard = useCallback(async (content: string) => {
@@ -41,7 +41,7 @@ const NewCustomGame: React.FC = () => {
       setPageId(newValue);
       event.preventDefault();
     },
-    []
+    [],
   );
 
   const handleSubmissionCreated = useCallback(
@@ -50,7 +50,7 @@ const NewCustomGame: React.FC = () => {
       setPageName(pageName);
       await handleCopyToClipboard(gameUrl);
     },
-    [handleCopyToClipboard, gameUrl]
+    [handleCopyToClipboard, gameUrl],
   );
 
   const handleSubmit = useCallback(
@@ -63,7 +63,7 @@ const NewCustomGame: React.FC = () => {
         onSuccess: handleSubmissionCreated,
       });
     },
-    [gameId, handleSubmissionCreated, mutation, pageId]
+    [gameId, handleSubmissionCreated, mutation, pageId],
   );
 
   const handleReset = useCallback(() => {

@@ -7,12 +7,12 @@ import React, {
   useState,
 } from "react";
 
-import ArticleContainer from "@caviardeul/components/article";
-import CustomGameBanner from "@caviardeul/components/customGameBanner";
-import GameInformation from "@caviardeul/components/gameInformation";
-import HistoryContainer from "@caviardeul/components/history";
-import Input from "@caviardeul/components/input";
-import Loader from "@caviardeul/components/loader";
+import ArticleContainer from "@caviardeul/components/game/article";
+import CustomGameBanner from "@caviardeul/components/game/customGameBanner";
+import GameInformation from "@caviardeul/components/game/gameInformation";
+import HistoryContainer from "@caviardeul/components/game/history";
+import Input from "@caviardeul/components/game/input";
+import Loader from "@caviardeul/components/utils/loader";
 import { Article, History } from "@caviardeul/types";
 import {
   buildAlternatives,
@@ -78,7 +78,7 @@ const Game: React.FC<{
         }
       }
     },
-    [selection, history, withCloseAlternatives]
+    [selection, history, withCloseAlternatives],
   );
 
   const handleReveal = useCallback(
@@ -109,12 +109,12 @@ const Game: React.FC<{
         content,
         standardizedArticle,
         word,
-        withCloseAlternatives
+        withCloseAlternatives,
       );
       const newRevealedWords = revealedWords.add(standardizedWord);
       if (withCloseAlternatives) {
         buildAlternatives(standardizedWord).forEach((alternative) =>
-          newRevealedWords.add(alternative)
+          newRevealedWords.add(alternative),
         );
       }
       setRevealedWords(new Set(newRevealedWords));
@@ -128,7 +128,7 @@ const Game: React.FC<{
       content,
       standardizedArticle,
       withCloseAlternatives,
-    ]
+    ],
   );
 
   // Check if game is over
@@ -137,7 +137,7 @@ const Game: React.FC<{
       !isOver &&
       titleWords.length &&
       titleWords.every(
-        (titleWord) => revealedWords.has(titleWord) || isCommonWord(titleWord)
+        (titleWord) => revealedWords.has(titleWord) || isCommonWord(titleWord),
       )
     ) {
       setIsOver(true);
@@ -172,7 +172,7 @@ const Game: React.FC<{
     const savedHistory = SaveManagement.loadProgress(
       articleId,
       archive,
-      custom
+      custom,
     );
     if (savedHistory) {
       setHistory(
@@ -182,9 +182,9 @@ const Game: React.FC<{
             content,
             standardizedArticle,
             word,
-            withCloseAlternatives
+            withCloseAlternatives,
           ),
-        ])
+        ]),
       );
       setRevealedWords(
         new Set(
@@ -196,8 +196,8 @@ const Game: React.FC<{
               }
               return res;
             })
-            .flat()
-        )
+            .flat(),
+        ),
       );
     }
     setSaveLoaded(true);
@@ -222,7 +222,7 @@ const Game: React.FC<{
     if (saveLoaded && isOver) {
       const nbAttempts = history.length;
       const nbCorrect = history.filter(
-        ([, nbOccurrences]) => nbOccurrences > 0
+        ([, nbOccurrences]) => nbOccurrences > 0,
       ).length;
       saveScore(articleId, custom, nbAttempts, nbCorrect);
     }

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 
-import Modal from "@caviardeul/components/modal";
+import Modal from "@caviardeul/components/modals/modal";
 import SaveManagement from "@caviardeul/utils/save";
 
 const IntroductionfoModal: React.FC = () => {

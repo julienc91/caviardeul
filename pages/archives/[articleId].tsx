@@ -2,7 +2,7 @@ import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import React from "react";
 
-import Game from "@caviardeul/components/game";
+import Game from "@caviardeul/components/game/game";
 import { getEncodedArticle } from "@caviardeul/hooks/article";
 import prismaClient from "@caviardeul/prisma";
 import { EncodedArticle } from "@caviardeul/types";

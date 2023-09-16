@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 
-import ExternalLink from "@caviardeul/components/externalLink";
+import ExternalLink from "@caviardeul/components/utils/externalLink";
 
 const AboutPage: React.FC = () => {
   const title = "Caviardeul - À propos";

@@ -3,7 +3,7 @@ import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 
-import Loader from "@caviardeul/components/loader";
+import Loader from "@caviardeul/components/utils/loader";
 import { getUser } from "@caviardeul/utils/api";
 import { BASE_URL, COOKIE_MAX_AGE } from "@caviardeul/utils/config";
 
