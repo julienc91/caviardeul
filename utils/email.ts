@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 export const sendEmail = (to: string, subject: string, text: string) => {
   const transporter = getTransporter();
   return transporter.sendMail({
-    from: process.env.EMAIL_FROM as string,
+    from: process.env.EMAIL_FROM,
     to,
     subject,
     text,
@@ -11,7 +11,7 @@ export const sendEmail = (to: string, subject: string, text: string) => {
 };
 
 export const sendAdminEmail = (subject: string, text: string) => {
-  return sendEmail(process.env.EMAIL_ADMIN_TO as string, subject, text);
+  return sendEmail(process.env.EMAIL_ADMIN_TO, subject, text);
 };
 
 const getTransporter = () => {
