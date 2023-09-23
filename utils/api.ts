@@ -12,7 +12,7 @@ import { NextRequest } from "next/server";
 
 export const getAuthorizationToken = (request: NextRequest): string | null => {
   const headers = new Headers(request.headers);
-  const authorizationHeader = headers.get("authorization");
+  const authorizationHeader = headers.get("Authorization");
   if (!authorizationHeader) {
     return null;
   }

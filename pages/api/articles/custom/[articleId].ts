@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import prismaClient from "@caviardeul/prisma";
 import { EncodedArticle, ErrorDetail } from "@caviardeul/types";
 import { initAPICall } from "@caviardeul/utils/api";
-import { getArticleContent } from "@caviardeul/utils/article";
+import { getArticleMarkdown } from "@caviardeul/utils/article/wikipedia";
 import {
   decode,
   encode,
@@ -13,7 +13,7 @@ import {
 
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<EncodedArticle | ErrorDetail>
+  res: NextApiResponse<EncodedArticle | ErrorDetail>,
 ) => {
   const ok = await initAPICall(req, res, ["GET"]);
   if (!ok) {
@@ -45,7 +45,7 @@ const handler = async (
     }
   }
 
-  const result = await getArticleContent(pageId, customArticle?.pageName);
+  const result = await getArticleMarkdown(pageId, customArticle?.pageName);
   if (result === null) {
     res.status(404).json({ error: "L'article n'a pas été trouvé" });
     return;

@@ -3,11 +3,11 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import prismaClient from "@caviardeul/prisma";
 import { CustomGameCreation, ErrorDetail } from "@caviardeul/types";
 import { getOrCreateUser, getUser, initAPICall } from "@caviardeul/utils/api";
-import { getArticleContent } from "@caviardeul/utils/article";
+import { getArticleHtml } from "@caviardeul/utils/article/wikipedia";
 
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<CustomGameCreation | ErrorDetail>
+  res: NextApiResponse<CustomGameCreation | ErrorDetail>,
 ) => {
   const ok = await initAPICall(req, res, ["POST"]);
   if (!ok) {
@@ -35,7 +35,7 @@ const handler = async (
   }
 
   if (!customArticle) {
-    const result = await getArticleContent(pageId);
+    const result = await getArticleHtml(pageId);
     if (result === null) {
       res.status(400).json({ error: "L'article n'a pas été trouvé" });
       return;
