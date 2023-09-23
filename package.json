@@ -26,7 +26,11 @@
     "react-icons": "^4.6.0",
     "react-markdown": "^8.0.3",
     "react-query": "^3.39.0",
-    "turndown": "^7.1.1"
+    "turndown": "^7.1.2"
+  },
+  "//": "https://github.com/mixmark-io/turndown/issues/378",
+  "resolutions": {
+    "domino": "Haringat/domino#2721294c75334ece635dfc72cad0a3dede7391fb"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.0.0",
