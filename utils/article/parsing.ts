@@ -1,11 +1,4 @@
 import { parse } from "node-html-parser";
-import TurndownService from "turndown";
-
-const turndownService = new TurndownService();
-
-export const convertToMarkdown = (htmlContent: string): string => {
-  return turndownService.turndown(htmlContent);
-};
 
 const elementsToRemove = [
   "audio",

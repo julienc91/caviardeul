@@ -1,8 +1,5 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-
 import prismaClient from "@caviardeul/prisma";
-import { ErrorDetail } from "@caviardeul/types";
-import { initAPICall } from "@caviardeul/utils/api";
+import { NextResponse } from "next/server";
 
 const data: [string, string][] = []; // list of [pageId, pageName], must be shuffled!
 const exceptions: Set<string> = new Set(); // exceptions to pageId <-> pageName mismatch
@@ -13,15 +10,7 @@ const datePlusNbDays = (date: Date, days: number): Date => {
   return newDate;
 };
 
-const handler = async (
-  req: NextApiRequest,
-  res: NextApiResponse<{ count: number } | ErrorDetail>,
-) => {
-  const ok = await initAPICall(req, res, ["POST"]);
-  if (!ok) {
-    return;
-  }
-
+export const POST = async () => {
   const currentArticles = await prismaClient.dailyArticle.findMany({
     orderBy: { id: "asc" },
   });
@@ -51,13 +40,21 @@ const handler = async (
   }
 
   if (duplicates.length > 0) {
-    res
-      .status(400)
-      .json({ error: `Duplicated articles: ${duplicates.join(", ")}` });
-    return;
+    return NextResponse.json(
+      {
+        error: `Duplicated articles`,
+        detail: `${duplicates.join(", ")}`,
+      },
+      { status: 400 },
+    );
   } else if (invalid.length > 0) {
-    res.status(400).json({ error: `Invalid articles: ${invalid.join(", ")}` });
-    return;
+    return NextResponse.json(
+      {
+        error: `Invalid articles`,
+        detail: `${invalid.join(", ")}`,
+      },
+      { status: 400 },
+    );
   }
 
   const latestArticle = currentArticles[currentArticles.length - 1];
@@ -71,7 +68,5 @@ const handler = async (
     })),
   });
 
-  res.status(200).json({ count });
+  return NextResponse.json({ count }, { status: 201 });
 };
-
-export default handler;
