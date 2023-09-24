@@ -28,7 +28,7 @@ const ShareAction: React.FC<{
 
   const hasNativeShare = useMemo(
     () => typeof navigator !== "undefined" && !!navigator.share,
-    []
+    [],
   );
 
   const handleNativeShare = useCallback(async () => {
@@ -42,35 +42,35 @@ const ShareAction: React.FC<{
   const handleTwitterShare = useCallback(() => {
     window.open(
       `https://twitter.com/share?text=${encodeURIComponent(
-        shareTitle
+        shareTitle,
       )}&url=${encodeURIComponent(shareUrl)}&hashtags=caviardeul`,
-      "_blank"
+      "_blank",
     );
   }, [shareUrl, shareTitle]);
 
   const handleFacebookShare = useCallback(() => {
     window.open(
       `https://www.facebook.com/sharer.php?u=${encodeURIComponent(
-        shareUrl
+        shareUrl,
       )}&quote=${encodeURIComponent(shareTitle)}`,
-      "_blank"
+      "_blank",
     );
   }, [shareUrl, shareTitle]);
 
   const handleWhatsAppShare = useCallback(() => {
     window.open(
       `http://api.whatsapp.com/send?text=${encodeURIComponent(
-        `${shareTitle} ${shareUrl}`
+        `${shareTitle} ${shareUrl}`,
       )}`,
-      "_blank"
+      "_blank",
     );
   }, [shareUrl, shareTitle]);
 
   const handleTelegramShare = useCallback(() => {
     window.open(
       `https://t.me/share/url?url=${encodeURIComponent(
-        shareUrl
-      )}&text=${encodeURIComponent(shareTitle)}`
+        shareUrl,
+      )}&text=${encodeURIComponent(shareTitle)}`,
     );
   }, [shareUrl, shareTitle]);
 

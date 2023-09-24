@@ -1,7 +1,8 @@
+import { NextResponse } from "next/server";
+
 import prismaClient from "@caviardeul/prisma";
 import { getArticleHtml } from "@caviardeul/utils/article/wikipedia";
 import { sendAdminEmail } from "@caviardeul/utils/email";
-import { NextResponse } from "next/server";
 
 export const POST = async () => {
   const article = await prismaClient.dailyArticle.findFirst({

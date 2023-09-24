@@ -1,5 +1,6 @@
-import { stripArticle } from "@caviardeul/utils/article/parsing";
 import TurndownService from "turndown";
+
+import { stripArticle } from "@caviardeul/utils/article/parsing";
 
 const convertToMarkdown = (htmlContent: string): string => {
   return new TurndownService().turndown(htmlContent);

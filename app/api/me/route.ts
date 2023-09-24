@@ -1,6 +1,7 @@
-import prismaClient from "@caviardeul/prisma";
-import { getUser } from "@caviardeul/lib/user";
 import { NextResponse } from "next/server";
+
+import { getUser } from "@caviardeul/lib/user";
+import prismaClient from "@caviardeul/prisma";
 
 export const DELETE = async () => {
   const user = await getUser();

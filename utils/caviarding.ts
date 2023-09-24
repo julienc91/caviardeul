@@ -66,7 +66,7 @@ const separatorRegex = new RegExp(`([${punctuationList}]+)`, "gim");
 
 export const splitWords = (
   text: string,
-  isMarkdown: boolean = false
+  isMarkdown: boolean = false,
 ): string[] => {
   const splittedText = text.split(separatorRegex);
   const result = [];
@@ -105,7 +105,7 @@ export const isCommonWord = (word: string): boolean => {
 const getRelatedCommonWords = (word: string): string[] => {
   word = word.toLocaleLowerCase();
   return Array.from(commonWords).filter(
-    (commonWord) => word === standardizeText(commonWord)
+    (commonWord) => word === standardizeText(commonWord),
   );
 };
 
@@ -113,7 +113,7 @@ export const countOccurrences = (
   text: string,
   standardizedText: string,
   word: string,
-  withCloseAlternatives: boolean
+  withCloseAlternatives: boolean,
 ): number => {
   const standardizedWord = standardizeText(word);
   const allowedSuffixes = withCloseAlternatives
@@ -121,7 +121,7 @@ export const countOccurrences = (
     : "";
   const regex = new RegExp(
     `\([${punctuationList}]|^)(${standardizedWord})${allowedSuffixes}([${punctuationList}]|$)`,
-    "gim"
+    "gim",
   );
   const matches = Array.from(standardizedText.matchAll(regex));
   let count = matches.length;
@@ -132,7 +132,7 @@ export const countOccurrences = (
     .map((commonWord) => {
       const regex = new RegExp(
         `\([${punctuationList}]|^)(${commonWord})([${punctuationList}]|$)`,
-        "gim"
+        "gim",
       );
       return Array.from(text.matchAll(regex)).length;
     })
@@ -156,7 +156,7 @@ export const buildAlternatives = (standardizedWord: string): string[] =>
  */
 export const isRevealed = (
   word: string,
-  revealedWords: Set<string>
+  revealedWords: Set<string>,
 ): boolean => {
   return revealedWords.has(standardizeText(word));
 };
@@ -170,7 +170,7 @@ export const isRevealed = (
 export const isSelected = (
   word: string,
   selection: string,
-  withCloseAlternatives: boolean
+  withCloseAlternatives: boolean,
 ): boolean => {
   const standardizedWord = standardizeText(word);
   if (standardizedWord === selection) {
@@ -179,7 +179,7 @@ export const isSelected = (
   if (withCloseAlternatives) {
     if (
       buildAlternatives(selection).some(
-        (alternative) => alternative === standardizedWord
+        (alternative) => alternative === standardizedWord,
       )
     ) {
       return true;

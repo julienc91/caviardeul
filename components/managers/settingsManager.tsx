@@ -21,7 +21,7 @@ const SettingsManager: React.FC<{ children: React.ReactNode }> = ({
     document.documentElement.style.setProperty("--color-text", textColor);
     document.documentElement.style.setProperty(
       "--color-background",
-      backgroundColor
+      backgroundColor,
     );
   }, []);
 
@@ -31,7 +31,7 @@ const SettingsManager: React.FC<{ children: React.ReactNode }> = ({
       setSettings(updatedSettings);
       SaveManagement.saveSettings(updatedSettings);
     },
-    [settings]
+    [settings],
   );
 
   useEffect(() => {

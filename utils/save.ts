@@ -12,7 +12,7 @@ class SaveManagement {
 
   static getEncryptionKey(
     generate: boolean = false,
-    raise: boolean = true
+    raise: boolean = true,
   ): string {
     let key = localStorage.getItem("key");
     if (!key && generate) {
@@ -37,7 +37,7 @@ class SaveManagement {
   static loadProgress(
     articleId: number | string,
     archive: boolean,
-    custom: boolean
+    custom: boolean,
   ): History | null {
     const storageKey = SaveManagement.getProgressStorageKey(archive, custom);
     const data = localStorage.getItem(storageKey);
@@ -65,7 +65,7 @@ class SaveManagement {
     articleId: number | string,
     history: History,
     archive: boolean,
-    custom: boolean
+    custom: boolean,
   ): void {
     const data = { articleId, history };
     const storageKey = SaveManagement.getProgressStorageKey(archive, custom);
@@ -78,7 +78,7 @@ class SaveManagement {
   static clearProgress(
     daily: boolean,
     archive: boolean,
-    custom: boolean
+    custom: boolean,
   ): void {
     const keys = [];
     if (daily) {

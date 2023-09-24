@@ -13,7 +13,7 @@ const TopProgressBar = dynamic(
   () => {
     return import("../components/topProgressBar");
   },
-  { ssr: false }
+  { ssr: false },
 );
 
 const Caviardeul = ({ Component, pageProps }: AppProps) => {

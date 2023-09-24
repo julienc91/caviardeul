@@ -13,7 +13,7 @@ export const GameContext = React.createContext<GameState>({
 export const getSelectedWord = (
   word: string,
   history: History,
-  withCloseAlternatives: boolean
+  withCloseAlternatives: boolean,
 ): string => {
   const historyWords = new Set([
     ...history.map(([historyWord]) => historyWord),

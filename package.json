@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "eslint": "eslint . --fix",
     "vercel-build": "prisma generate && prisma migrate deploy && next build",
     "prisma:generate": "prisma generate"
   },
@@ -45,6 +46,7 @@
     "eslint": "^8.15.0",
     "eslint-config-next": "^13.0.0",
     "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
     "prettier": "^3.0.3",
     "sass": "^1.52.1",
     "typescript": "^5.0.2"

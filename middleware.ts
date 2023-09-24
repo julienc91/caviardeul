@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+
 import { checkAdminToken, getAuthorizationToken } from "@caviardeul/utils/api";
 
 export const middleware = (request: NextRequest) => {

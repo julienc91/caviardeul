@@ -1,7 +1,8 @@
+import { NextRequest, NextResponse } from "next/server";
+
+import { getOrCreateUser, getUser } from "@caviardeul/lib/user";
 import prismaClient from "@caviardeul/prisma";
 import { getArticleHtml } from "@caviardeul/utils/article/wikipedia";
-import { NextRequest, NextResponse } from "next/server";
-import { getUser, getOrCreateUser } from "@caviardeul/lib/user";
 
 export const POST = async (request: NextRequest) => {
   const body = await request.json();

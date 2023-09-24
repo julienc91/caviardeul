@@ -1,5 +1,5 @@
-import { stripArticle } from "@caviardeul/utils/article/parsing";
 import { convertArticleToMarkdown } from "@caviardeul/utils/article/markdown";
+import { stripArticle } from "@caviardeul/utils/article/parsing";
 
 export const getArticleHtml = async (
   pageId: string,

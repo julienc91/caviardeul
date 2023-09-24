@@ -1,11 +1,11 @@
 import { DailyArticleScore, User } from "@prisma/client";
 import { setCookie } from "cookies-next";
-
-import prismaClient from "@caviardeul/prisma";
-import { getUser } from "@caviardeul/lib/user";
-import { COOKIE_MAX_AGE } from "@caviardeul/utils/config";
-import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
+
+import { getUser } from "@caviardeul/lib/user";
+import prismaClient from "@caviardeul/prisma";
+import { COOKIE_MAX_AGE } from "@caviardeul/utils/config";
 
 export const POST = async (request: NextRequest) => {
   const user = await getUser();

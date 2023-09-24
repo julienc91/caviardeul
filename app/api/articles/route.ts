@@ -1,10 +1,10 @@
 import { DailyArticleScore } from "@prisma/client";
+import { NextResponse } from "next/server";
 
+import { getUser } from "@caviardeul/lib/user";
 import prismaClient from "@caviardeul/prisma";
 import { ArticleInfo } from "@caviardeul/types";
-import { getUser } from "@caviardeul/lib/user";
 import { getArticleInfoStats } from "@caviardeul/utils/stats";
-import { NextResponse } from "next/server";
 
 export const GET = async () => {
   const user = await getUser();

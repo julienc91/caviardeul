@@ -1,10 +1,10 @@
 import { User } from "@prisma/client";
 import { deleteCookie, getCookie } from "cookies-next";
 import { IncomingMessage, ServerResponse } from "http";
+import { NextRequest } from "next/server";
 
 import prismaClient from "@caviardeul/prisma";
 import { LAST_SEEN_AT_UPDATE_THRESHOLD } from "@caviardeul/utils/config";
-import { NextRequest } from "next/server";
 
 export const getAuthorizationToken = (request: NextRequest): string | null => {
   const headers = new Headers(request.headers);

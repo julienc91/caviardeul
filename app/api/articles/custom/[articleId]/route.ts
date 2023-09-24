@@ -1,3 +1,5 @@
+import { NextRequest, NextResponse } from "next/server";
+
 import prismaClient from "@caviardeul/prisma";
 import { getArticleMarkdown } from "@caviardeul/utils/article/wikipedia";
 import {
@@ -6,7 +8,6 @@ import {
   fromBase64Url,
   generateKey,
 } from "@caviardeul/utils/encryption";
-import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (
   request: NextRequest,

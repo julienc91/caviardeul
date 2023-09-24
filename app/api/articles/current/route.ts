@@ -1,8 +1,9 @@
+import { NextResponse } from "next/server";
+
 import prismaClient from "@caviardeul/prisma";
+import { getNextArticleCountdown } from "@caviardeul/utils/article/article";
 import { getArticleMarkdown } from "@caviardeul/utils/article/wikipedia";
 import { encode, generateKey } from "@caviardeul/utils/encryption";
-import { getNextArticleCountdown } from "@caviardeul/utils/article/article";
-import { NextResponse } from "next/server";
 
 export const GET = async () => {
   const dailyArticle = await prismaClient.dailyArticle.findFirstOrThrow({

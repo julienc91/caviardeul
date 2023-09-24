@@ -10,7 +10,7 @@ const UserManager: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       articleId: ArticleId,
       custom: boolean,
       nbAttempts: number,
-      nbCorrect: number
+      nbCorrect: number,
     ) => {
       await fetch(`${BASE_URL}/api/scores`, {
         method: "POST",
@@ -20,7 +20,7 @@ const UserManager: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         },
       });
     },
-    []
+    [],
   );
 
   return (

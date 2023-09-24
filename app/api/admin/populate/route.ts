@@ -1,5 +1,6 @@
-import prismaClient from "@caviardeul/prisma";
 import { NextResponse } from "next/server";
+
+import prismaClient from "@caviardeul/prisma";
 
 const data: [string, string][] = []; // list of [pageId, pageName], must be shuffled!
 const exceptions: Set<string> = new Set(); // exceptions to pageId <-> pageName mismatch

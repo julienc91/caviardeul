@@ -5,7 +5,7 @@ import { BASE_URL } from "@caviardeul/utils/config";
 
 export const getEncodedArticle = (
   articleId?: ArticleId,
-  custom?: boolean
+  custom?: boolean,
 ): Promise<EncodedArticle> => {
   let url = `${BASE_URL}/api/articles/`;
   if (!articleId) {
@@ -56,6 +56,6 @@ export const useCreateCustomGame = () => {
     },
     {
       retry: false,
-    }
+    },
   );
 };

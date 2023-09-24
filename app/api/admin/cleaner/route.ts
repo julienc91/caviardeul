@@ -1,6 +1,7 @@
+import { NextResponse } from "next/server";
+
 import prismaClient from "@caviardeul/prisma";
 import { ADMIN_CLEANUP_LAST_SEEN_AT_THRESHOLD } from "@caviardeul/utils/config";
-import { NextResponse } from "next/server";
 
 export const POST = async () => {
   const thresholdDate = new Date();

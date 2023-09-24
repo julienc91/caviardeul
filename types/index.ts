@@ -86,6 +86,6 @@ export type UserState = {
     articleId: ArticleId,
     custom: boolean,
     nbAttempts: number,
-    nbCorrect: number
+    nbCorrect: number,
   ) => void;
 };

@@ -14,7 +14,7 @@ const Input: React.FC<{
     (event: ChangeEvent<HTMLInputElement>) => {
       setValue(event.target.value.replace(/\s/gi, ""));
     },
-    [setValue]
+    [setValue],
   );
 
   const handleSubmit = useCallback(() => {
@@ -33,7 +33,7 @@ const Input: React.FC<{
         setValue("");
       }
     },
-    [handleSubmit, value, lastValue]
+    [handleSubmit, value, lastValue],
   );
 
   const handleScrollTop = useCallback(() => {

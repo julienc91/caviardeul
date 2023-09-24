@@ -7,15 +7,15 @@ import {
 } from "@caviardeul/types";
 
 export const getArticleInfoStats = (
-  article: DailyArticle
+  article: DailyArticle,
 ): ArticleInfoStats => {
   const articleStats = article.stats as ArticleStats | null;
   const attempts = articleStats?.distribution
     ? Object.keys(articleStats.distribution)
         .map((nbAttempts: string) =>
           Array(articleStats.distribution[parseInt(nbAttempts)]).fill(
-            parseInt(nbAttempts) * 10
-          )
+            parseInt(nbAttempts) * 10,
+          ),
         )
         .flat()
         .sort()
@@ -24,7 +24,7 @@ export const getArticleInfoStats = (
   const mean = attempts.reduce((a, b) => a + b, 0) / (attempts.length || 1);
   const median = Math.max(
     attempts.length > 0 ? attempts[Math.floor(attempts.length / 2)] : 0,
-    10
+    10,
   );
 
   return {
