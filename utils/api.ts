@@ -1,13 +1,9 @@
 import { User } from "@prisma/client";
-import { deleteCookie, getCookie, setCookie } from "cookies-next";
+import { deleteCookie, getCookie } from "cookies-next";
 import { IncomingMessage, ServerResponse } from "http";
-import { NextApiRequest, NextApiResponse } from "next";
 
 import prismaClient from "@caviardeul/prisma";
-import {
-  COOKIE_MAX_AGE,
-  LAST_SEEN_AT_UPDATE_THRESHOLD,
-} from "@caviardeul/utils/config";
+import { LAST_SEEN_AT_UPDATE_THRESHOLD } from "@caviardeul/utils/config";
 import { NextRequest } from "next/server";
 
 export const getAuthorizationToken = (request: NextRequest): string | null => {
@@ -36,20 +32,6 @@ type ServerRequest = IncomingMessage & {
   cookies?: { [key: string]: string } | Partial<{ [key: string]: string }>;
 };
 
-export const initAPICall = async (
-  req: NextApiRequest,
-  res: NextApiResponse,
-  allowedMethods: string[],
-) => {
-  const { method } = req;
-  if (!method || !allowedMethods.includes(method)) {
-    res.setHeader("Allow", ["POST"]);
-    res.status(405).json({ error: `Method ${method} Not Allowed` });
-    return false;
-  }
-  return true;
-};
-
 export const getUser = async (
   req: ServerRequest,
   res: ServerResponse,
@@ -73,18 +55,6 @@ export const getUser = async (
         });
       }
     }
-  }
-  return user;
-};
-
-export const getOrCreateUser = async (
-  req: ServerRequest,
-  res: ServerResponse,
-): Promise<User> => {
-  let user = await getUser(req, res);
-  if (!user) {
-    user = await prismaClient.user.create({ data: {} });
-    setCookie("userId", user.id, { req, res, maxAge: COOKIE_MAX_AGE });
   }
   return user;
 };

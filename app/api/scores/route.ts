@@ -1,29 +1,12 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-
 import prismaClient from "@caviardeul/prisma";
-import { ArticleStats, ErrorDetail, User } from "@caviardeul/types";
-import { getOrCreateUser, initAPICall } from "@caviardeul/utils/api";
+import { ArticleStats } from "@caviardeul/types";
+import { getOrCreateUser } from "@caviardeul/lib/user";
+import { NextRequest, NextResponse } from "next/server";
 
-const handler = async (
-  req: NextApiRequest,
-  res: NextApiResponse<{} | ErrorDetail>
-) => {
-  const ok = await initAPICall(req, res, ["POST"]);
-  if (!ok) {
-    return;
-  }
-
-  const user = await getOrCreateUser(req, res);
-  await postHandler(req, res, user);
-};
-
-const postHandler = async (
-  req: NextApiRequest,
-  res: NextApiResponse<{} | ErrorDetail>,
-  user: User
-) => {
-  const nbAttempts = parseInt(req.body.nbAttempts, 10);
-  const nbCorrect = parseInt(req.body.nbCorrect, 10);
+export const POST = async (request: NextRequest) => {
+  const body = await request.json();
+  const nbAttempts = parseInt(body?.nbAttempts, 10);
+  const nbCorrect = parseInt(body?.nbCorrect, 10);
   if (
     isNaN(nbCorrect) ||
     isNaN(nbAttempts) ||
@@ -31,34 +14,36 @@ const postHandler = async (
     nbAttempts <= 0 ||
     nbCorrect > nbAttempts
   ) {
-    res.status(400).json({ error: "Invalid score" });
-    return;
+    return NextResponse.json(
+      {
+        error: "Invalid score",
+      },
+      { status: 400 },
+    );
   }
 
-  const { articleId, custom } = req.body;
+  const { articleId, custom } = body;
   if (custom) {
-    return customArticleHandler(res, user, articleId, nbAttempts, nbCorrect);
+    return await customArticleHandler(articleId, nbAttempts, nbCorrect);
   } else {
-    return dailyArticleHandler(res, user, articleId, nbAttempts, nbCorrect);
+    return await dailyArticleHandler(articleId, nbAttempts, nbCorrect);
   }
 };
 
 const customArticleHandler = async (
-  res: NextApiResponse,
-  user: User,
   articleId: string,
   nbAttempts: number,
-  nbCorrect: number
+  nbCorrect: number,
 ) => {
   const article = await prismaClient.customArticle.findUnique({
     where: { id: articleId },
   });
 
   if (!article) {
-    res.status(400).json({ error: "Article not found" });
-    return;
+    return NextResponse.json({ error: "Article not found" }, { status: 400 });
   }
 
+  const user = await getOrCreateUser();
   if (article.createdById !== user.id) {
     const stats = (article.stats || { distribution: {} }) as ArticleStats;
     const distributionKey = Math.min(Math.floor(nbAttempts / 10), 500);
@@ -74,23 +59,20 @@ const customArticleHandler = async (
     });
   }
 
-  res.status(204).end();
+  return new Response(null, { status: 204 });
 };
 
 const dailyArticleHandler = async (
-  res: NextApiResponse,
-  user: User,
   articleId: string,
   nbAttempts: number,
-  nbCorrect: number
+  nbCorrect: number,
 ) => {
   const article = await prismaClient.dailyArticle.findUnique({
     where: { id: parseInt(articleId, 10) },
   });
 
   if (!article || article.date > new Date()) {
-    res.status(400).json({ error: "Article not found" });
-    return;
+    return NextResponse.json({ error: "Article not found" }, { status: 400 });
   }
 
   const currentArticle = await prismaClient.dailyArticle.findFirstOrThrow({
@@ -99,6 +81,7 @@ const dailyArticleHandler = async (
   });
   const isCurrentArticle = article.id === currentArticle.id;
 
+  const user = await getOrCreateUser();
   try {
     await prismaClient.dailyArticleScore.create({
       data: {
@@ -109,8 +92,10 @@ const dailyArticleHandler = async (
       },
     });
   } catch (error) {
-    res.status(409).json({ error: "Score already exists" });
-    return;
+    return NextResponse.json(
+      { error: "Score already exists" },
+      { status: 409 },
+    );
   }
 
   const stats = (article.stats || { distribution: {} }) as ArticleStats;
@@ -127,7 +112,5 @@ const dailyArticleHandler = async (
     },
   });
 
-  res.status(204).end();
+  return new Response(null, { status: 204 });
 };
-
-export default handler;

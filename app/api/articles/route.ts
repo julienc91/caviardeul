@@ -1,21 +1,13 @@
 import { DailyArticleScore } from "@prisma/client";
-import type { NextApiRequest, NextApiResponse } from "next";
 
 import prismaClient from "@caviardeul/prisma";
-import { ArticleInfo, ErrorDetail } from "@caviardeul/types";
-import { getUser, initAPICall } from "@caviardeul/utils/api";
+import { ArticleInfo } from "@caviardeul/types";
+import { getUser } from "@caviardeul/lib/user";
 import { getArticleInfoStats } from "@caviardeul/utils/stats";
+import { NextResponse } from "next/server";
 
-const handler = async (
-  req: NextApiRequest,
-  res: NextApiResponse<ArticleInfo[] | ErrorDetail>
-) => {
-  const ok = await initAPICall(req, res, ["GET"]);
-  if (!ok) {
-    return;
-  }
-
-  const user = await getUser(req, res);
+export const GET = async () => {
+  const user = await getUser();
   const dailyArticles = await prismaClient.dailyArticle.findMany({
     where: { date: { lt: new Date() } },
     orderBy: { id: "asc" },
@@ -49,8 +41,5 @@ const handler = async (
     return data;
   });
 
-  res.status(200);
-  res.json(result);
+  return NextResponse.json(result);
 };
-
-export default handler;
