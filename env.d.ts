@@ -9,9 +9,9 @@ namespace NodeJS {
 
     EMAIL_FROM: string;
     EMAIL_ADMIN_TO: string;
-    SMTP_HOSTNAME: string;
+    SMTP_HOSTNAME?: string;
     SMTP_PORT?: string;
-    SMTP_LOGIN: string;
-    SMTP_PASSWORD: string;
+    SMTP_LOGIN?: string;
+    SMTP_PASSWORD?: string;
   }
 }

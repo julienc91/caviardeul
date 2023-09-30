@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 
 export const sendEmail = (to: string, subject: string, text: string) => {
   const transporter = getTransporter();
-  return transporter.sendMail({
+  return transporter?.sendMail({
     from: process.env.EMAIL_FROM,
     to,
     subject,
@@ -20,8 +20,10 @@ const getTransporter = () => {
   const user = process.env.SMTP_LOGIN;
   const pass = process.env.SMTP_PASSWORD;
 
-  if (!host || !port || !user || !pass) {
-    throw new Error("Email is not configured");
+  if (!host && !port && !user && !pass) {
+    return;
+  } else if (!host || !port || !user || !pass) {
+    throw new Error("Email is not configured correctly");
   }
   return nodemailer.createTransport({
     host,
