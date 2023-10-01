@@ -5,6 +5,8 @@ import { getNextArticleCountdown } from "@caviardeul/utils/article/article";
 import { getArticleMarkdown } from "@caviardeul/utils/article/wikipedia";
 import { encode, generateKey } from "@caviardeul/utils/encryption";
 
+export const dynamic = "force-dynamic";
+
 export const GET = async () => {
   const dailyArticle = await prismaClient.dailyArticle.findFirstOrThrow({
     where: {
@@ -31,7 +33,6 @@ export const GET = async () => {
 
   const { content } = result;
   const key = generateKey();
-
   return NextResponse.json(
     {
       key,
