@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
 
 import SettingsManager from "@caviardeul/components/managers/settingsManager";
-import UserManager from "@caviardeul/components/managers/userManager";
 import IntroductionModal from "@caviardeul/components/modals/introductionModal";
 import SettingsModal from "@caviardeul/components/modals/settingsModal";
 import Navbar from "@caviardeul/components/navbar";
@@ -65,19 +64,17 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <UserManager>
-        <Navbar onShowSettingsModal={handleShowSettingsModal} />
+      <Navbar onShowSettingsModal={handleShowSettingsModal} />
 
-        <SettingsManager>
-          {children}
+      <SettingsManager>
+        {children}
 
-          <SettingsModal
-            open={showSettingsModal}
-            onClose={handleCloseSettingsModal}
-          />
-          <IntroductionModal />
-        </SettingsManager>
-      </UserManager>
+        <SettingsModal
+          open={showSettingsModal}
+          onClose={handleCloseSettingsModal}
+        />
+        <IntroductionModal />
+      </SettingsManager>
     </>
   );
 };

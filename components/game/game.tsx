@@ -13,6 +13,7 @@ import GameInformation from "@caviardeul/components/game/gameInformation";
 import HistoryContainer from "@caviardeul/components/game/history";
 import Input from "@caviardeul/components/game/input";
 import Loader from "@caviardeul/components/utils/loader";
+import { saveGameScore } from "@caviardeul/lib/queries";
 import { Article, History } from "@caviardeul/types";
 import {
   buildAlternatives,
@@ -25,7 +26,6 @@ import {
 import { GameContext, getSelectedWord } from "@caviardeul/utils/game";
 import SaveManagement from "@caviardeul/utils/save";
 import { SettingsContext, defaultSettings } from "@caviardeul/utils/settings";
-import { UserContext } from "@caviardeul/utils/user";
 
 const Game: React.FC<{
   article: Article;
@@ -41,7 +41,6 @@ const Game: React.FC<{
 
   const { articleId, archive, custom, pageName, content } = article;
 
-  const { saveScore } = useContext(UserContext);
   const { settings } = useContext(SettingsContext);
 
   const withCloseAlternatives =
@@ -224,9 +223,9 @@ const Game: React.FC<{
       const nbCorrect = history.filter(
         ([, nbOccurrences]) => nbOccurrences > 0,
       ).length;
-      saveScore(articleId, custom, nbAttempts, nbCorrect);
+      saveGameScore(articleId, custom, nbAttempts, nbCorrect);
     }
-  }, [custom, articleId, history, isOver, saveLoaded, saveScore]);
+  }, [custom, articleId, history, isOver, saveLoaded]);
 
   return (
     <main id="game">

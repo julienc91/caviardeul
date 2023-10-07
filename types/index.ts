@@ -1,10 +1,5 @@
 import { ArticleSafety } from "@prisma/client";
 
-export type ErrorDetail = {
-  error: string;
-  debug?: string;
-};
-
 export type ArticleId = number | string;
 
 export type Article = {
@@ -75,17 +70,4 @@ export type Settings = {
 export type SettingsState = {
   settings: Settings | null;
   onChangeSettings: (settings: Partial<Settings>) => void;
-};
-
-export type User = {
-  id: string;
-};
-
-export type UserState = {
-  saveScore: (
-    articleId: ArticleId,
-    custom: boolean,
-    nbAttempts: number,
-    nbCorrect: number,
-  ) => void;
 };
