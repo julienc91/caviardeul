@@ -19,6 +19,7 @@ const elementsToRemove = [
   ".mw-empty-elt",
   ".noprint",
   ".bandeau-portail",
+  ".indicateur-langue", // Link to page in another language
   ".reference",
   ".reference-cadre",
   ".thumb",
