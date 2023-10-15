@@ -42,11 +42,6 @@ export type ArticleInfo = {
   stats: ArticleInfoStats;
 };
 
-export type CustomGameCreation = {
-  articleId: string;
-  pageName: string;
-};
-
 export type History = [string, number][];
 
 export type GameState = {

@@ -3,8 +3,7 @@ import { useRouter } from "next/router";
 import React, { FormEvent, useCallback, useState } from "react";
 
 import Loader from "@caviardeul/components/utils/loader";
-import { useCreateCustomGame } from "@caviardeul/hooks/article";
-import { CustomGameCreation } from "@caviardeul/types";
+import { useCreateCustomGame } from "@caviardeul/lib/queries";
 import { copyToClipboard } from "@caviardeul/utils/clipboard";
 import { BASE_URL } from "@caviardeul/utils/config";
 
@@ -45,7 +44,13 @@ const NewCustomGame: React.FC = () => {
   );
 
   const handleSubmissionCreated = useCallback(
-    async ({ articleId, pageName }: CustomGameCreation) => {
+    async ({
+      articleId,
+      pageName,
+    }: {
+      articleId: string;
+      pageName: string;
+    }) => {
       setArticleId(articleId);
       setPageName(pageName);
       await handleCopyToClipboard(gameUrl);
@@ -56,12 +61,12 @@ const NewCustomGame: React.FC = () => {
   const handleSubmit = useCallback(
     (event: FormEvent) => {
       event.preventDefault();
-      if (gameId) {
+      if (gameId || !pageId) {
         return;
       }
-      mutation.mutate(pageId, {
-        onSuccess: handleSubmissionCreated,
-      });
+      mutation
+        .trigger({ pageId })
+        .then((param) => param && handleSubmissionCreated(param));
     },
     [gameId, handleSubmissionCreated, mutation, pageId],
   );
@@ -104,12 +109,12 @@ const NewCustomGame: React.FC = () => {
               </label>
               <input
                 type="submit"
-                disabled={!pageId.length || mutation.isLoading || !!gameId}
+                disabled={!pageId.length || mutation.isMutating || !!gameId}
                 value="Créer"
               />
             </p>
-            {mutation.isLoading && <Loader />}
-            {mutation.isError && (
+            {mutation.isMutating && <Loader />}
+            {mutation.error && (
               <p>
                 Impossibe de créer une partie personnalisée à partir de cet
                 article.

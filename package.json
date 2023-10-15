@@ -25,7 +25,7 @@
     "react-dom": "^18.1.0",
     "react-icons": "^4.6.0",
     "react-markdown": "^9.0.0",
-    "react-query": "^3.39.0",
+    "swr": "^2.2.4",
     "turndown": "^7.1.2"
   },
   "//": "https://github.com/mixmark-io/turndown/issues/378",
