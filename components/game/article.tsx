@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import ReactMarkdown from "react-markdown";
-import { ReactMarkdownOptions } from "react-markdown/lib/react-markdown";
+import ReactMarkdown, { Options } from "react-markdown";
 
 import {
   isCommonWord,
@@ -52,7 +51,7 @@ const _WordContainer: React.FC<{ node: any }> = ({ node }) => {
 };
 
 const _MarkdownContainer: React.FC<
-  ReactMarkdownOptions & { onContentLoaded: () => void }
+  Options & { onContentLoaded: () => void }
 > = ({ children, onContentLoaded, ...props }) => {
   useEffect(() => {
     onContentLoaded();
