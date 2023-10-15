@@ -15,8 +15,9 @@
     "@prisma/client": "^5.2.0",
     "cookies-next": "^4.0.0",
     "crypto-js": "^4.1.1",
+    "jsdom": "^22.1.0",
     "latinize": "^2.0.0",
-    "next": "13.4.x",
+    "next": "^13.5.4",
     "node-html-parser": "6.1.8",
     "nodemailer": "^6.9.3",
     "prisma": "^5.2.0",
@@ -28,13 +29,10 @@
     "swr": "^2.2.4",
     "turndown": "^7.1.2"
   },
-  "//": "https://github.com/mixmark-io/turndown/issues/378",
-  "resolutions": {
-    "domino": "Haringat/domino#2721294c75334ece635dfc72cad0a3dede7391fb"
-  },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.0.0",
     "@types/crypto-js": "^4.1.1",
+    "@types/jsdom": "^21.1.3",
     "@types/latinize": "^0.2.15",
     "@types/node": "^20.3.3",
     "@types/nodemailer": "^6.4.8",
