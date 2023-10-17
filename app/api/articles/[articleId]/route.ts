@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import prismaClient from "@caviardeul/prisma";
-import { getArticleMarkdown } from "@caviardeul/utils/article/wikipedia";
+import { getParsedArticle } from "@caviardeul/utils/article/wikipedia";
 import { encode, generateKey } from "@caviardeul/utils/encryption";
 
 export const GET = async (
@@ -28,7 +28,7 @@ export const GET = async (
     );
   }
 
-  const result = await getArticleMarkdown(
+  const result = await getParsedArticle(
     dailyArticle.pageId,
     dailyArticle.pageName,
   );

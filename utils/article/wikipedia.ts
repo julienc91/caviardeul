@@ -1,4 +1,3 @@
-import { convertArticleToMarkdown } from "@caviardeul/utils/article/markdown";
 import { stripArticle } from "@caviardeul/utils/article/parsing";
 
 export const getArticleHtml = async (
@@ -19,7 +18,7 @@ export const getArticleHtml = async (
   return { pageName: result.parse.title, content: result.parse.text };
 };
 
-export const getArticleMarkdown = async (
+export const getParsedArticle = async (
   pageId: string,
   pageTitle?: string,
 ): Promise<{ pageName: string; content: string } | null> => {
@@ -32,6 +31,6 @@ export const getArticleMarkdown = async (
   const html = result.content;
   return {
     pageName,
-    content: convertArticleToMarkdown(pageName, stripArticle(html)),
+    content: `<h1>${pageName}</h1>` + stripArticle(html),
   };
 };

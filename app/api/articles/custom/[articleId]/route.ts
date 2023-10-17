@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import prismaClient from "@caviardeul/prisma";
-import { getArticleMarkdown } from "@caviardeul/utils/article/wikipedia";
+import { getParsedArticle } from "@caviardeul/utils/article/wikipedia";
 import {
   decode,
   encode,
@@ -37,7 +37,7 @@ export const GET = async (
     }
   }
 
-  const result = await getArticleMarkdown(pageId, customArticle?.pageName);
+  const result = await getParsedArticle(pageId, customArticle?.pageName);
   if (result === null) {
     return NextResponse.json(
       { error: "L'artcile n'a pas été trouvée" },

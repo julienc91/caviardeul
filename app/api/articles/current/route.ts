@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 import prismaClient from "@caviardeul/prisma";
 import { getNextArticleCountdown } from "@caviardeul/utils/article/article";
-import { getArticleMarkdown } from "@caviardeul/utils/article/wikipedia";
+import { getParsedArticle } from "@caviardeul/utils/article/wikipedia";
 import { encode, generateKey } from "@caviardeul/utils/encryption";
 
 export const dynamic = "force-dynamic";
@@ -20,7 +20,7 @@ export const GET = async () => {
   });
 
   const nextArticleCountdown = getNextArticleCountdown();
-  const result = await getArticleMarkdown(
+  const result = await getParsedArticle(
     dailyArticle.pageId,
     dailyArticle.pageName,
   );
