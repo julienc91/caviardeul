@@ -3,7 +3,7 @@ import Error from "next/error";
 import React from "react";
 
 import Game from "@caviardeul/components/game/game";
-import { getEncodedArticle } from "@caviardeul/hooks/article";
+import { getEncodedArticle } from "@caviardeul/lib/article";
 import prismaClient from "@caviardeul/prisma";
 import { EncodedArticle } from "@caviardeul/types";
 import { getUser } from "@caviardeul/utils/api";

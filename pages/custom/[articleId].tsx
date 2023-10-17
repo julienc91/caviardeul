@@ -3,7 +3,7 @@ import Head from "next/head";
 import React from "react";
 
 import Game from "@caviardeul/components/game/game";
-import { getEncodedArticle } from "@caviardeul/hooks/article";
+import { getEncodedArticle } from "@caviardeul/lib/article";
 import { EncodedArticle } from "@caviardeul/types";
 import { decodeArticle } from "@caviardeul/utils/encryption";
 
