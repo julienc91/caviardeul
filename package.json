@@ -27,7 +27,7 @@
     "swr": "^2.2.4"
   },
   "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "^4.0.0",
+    "@trivago/prettier-plugin-sort-imports": "^4.2.0",
     "@types/crypto-js": "^4.1.1",
     "@types/latinize": "^0.2.15",
     "@types/node": "^20.3.3",
