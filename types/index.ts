@@ -42,14 +42,7 @@ export type ArticleInfo = {
   stats: ArticleInfoStats;
 };
 
-export type History = [string, number][];
-
-export type GameState = {
-  history: History;
-  words: Set<string>;
-  isOver: boolean;
-  selection: [string, number] | null;
-};
+export type GameHistory = [string, number][];
 
 export type ArticleStats = {
   distribution: Record<number, number>;

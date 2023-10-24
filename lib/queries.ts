@@ -1,6 +1,6 @@
 import useSWRMutation from "swr/mutation";
 
-import { ArticleId } from "@caviardeul/types";
+import { Article } from "@caviardeul/types";
 import { BASE_URL } from "@caviardeul/utils/config";
 
 class APIError extends Error {
@@ -15,11 +15,11 @@ class APIError extends Error {
 }
 
 export const saveGameScore = (
-  articleId: ArticleId,
-  custom: boolean,
+  article: Article,
   nbAttempts: number,
   nbCorrect: number,
 ) => {
+  const { articleId, custom } = article;
   return fetch(`${BASE_URL}/api/scores`, {
     method: "POST",
     body: JSON.stringify({ articleId, custom, nbAttempts, nbCorrect }),

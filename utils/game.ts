@@ -1,18 +1,9 @@
-import React from "react";
-
-import { GameState, History } from "@caviardeul/types";
+import { GameHistory } from "@caviardeul/types";
 import { closeAlternativesSuffixes } from "@caviardeul/utils/caviarding";
-
-export const GameContext = React.createContext<GameState>({
-  history: [],
-  words: new Set(),
-  isOver: false,
-  selection: null,
-});
 
 export const getSelectedWord = (
   word: string,
-  history: History,
+  history: GameHistory,
   withCloseAlternatives: boolean,
 ): string => {
   const historyWords = new Set([

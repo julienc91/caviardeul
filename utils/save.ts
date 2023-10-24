@@ -1,4 +1,4 @@
-import { History, Settings } from "@caviardeul/types";
+import { Article, GameHistory, Settings } from "@caviardeul/types";
 import { decode, encode, generateKey } from "@caviardeul/utils/encryption";
 
 class SaveManagement {
@@ -34,11 +34,8 @@ class SaveManagement {
     }
   }
 
-  static loadProgress(
-    articleId: number | string,
-    archive: boolean,
-    custom: boolean,
-  ): History | null {
+  static loadProgress(article: Article): GameHistory | null {
+    const { articleId, archive, custom } = article;
     const storageKey = SaveManagement.getProgressStorageKey(archive, custom);
     const data = localStorage.getItem(storageKey);
     if (!data) {
@@ -61,12 +58,8 @@ class SaveManagement {
     }
   }
 
-  static saveProgress(
-    articleId: number | string,
-    history: History,
-    archive: boolean,
-    custom: boolean,
-  ): void {
+  static saveProgress(article: Article, history: GameHistory): void {
+    const { articleId, custom, archive } = article;
     const data = { articleId, history };
     const storageKey = SaveManagement.getProgressStorageKey(archive, custom);
     const key = SaveManagement.getEncryptionKey(true);

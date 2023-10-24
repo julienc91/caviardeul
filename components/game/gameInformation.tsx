@@ -1,18 +1,17 @@
 import Link from "next/link";
-import React from "react";
+import React, { useContext } from "react";
 
+import { GameContext } from "@caviardeul/components/game/manager";
 import ExternalLink from "@caviardeul/components/utils/externalLink";
 import ShareAction from "@caviardeul/components/utils/shareAction";
-import { ArticleId, History } from "@caviardeul/types";
 
-const GameInformation: React.FC<{
-  articleId: ArticleId;
-  archive: boolean;
-  custom: boolean;
-  history: History;
-  pageName: string;
-  userScore?: { nbAttempts: number; nbCorrect: number };
-}> = ({ articleId, archive, custom, history, pageName, userScore }) => {
+const GameInformation = () => {
+  const { article, userScore, isOver, history } = useContext(GameContext);
+  if (!isOver || !article) {
+    return null;
+  }
+
+  const { articleId, archive, custom, pageName } = article;
   const nbTrials = userScore?.nbAttempts ?? history.length;
   const accuracy = Math.round(
     (userScore

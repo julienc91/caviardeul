@@ -1,13 +1,13 @@
-import React, { useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 
-import { History } from "@caviardeul/types";
+import { GameContext } from "@caviardeul/components/game/manager";
 
-const HistoryContainer: React.FC<{
-  history: History;
-  selectedWord: string | null;
-  onSelectionChange: (world: string) => void;
-}> = ({ history, selectedWord, onSelectionChange }) => {
+const AttemptHistory = () => {
+  const { isOver, history, selection, updateSelection } =
+    useContext(GameContext);
   const selectedRow = useRef<HTMLTableRowElement>(null);
+  const selectedWord = selection ? selection[0] : null;
+
   useEffect(() => {
     if (selectedRow.current) {
       selectedRow.current.scrollIntoView({
@@ -17,6 +17,10 @@ const HistoryContainer: React.FC<{
       });
     }
   }, [selectedRow, selectedWord]);
+
+  if (isOver && !history.length) {
+    return null;
+  }
 
   return (
     <div className="guess-history">
@@ -40,7 +44,7 @@ const HistoryContainer: React.FC<{
                     (isSelectedWord ? "selected " : "") +
                     (isClickable ? "clickable " : "")
                   }
-                  onClick={() => onSelectionChange(word)}
+                  onClick={() => updateSelection(word)}
                   ref={isSelectedWord ? selectedRow : null}
                 >
                   <td>{i + 1}</td>
@@ -56,4 +60,4 @@ const HistoryContainer: React.FC<{
   );
 };
 
-export default HistoryContainer;
+export default AttemptHistory;

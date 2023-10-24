@@ -1,12 +1,11 @@
-import React, { ChangeEvent, useCallback, useState } from "react";
+import React, { ChangeEvent, useCallback, useContext, useState } from "react";
 import { FaArrowUp } from "react-icons/fa";
 
+import { GameContext } from "@caviardeul/components/game/manager";
 import { isWord, splitWords } from "@caviardeul/utils/caviarding";
 
-const Input: React.FC<{
-  disabled: boolean;
-  onConfirm: (value: string) => void;
-}> = ({ disabled, onConfirm }) => {
+const Input = () => {
+  const { canPlay, makeAttempt } = useContext(GameContext);
   const [value, setValue] = useState<string>("");
   const [lastValue, setLastValue] = useState<string>("");
 
@@ -18,10 +17,10 @@ const Input: React.FC<{
   );
 
   const handleSubmit = useCallback(() => {
-    onConfirm(splitWords(value).filter(isWord).join().toLocaleLowerCase());
+    makeAttempt(splitWords(value).filter(isWord).join().toLocaleLowerCase());
     setLastValue(value);
     setValue("");
-  }, [onConfirm, value]);
+  }, [makeAttempt, value]);
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -53,7 +52,7 @@ const Input: React.FC<{
       </div>
       <input
         type="text"
-        disabled={disabled}
+        disabled={!canPlay}
         value={value}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
@@ -61,7 +60,7 @@ const Input: React.FC<{
       />
       <input
         type="submit"
-        disabled={disabled}
+        disabled={!canPlay}
         onClick={handleSubmit}
         value="Valider"
       />
