@@ -95,6 +95,7 @@ export const Manager: React.FC<{
       )
     ) {
       setIsOver(true);
+      setSelection(null);
       setCanPlay(false);
     }
   }, [isOver, revealedWords, titleWords]);
