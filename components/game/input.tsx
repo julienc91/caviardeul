@@ -37,7 +37,7 @@ const Input = () => {
 
   const handleScrollTop = useCallback(() => {
     document
-      .getElementById("article")
+      .querySelector(".article-container")
       ?.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
