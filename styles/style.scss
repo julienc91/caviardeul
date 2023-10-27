@@ -73,7 +73,9 @@ body {
   color: $light2;
   height: 100vh;
   overflow: auto;
-  transition: color 0.5s ease-in, background-color 0.5s ease-out;
+  transition:
+    color 0.5s ease-in,
+    background-color 0.5s ease-out;
 
   @include media-max($breakpoint) {
     .medium-up {
@@ -117,7 +119,9 @@ nav {
         border: 2px solid $light4;
         border-radius: 5px;
         height: 0;
-        transition: transform 0.2s ease-in-out, width 0.2s ease-in-out;
+        transition:
+          transform 0.2s ease-in-out,
+          width 0.2s ease-in-out;
         width: 90%;
       }
 
@@ -448,6 +452,7 @@ main {
     .word {
       box-sizing: border-box;
       border: 1px solid transparent;
+      white-space: nowrap;
 
       &.selected {
         color: $lightBlue;
