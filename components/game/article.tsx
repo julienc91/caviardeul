@@ -6,6 +6,7 @@ import {
 } from "node-html-parser";
 import React, { Key, ReactNode, useContext, useEffect, useMemo } from "react";
 
+import CustomGameBanner from "@caviardeul/components/game/customGameBanner";
 import { GameContext } from "@caviardeul/components/game/manager";
 import {
   isCommonWord,
@@ -159,7 +160,14 @@ const ArticleContainer = () => {
     return null;
   }
 
-  return <div className="article-container">{inner}</div>;
+  const { custom, safety } = article;
+
+  return (
+    <div className="article-container">
+      {custom && <CustomGameBanner safetyLevel={safety} />}
+      {inner}
+    </div>
+  );
 };
 
 export default ArticleContainer;

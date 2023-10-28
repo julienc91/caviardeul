@@ -18,7 +18,6 @@ const Game: React.FC<{
     <main id="game">
       <Manager article={article} userScore={userScore}>
         <div className="left-container">
-          {custom && <CustomGameBanner safetyLevel={article.safety} />}
           <ArticleContainer />
           <Input />
         </div>
