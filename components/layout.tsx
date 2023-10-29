@@ -1,24 +1,12 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React, { useCallback, useState } from "react";
+import React from "react";
 
 import SettingsManager from "@caviardeul/components/managers/settingsManager";
-import IntroductionModal from "@caviardeul/components/modals/introductionModal";
-import SettingsModal from "@caviardeul/components/modals/settingsModal";
 import Navbar from "@caviardeul/components/navbar";
 import { BASE_URL } from "@caviardeul/utils/config";
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [showSettingsModal, setShowSettingsModal] = useState(false);
-
-  const handleShowSettingsModal = useCallback(() => {
-    setShowSettingsModal(true);
-  }, []);
-
-  const handleCloseSettingsModal = useCallback(() => {
-    setShowSettingsModal(false);
-  }, []);
-
   const router = useRouter();
 
   const title = "Caviardeul - Devinez l'article Wikipédia caché";
@@ -64,16 +52,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Navbar onShowSettingsModal={handleShowSettingsModal} />
-
       <SettingsManager>
+        <Navbar />
         {children}
-
-        <SettingsModal
-          open={showSettingsModal}
-          onClose={handleCloseSettingsModal}
-        />
-        <IntroductionModal />
       </SettingsManager>
     </>
   );

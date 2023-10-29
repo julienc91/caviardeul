@@ -1,9 +1,11 @@
+"use client";
+
 import { getCookie } from "cookies-next";
 import React, { useState } from "react";
 
 import SaveManagement from "@caviardeul/utils/save";
 
-const DebugPage: React.FC = () => {
+const Page = () => {
   const [ready, setReady] = useState(false);
 
   return (
@@ -38,5 +40,4 @@ const DebugPage: React.FC = () => {
     </main>
   );
 };
-
-export default DebugPage;
+export default Page;
