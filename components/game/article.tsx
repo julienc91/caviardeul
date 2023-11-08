@@ -8,6 +8,7 @@ import React, { Key, ReactNode, useContext, useEffect, useMemo } from "react";
 
 import CustomGameBanner from "@caviardeul/components/game/customGameBanner";
 import { GameContext } from "@caviardeul/components/game/manager";
+import { SettingsContext } from "@caviardeul/components/settings/manager";
 import {
   isCommonWord,
   isSelected,
@@ -15,16 +16,15 @@ import {
   splitWords,
   standardizeText,
 } from "@caviardeul/utils/caviarding";
-import { SettingsContext, defaultSettings } from "@caviardeul/utils/settings";
 
 const _WordContainer: React.FC<{ word: string }> = ({ word }) => {
   const { settings } = useContext(SettingsContext);
+  const { withCloseAlternatives } = settings;
+
   const { revealedWords, isOver, selection } = useContext(GameContext);
   if (word === undefined) {
     return null;
   }
-  const withCloseAlternatives =
-    settings?.withCloseAlternatives ?? defaultSettings.withCloseAlternatives;
 
   const standardizedWord = standardizeText(word);
   const revealed = isOver || revealedWords.has(standardizedWord);
@@ -130,8 +130,8 @@ const parseText = (text: string): ReactNode => {
 const ArticleContainer = () => {
   const { article, selection } = useContext(GameContext);
   const { settings } = useContext(SettingsContext);
-  const autoScroll =
-    settings?.autoScroll ?? defaultSettings.withCloseAlternatives;
+  const { autoScroll } = settings;
+
   const inner = useMemo(
     () => (article ? parseHTML(article.content) : null),
     [article],

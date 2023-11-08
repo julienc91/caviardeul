@@ -7,6 +7,7 @@ import React, {
   useState,
 } from "react";
 
+import { SettingsContext } from "@caviardeul/components/settings/manager";
 import { saveGameScore } from "@caviardeul/lib/queries";
 import { Article, GameHistory } from "@caviardeul/types";
 import {
@@ -19,7 +20,6 @@ import {
 } from "@caviardeul/utils/caviarding";
 import { getSelectedWord } from "@caviardeul/utils/game";
 import SaveManagement from "@caviardeul/utils/save";
-import { SettingsContext, defaultSettings } from "@caviardeul/utils/settings";
 
 type UserScore = {
   nbAttempts: number;
@@ -61,8 +61,7 @@ export const Manager: React.FC<{
 
   const { pageName, content } = article;
   const { settings } = useContext(SettingsContext);
-  const withCloseAlternatives =
-    settings?.withCloseAlternatives ?? defaultSettings.withCloseAlternatives;
+  const { withCloseAlternatives } = settings;
 
   const titleWords = useMemo(
     () => splitWords(pageName).filter(isWord).map(standardizeText),

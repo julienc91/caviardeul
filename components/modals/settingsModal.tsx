@@ -1,7 +1,7 @@
 import React, { useCallback, useContext } from "react";
 
 import Modal from "@caviardeul/components/modals/modal";
-import { SettingsContext, defaultSettings } from "@caviardeul/utils/settings";
+import { SettingsContext } from "@caviardeul/components/settings/manager";
 
 const SettingsModal: React.FC<{ open: boolean; onClose: () => void }> = ({
   open,
@@ -9,7 +9,7 @@ const SettingsModal: React.FC<{ open: boolean; onClose: () => void }> = ({
 }) => {
   const { settings, onChangeSettings } = useContext(SettingsContext);
   const { lightMode, displayWordLength, withCloseAlternatives, autoScroll } =
-    settings ?? defaultSettings;
+    settings;
 
   const handleToggleLightMode = useCallback(() => {
     onChangeSettings({ lightMode: !lightMode });

@@ -2,8 +2,9 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
 
-import SettingsManager from "@caviardeul/components/managers/settingsManager";
 import Navbar from "@caviardeul/components/navbar";
+import ColorMode from "@caviardeul/components/settings/colorMode";
+import SettingsManager from "@caviardeul/components/settings/manager";
 import { BASE_URL } from "@caviardeul/utils/config";
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -53,6 +54,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       </Head>
 
       <SettingsManager>
+        <ColorMode />
         <Navbar />
         {children}
       </SettingsManager>

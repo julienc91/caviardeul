@@ -54,8 +54,3 @@ export type Settings = {
   withCloseAlternatives: boolean;
   autoScroll: boolean;
 };
-
-export type SettingsState = {
-  settings: Settings | null;
-  onChangeSettings: (settings: Partial<Settings>) => void;
-};
