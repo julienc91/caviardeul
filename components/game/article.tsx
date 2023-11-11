@@ -19,7 +19,6 @@ import {
 
 const _WordContainer: React.FC<{ word: string }> = ({ word }) => {
   const { settings } = useContext(SettingsContext);
-  const { withCloseAlternatives } = settings;
 
   const { revealedWords, isOver, selection } = useContext(GameContext);
   if (word === undefined) {
@@ -28,9 +27,7 @@ const _WordContainer: React.FC<{ word: string }> = ({ word }) => {
 
   const standardizedWord = standardizeText(word);
   const revealed = isOver || revealedWords.has(standardizedWord);
-  const selected =
-    selection &&
-    isSelected(standardizedWord, selection[0], withCloseAlternatives);
+  const selected = selection && isSelected(standardizedWord, selection[0]);
 
   if (revealed) {
     return (
@@ -40,7 +37,7 @@ const _WordContainer: React.FC<{ word: string }> = ({ word }) => {
     return (
       <span
         className={
-          "word caviarded" + (settings?.displayWordLength ? " word-length" : "")
+          "word caviarded" + (settings.displayWordLength ? " word-length" : "")
         }
         data-word-length={word.length}
       >

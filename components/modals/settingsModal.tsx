@@ -8,8 +8,7 @@ const SettingsModal: React.FC<{ open: boolean; onClose: () => void }> = ({
   onClose,
 }) => {
   const { settings, onChangeSettings } = useContext(SettingsContext);
-  const { lightMode, displayWordLength, withCloseAlternatives, autoScroll } =
-    settings;
+  const { lightMode, displayWordLength, autoScroll } = settings;
 
   const handleToggleLightMode = useCallback(() => {
     onChangeSettings({ lightMode: !lightMode });
@@ -18,10 +17,6 @@ const SettingsModal: React.FC<{ open: boolean; onClose: () => void }> = ({
   const handleToggleDisplayWordLength = useCallback(() => {
     onChangeSettings({ displayWordLength: !displayWordLength });
   }, [displayWordLength, onChangeSettings]);
-
-  const handleToggleWithCloseAlternatives = useCallback(() => {
-    onChangeSettings({ withCloseAlternatives: !withCloseAlternatives });
-  }, [withCloseAlternatives, onChangeSettings]);
 
   const handleToggleAutoscroll = useCallback(() => {
     onChangeSettings({ autoScroll: !autoScroll });
@@ -51,15 +46,6 @@ const SettingsModal: React.FC<{ open: boolean; onClose: () => void }> = ({
             onChange={handleToggleDisplayWordLength}
           />
           Afficher le nombre de lettres au clic
-        </label>
-        <br />
-        <label>
-          <input
-            type="checkbox"
-            checked={withCloseAlternatives}
-            onChange={handleToggleWithCloseAlternatives}
-          />
-          Révéler les mots proches
         </label>
         <br />
         <label>

@@ -83,15 +83,9 @@ const getRelatedCommonWords = (word: string): string[] => {
   );
 };
 
-export const countOccurrences = (
-  word: string,
-  text: string,
-  withCloseAlternatives: boolean,
-): number => {
+export const countOccurrences = (word: string, text: string): number => {
   text = standardizeText(text);
-  const allowedSuffixes = withCloseAlternatives
-    ? `(${closeAlternativesSuffixes.join("|")})?`
-    : "";
+  const allowedSuffixes = `(${closeAlternativesSuffixes.join("|")})?`;
   const regex = new RegExp(
     `\([${punctuationList}]|^)(${word})${allowedSuffixes}([${punctuationList}]|$)`,
     "gim",
@@ -125,17 +119,10 @@ export const buildAlternatives = (standardizedWord: string): string[] =>
  * Determine if a word is currently selected
  * @param word
  * @param selection
- * @param withCloseAlternatives
  */
-export const isSelected = (
-  word: string,
-  selection: string,
-  withCloseAlternatives: boolean,
-): boolean => {
+export const isSelected = (word: string, selection: string): boolean => {
   if (word === selection) {
     return true;
-  } else if (!withCloseAlternatives) {
-    return false;
   } else {
     return buildAlternatives(selection).some(
       (alternative) => alternative === word,

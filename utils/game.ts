@@ -1,11 +1,7 @@
 import { GameHistory } from "@caviardeul/types";
 import { closeAlternativesSuffixes } from "@caviardeul/utils/caviarding";
 
-export const getSelectedWord = (
-  word: string,
-  history: GameHistory,
-  withCloseAlternatives: boolean,
-): string => {
+export const getSelectedWord = (word: string, history: GameHistory): string => {
   const historyWords = new Set([
     ...history.map(([historyWord]) => historyWord),
   ]);
@@ -13,13 +9,11 @@ export const getSelectedWord = (
     return word;
   }
 
-  if (withCloseAlternatives) {
-    for (let suffix of closeAlternativesSuffixes) {
-      if (word.endsWith(suffix) && word !== suffix) {
-        const alternative = word.slice(0, -suffix.length);
-        if (historyWords.has(alternative)) {
-          return alternative;
-        }
+  for (let suffix of closeAlternativesSuffixes) {
+    if (word.endsWith(suffix) && word !== suffix) {
+      const alternative = word.slice(0, -suffix.length);
+      if (historyWords.has(alternative)) {
+        return alternative;
       }
     }
   }

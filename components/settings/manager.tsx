@@ -8,7 +8,6 @@ import SaveManagement from "@caviardeul/utils/save";
 const defaultSettings: Settings = {
   lightMode: false,
   displayWordLength: true,
-  withCloseAlternatives: true,
   autoScroll: true,
 };
 const getInitialSettings = (): Settings => {
@@ -22,8 +21,6 @@ const getInitialSettings = (): Settings => {
     lightMode: settings?.lightMode ?? defaultSettings.lightMode,
     displayWordLength:
       settings?.displayWordLength ?? defaultSettings.displayWordLength,
-    withCloseAlternatives:
-      settings?.withCloseAlternatives ?? defaultSettings.withCloseAlternatives,
     autoScroll: settings?.autoScroll ?? defaultSettings.autoScroll,
   };
 };

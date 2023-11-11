@@ -1,13 +1,11 @@
 import React, {
   createContext,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
 
-import { SettingsContext } from "@caviardeul/components/settings/manager";
 import { saveGameScore } from "@caviardeul/lib/queries";
 import { Article, GameHistory } from "@caviardeul/types";
 import {
@@ -25,6 +23,7 @@ type UserScore = {
   nbAttempts: number;
   nbCorrect: number;
 };
+
 export const GameContext = createContext<{
   article?: Article;
   isOver: boolean;
@@ -60,8 +59,6 @@ export const Manager: React.FC<{
   const [canPlay, setCanPlay] = useState(false);
 
   const { pageName, content } = article;
-  const { settings } = useContext(SettingsContext);
-  const { withCloseAlternatives } = settings;
 
   const titleWords = useMemo(
     () => splitWords(pageName).filter(isWord).map(standardizeText),
@@ -107,7 +104,7 @@ export const Manager: React.FC<{
       if (!word || !word.length) {
         setSelection(null);
       } else {
-        word = getSelectedWord(word, history, withCloseAlternatives);
+        word = getSelectedWord(word, history);
         if (!selection) {
           setSelection([word, 0]);
         } else {
@@ -120,7 +117,7 @@ export const Manager: React.FC<{
         }
       }
     },
-    [selection, history, withCloseAlternatives],
+    [selection, history],
   );
 
   /**
@@ -159,22 +156,16 @@ export const Manager: React.FC<{
         return;
       }
 
-      const nbOccurrences = countOccurrences(
-        word,
-        content,
-        withCloseAlternatives,
-      );
+      const nbOccurrences = countOccurrences(word, content);
       const newRevealedWords = new Set(revealedWords);
       newRevealedWords.add(word);
-      if (withCloseAlternatives) {
-        buildAlternatives(word).forEach((alternative) =>
-          newRevealedWords.add(alternative),
-        );
-      }
+      buildAlternatives(word).forEach((alternative) =>
+        newRevealedWords.add(alternative),
+      );
       setRevealedWords(newRevealedWords);
       setHistory((prev) => [...prev, [word, nbOccurrences]]);
     },
-    [canPlay, content, revealedWords, selection, withCloseAlternatives],
+    [canPlay, content, revealedWords, selection],
   );
 
   /**
@@ -192,15 +183,10 @@ export const Manager: React.FC<{
       savedHistory.forEach(([word]) => {
         word = standardizeText(word);
         newRevealedWords.add(word);
-        if (withCloseAlternatives) {
-          buildAlternatives(word).forEach((alternative) =>
-            newRevealedWords.add(alternative),
-          );
-        }
-        newHistory.push([
-          word,
-          countOccurrences(word, content, withCloseAlternatives),
-        ]);
+        buildAlternatives(word).forEach((alternative) =>
+          newRevealedWords.add(alternative),
+        );
+        newHistory.push([word, countOccurrences(word, content)]);
       });
 
       setHistory(newHistory);
@@ -209,7 +195,7 @@ export const Manager: React.FC<{
 
     setSaveLoaded(true);
     setCanPlay(!isOver);
-  }, [isOver, saveLoaded, article, content, withCloseAlternatives]);
+  }, [isOver, saveLoaded, article, content]);
 
   return (
     <GameContext.Provider
