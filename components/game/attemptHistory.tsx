@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef } from "react";
 
-import { GameContext } from "@caviardeul/components/game/manager";
+import { GameContext } from "@caviardeul/components/game/gameManager";
 
 const AttemptHistory = () => {
   const { isOver, history, selection, updateSelection } =

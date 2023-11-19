@@ -7,7 +7,7 @@ import {
 import React, { Key, ReactNode, useContext, useEffect, useMemo } from "react";
 
 import CustomGameBanner from "@caviardeul/components/game/customGameBanner";
-import { GameContext } from "@caviardeul/components/game/manager";
+import { GameContext } from "@caviardeul/components/game/gameManager";
 import { SettingsContext } from "@caviardeul/components/settings/manager";
 import {
   isCommonWord,

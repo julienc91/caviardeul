@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useCallback, useContext, useState } from "react";
 import { FaArrowUp } from "react-icons/fa";
 
-import { GameContext } from "@caviardeul/components/game/manager";
+import { GameContext } from "@caviardeul/components/game/gameManager";
 import { isWord, splitWords } from "@caviardeul/utils/caviarding";
 
 const Input = () => {

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React, { useContext } from "react";
 
-import { GameContext } from "@caviardeul/components/game/manager";
+import { GameContext } from "@caviardeul/components/game/gameManager";
 import ExternalLink from "@caviardeul/components/utils/externalLink";
 import ShareAction from "@caviardeul/components/utils/shareAction";
 

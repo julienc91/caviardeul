@@ -3,8 +3,8 @@ import React from "react";
 import ArticleContainer from "@caviardeul/components/game/article";
 import AttemptHistory from "@caviardeul/components/game/attemptHistory";
 import GameInformation from "@caviardeul/components/game/gameInformation";
+import Manager from "@caviardeul/components/game/gameManager";
 import Input from "@caviardeul/components/game/input";
-import Manager from "@caviardeul/components/game/manager";
 import { Article } from "@caviardeul/types";
 
 const Game: React.FC<{
