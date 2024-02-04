@@ -1,4 +1,5 @@
 import latinize from "latinize";
+import { parse } from "node-html-parser";
 
 const commonWords = new Set<string>([
   "a",
@@ -63,6 +64,11 @@ export const closeAlternativesSuffixes = ["e", "s", "es", "r", "x"];
 const punctuationList = "{}()\\[\\]\\\\.…,;:!¡?¿/@#%\\^&*_—~+\\-=<>«»\"'’\\s";
 const wordRegex = new RegExp(`^[^${punctuationList}]+$`, "i");
 const separatorRegex = new RegExp(`([${punctuationList}]+)`, "gim");
+
+export const stripHtmlTags = (text: string): string => {
+  const htmlContent = parse(text);
+  return htmlContent.innerText;
+};
 
 export const splitWords = (text: string): string[] => {
   return text.split(separatorRegex);

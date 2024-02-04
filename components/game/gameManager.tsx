@@ -15,6 +15,7 @@ import {
   isWord,
   splitWords,
   standardizeText,
+  stripHtmlTags,
 } from "@caviardeul/utils/caviarding";
 import { getSelectedWord } from "@caviardeul/utils/game";
 import SaveManagement from "@caviardeul/utils/save";
@@ -59,6 +60,7 @@ export const Manager: React.FC<{
   const [canPlay, setCanPlay] = useState(false);
 
   const { pageName, content } = article;
+  const escapedContent = useMemo(() => stripHtmlTags(content), [content]);
 
   const titleWords = useMemo(
     () => splitWords(pageName).filter(isWord).map(standardizeText),
@@ -156,7 +158,7 @@ export const Manager: React.FC<{
         return;
       }
 
-      const nbOccurrences = countOccurrences(word, content);
+      const nbOccurrences = countOccurrences(word, escapedContent);
       const newRevealedWords = new Set(revealedWords);
       newRevealedWords.add(word);
       buildAlternatives(word).forEach((alternative) =>
@@ -165,7 +167,7 @@ export const Manager: React.FC<{
       setRevealedWords(newRevealedWords);
       setHistory((prev) => [...prev, [word, nbOccurrences]]);
     },
-    [canPlay, content, revealedWords, selection],
+    [canPlay, escapedContent, revealedWords, selection],
   );
 
   /**
@@ -186,7 +188,7 @@ export const Manager: React.FC<{
         buildAlternatives(word).forEach((alternative) =>
           newRevealedWords.add(alternative),
         );
-        newHistory.push([word, countOccurrences(word, content)]);
+        newHistory.push([word, countOccurrences(word, escapedContent)]);
       });
 
       setHistory(newHistory);
@@ -195,7 +197,7 @@ export const Manager: React.FC<{
 
     setSaveLoaded(true);
     setCanPlay(!isOver);
-  }, [isOver, saveLoaded, article, content]);
+  }, [isOver, saveLoaded, article, escapedContent]);
 
   return (
     <GameContext.Provider
