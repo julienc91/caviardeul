@@ -10,6 +10,9 @@ python = "^3.11"
 django = ">=5.0,<6.0"
 gunicorn = ">=21.2,<22.0"
 psycopg = {version = ">=3.1,<4.0", extras = ["binary"]}
+djangorestframework = ">=3.14,<4.0"
+httpx = "^0.26.0"
+beautifulsoup4 = "^4.12.3"
 
 
 [build-system]

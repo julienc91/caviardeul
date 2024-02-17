@@ -1,0 +1,2 @@
+class ArticleFetchError(Exception):
+    pass
