@@ -3,3 +3,6 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./backend/caviardeul:/app
+  db:
+    ports:
+      - "5432:5432"

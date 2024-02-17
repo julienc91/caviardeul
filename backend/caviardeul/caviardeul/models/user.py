@@ -9,3 +9,6 @@ class User(AbstractBaseUser):
 
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     created_at = models.DateTimeField(default=timezone.now)
+
+    def get_username(self):
+        return str(getattr(self, self.USERNAME_FIELD))
