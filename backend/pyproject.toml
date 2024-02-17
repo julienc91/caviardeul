@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "caviardeul"
+version = "2.0.0"
+description = ""
+authors = ["julien <git@julienc.io>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = ">=5.0,<6.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
