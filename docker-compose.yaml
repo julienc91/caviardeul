@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:16-alpine
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    env_file:
+      - ./data/.env
+  api:
+    build: backend/
+    ports:
+      - "8000:8000"
+    env_file:
+      - backend/.env
+    depends_on:
+      - db
