@@ -5,7 +5,10 @@ from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 from django.utils import timezone
 
 from caviardeul.models import DailyArticle
-from caviardeul.serializers.daily_article import DailyArticleDetailSerializer, DailyArticleListSerializer
+from caviardeul.serializers.daily_article import (
+    DailyArticleDetailSerializer,
+    DailyArticleListSerializer,
+)
 
 
 class DailyArticleViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
@@ -22,7 +25,8 @@ class DailyArticleViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
         if self.request.user.is_authenticated:
             queryset = queryset.annotate(
                 user_score=FilteredRelation(
-                    "dailyarticlescore", condition=Q(dailyarticlescore__user=self.request.user)
+                    "dailyarticlescore",
+                    condition=Q(dailyarticlescore__user=self.request.user),
                 )
             ).select_related("user_score")
         return queryset.order_by("date")

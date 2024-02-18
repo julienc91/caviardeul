@@ -4,7 +4,7 @@ from caviardeul.constants import Safety
 from caviardeul.models import DailyArticle
 from caviardeul.serializers.score import DailyArticleScoreSerializer
 from caviardeul.services.articles import get_article_content
-
+from caviardeul.services.encryption import generate_encryption_key, encrypt_data
 
 
 class _BaseDailyArticleSerializer(serializers.Serializer):
@@ -35,9 +35,11 @@ class DailyArticleDetailSerializer(_BaseDailyArticleSerializer):
     def to_representation(self, instance: DailyArticle):
         data = super().to_representation(instance)
         content = get_article_content(instance)
-        encrypted_page_name = instance.page_name
-        encrypted_content = content
+        key = generate_encryption_key()
+        encrypted_page_name = encrypt_data(instance.page_name, key)
+        encrypted_content = encrypt_data(content, key)
 
+        data["key"] = key
         data["pageName"] = encrypted_page_name
         data["content"] = encrypted_content
         return data
@@ -74,5 +76,5 @@ class DailyArticleStatsSerializer(serializers.Serializer):
         return {
             "median": median,
             "nbWinners": instance.nb_winners,
-            "category": self._get_difficulty_category_from_median_attempts(median)
+            "category": self._get_difficulty_category_from_median_attempts(median),
         }

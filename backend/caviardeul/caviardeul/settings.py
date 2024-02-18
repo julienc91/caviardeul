@@ -100,8 +100,8 @@ AUTH_USER_MODEL = "caviardeul.User"
 
 # REST Framework
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'caviardeul.services.authentication.UserIDAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "caviardeul.services.authentication.UserIDAuthentication",
     ]
 }
 
