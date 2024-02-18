@@ -41,4 +41,5 @@ class CustomArticle(Article):
             models.UniqueConstraint(
                 "page_id", "created_by", name="custom_article_page_id_creator_unq"
             ),
+            models.UniqueConstraint("public_id", name="custom_article_public_id_unq"),
         ]
