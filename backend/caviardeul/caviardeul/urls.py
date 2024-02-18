@@ -16,11 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from caviardeul.views.custom_article import CustomArticleViewSet
 from caviardeul.views.daily_article import DailyArticleViewSet
 from rest_framework.routers import DefaultRouter
 
 api_router = DefaultRouter()
 api_router.register("articles", DailyArticleViewSet)
+api_router.register("articles/custom", CustomArticleViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
