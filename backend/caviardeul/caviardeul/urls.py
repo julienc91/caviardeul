@@ -19,10 +19,12 @@ from django.urls import path, include
 from caviardeul.views.custom_article import CustomArticleViewSet
 from caviardeul.views.daily_article import DailyArticleViewSet
 from rest_framework.routers import DefaultRouter
+from caviardeul.views.user import UserViewSet
 
 api_router = DefaultRouter()
 api_router.register("articles", DailyArticleViewSet)
 api_router.register("articles/custom", CustomArticleViewSet)
+api_router.register("users", UserViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
