@@ -4,8 +4,7 @@ import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 
 import Loader from "@caviardeul/components/utils/loader";
-import { getUser } from "@caviardeul/utils/api";
-import { BASE_URL, COOKIE_MAX_AGE } from "@caviardeul/utils/config";
+import { API_URL, COOKIE_MAX_AGE } from "@caviardeul/utils/config";
 
 const LoginPage: React.FC = () => {
   const router = useRouter();
@@ -22,14 +21,12 @@ export const getServerSideProps: GetServerSideProps = async ({
   req,
   res,
 }) => {
-  const user = await getUser(req, res);
   const targetUserId = query.user;
-  if (user && targetUserId) {
-    await fetch(`${BASE_URL}/api/me/merge`, {
+  if (targetUserId) {
+    await fetch(`${API_URL}/me/merge`, {
       method: "POST",
       body: JSON.stringify({ userId: targetUserId }),
       headers: {
-        Cookie: `userId=${user.id}`,
         "Content-Type": "application/json",
       },
     });

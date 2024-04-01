@@ -1,7 +1,7 @@
 import useSWRMutation from "swr/mutation";
 
 import { Article } from "@caviardeul/types";
-import { BASE_URL } from "@caviardeul/utils/config";
+import { API_URL } from "@caviardeul/utils/config";
 
 class APIError extends Error {
   status: number;
@@ -20,7 +20,7 @@ export const saveGameScore = (
   nbCorrect: number,
 ) => {
   const { articleId, custom } = article;
-  return fetch(`${BASE_URL}/api/scores`, {
+  return fetch(`${API_URL}/scores`, {
     method: "POST",
     body: JSON.stringify({ articleId, custom, nbAttempts, nbCorrect }),
     headers: {
@@ -30,7 +30,7 @@ export const saveGameScore = (
 };
 
 const sendRequest = async (endpoint: string, { arg }: any) => {
-  const response = await fetch(`${BASE_URL}/${endpoint}`, {
+  const response = await fetch(`${API_URL}/${endpoint}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -54,5 +54,5 @@ export const useCreateCustomGame = () => {
   ): Promise<{ articleId: string; pageName: string }> => {
     return await sendRequest(endpoint, { arg });
   };
-  return useSWRMutation(`api/articles/custom`, sender, { throwOnError: false });
+  return useSWRMutation(`articles/custom`, sender, { throwOnError: false });
 };

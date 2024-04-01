@@ -1,11 +1,11 @@
 import { ArticleId, EncodedArticle } from "@caviardeul/types";
-import { BASE_URL } from "@caviardeul/utils/config";
+import { API_URL } from "@caviardeul/utils/config";
 
 export const getEncodedArticle = (
   articleId?: ArticleId,
   custom?: boolean,
 ): Promise<EncodedArticle> => {
-  let url = `${BASE_URL}/api/articles/`;
+  let url = `${API_URL}/articles/`;
   if (!articleId) {
     url += "current";
   } else if (custom) {
@@ -19,8 +19,16 @@ export const getEncodedArticle = (
       if (res.error) {
         throw res.error;
       }
-      const { key, articleId, safety, archive, custom, pageName, content } =
-        res;
+      const {
+        key,
+        articleId,
+        safety,
+        archive,
+        custom,
+        pageName,
+        content,
+        userScore,
+      } = res;
       return {
         key,
         articleId,
@@ -29,6 +37,7 @@ export const getEncodedArticle = (
         custom,
         pageName,
         content,
+        userScore,
       };
     });
 };

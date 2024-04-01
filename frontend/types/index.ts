@@ -19,6 +19,7 @@ export type EncodedArticle = {
   archive: boolean;
   custom: boolean;
   content: string;
+  userScore: UserScore | null;
 };
 
 export type UserScore = {
@@ -43,10 +44,6 @@ export type ArticleInfo = {
 };
 
 export type GameHistory = [string, number][];
-
-export type ArticleStats = {
-  distribution: Record<number, number>;
-};
 
 export type Settings = {
   lightMode: boolean;

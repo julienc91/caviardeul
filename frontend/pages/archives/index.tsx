@@ -14,8 +14,7 @@ import {
 import ConfirmModal from "@caviardeul/components/modals/confirmModal";
 import Modal from "@caviardeul/components/modals/modal";
 import { ArticleInfo, ArticleInfoStats } from "@caviardeul/types";
-import { getUser } from "@caviardeul/utils/api";
-import { BASE_URL } from "@caviardeul/utils/config";
+import { API_URL, BASE_URL } from "@caviardeul/utils/config";
 import SaveManagement from "@caviardeul/utils/save";
 
 const Difficulty: React.FC<{ stats: ArticleInfoStats }> = ({ stats }) => {
@@ -404,11 +403,8 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
 
 export default Archives;
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const user = await getUser(req, res);
-  const response = await fetch(`${BASE_URL}/api/articles`, {
-    headers: user ? { Cookie: `userId=${user.id}` } : {},
-  });
+export const getServerSideProps: GetServerSideProps = async () => {
+  const response = await fetch(`${API_URL}/articles`);
   const articles = await response.json();
   return {
     props: {

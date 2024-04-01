@@ -1,5 +1,4 @@
-import AES from "crypto-js/aes";
-import enc from "crypto-js/enc-utf8";
+import fernet from "fernet";
 
 import { Article, EncodedArticle } from "@caviardeul/types";
 
@@ -14,7 +13,13 @@ make cheating too easy.
  * @param key
  */
 export const decode = (encoded: string, key: string): string => {
-  return AES.decrypt(encoded, key).toString(enc);
+  const secret = new fernet.Secret(key);
+  const token = new fernet.Token({
+    secret,
+    token: encoded,
+    ttl: 0,
+  });
+  return token.decode();
 };
 
 /**
@@ -23,22 +28,26 @@ export const decode = (encoded: string, key: string): string => {
  * @param key
  */
 export const encode = (decoded: string, key: string): string => {
-  return AES.encrypt(decoded, key).toString();
-};
-
-/**
- * Convert a Base64Url string to Base64.
- * @param str
- */
-export const fromBase64Url = (str: string): string => {
-  return str.replace(/-/g, "+").replace(/_/g, "/");
+  const secret = new fernet.Secret(key);
+  const token = new fernet.Token({
+    secret,
+    ttl: 0,
+  });
+  return token.encode(decoded);
 };
 
 /**
  * Generate a random key.
  */
 export const generateKey = (): string => {
-  return Math.random().toString(36).substring(2, 15);
+  let result = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const charactersLength = characters.length;
+  for (let i = 0; i < 32; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return btoa(result);
 };
 
 /**
