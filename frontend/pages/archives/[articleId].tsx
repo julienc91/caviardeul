@@ -4,9 +4,7 @@ import React from "react";
 
 import Game from "@caviardeul/components/game/game";
 import { getEncodedArticle } from "@caviardeul/lib/article";
-import prismaClient from "@caviardeul/prisma";
 import { EncodedArticle } from "@caviardeul/types";
-import { getUser } from "@caviardeul/utils/api";
 import { decodeArticle } from "@caviardeul/utils/encryption";
 
 const ArchiveGame: NextPage<{
@@ -28,28 +26,21 @@ const ArchiveGame: NextPage<{
 
 export default ArchiveGame;
 
-export const getServerSideProps: GetServerSideProps = async ({
-  params,
-  req,
-  res,
-}) => {
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const articleId = parseInt(params?.articleId as string);
-  const user = await getUser(req, res);
-  if (user) {
-    const userScore = await prismaClient.dailyArticleScore.findFirst({
-      where: { userId: user.id, dailyArticleId: articleId },
-    });
-    if (userScore) {
-      return { redirect: { permanent: false, destination: "/archives" } };
-    }
-  }
-
+  let encodedArticle;
   try {
-    const data = await getEncodedArticle(articleId, false);
-    return {
-      props: { encodedArticle: data },
-    };
+    encodedArticle = await getEncodedArticle(articleId, false);
   } catch (error) {
     return { notFound: true };
   }
+
+  const { userScore } = encodedArticle;
+  if (userScore) {
+    return { redirect: { permanent: false, destination: "/archives" } };
+  }
+
+  return {
+    props: { encodedArticle },
+  };
 };

@@ -4,9 +4,7 @@ import React from "react";
 
 import Game from "@caviardeul/components/game/game";
 import { getEncodedArticle } from "@caviardeul/lib/article";
-import prismaClient from "@caviardeul/prisma";
 import { EncodedArticle } from "@caviardeul/types";
-import { getUser } from "@caviardeul/utils/api";
 import { decodeArticle } from "@caviardeul/utils/encryption";
 
 const Home: NextPage<{
@@ -27,25 +25,16 @@ const Home: NextPage<{
 
 export default Home;
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+export const getServerSideProps: GetServerSideProps = async () => {
   let encodedArticle;
   try {
     encodedArticle = await getEncodedArticle();
   } catch (error) {
+    console.log(error);
     return { props: { encodedArticle: null } };
   }
 
-  const user = await getUser(req, res);
-  let userScore;
-
-  if (user) {
-    userScore = await prismaClient.dailyArticleScore.findFirst({
-      where: {
-        userId: user.id,
-        dailyArticleId: encodedArticle.articleId as number,
-      },
-    });
-  }
+  const { userScore } = encodedArticle;
 
   return {
     props: {

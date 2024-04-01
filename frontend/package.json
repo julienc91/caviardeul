@@ -12,9 +12,9 @@
     "prisma:generate": "prisma generate"
   },
   "dependencies": {
-    "@prisma/client": "^5.2.0",
+    "@types/fernet": "^0.4.3",
     "cookies-next": "^4.0.0",
-    "crypto-js": "^4.2.0",
+    "fernet": "^0.3.2",
     "latinize": "^2.0.0",
     "next": "^13.5.4",
     "node-html-parser": "^6.1.8",
@@ -28,7 +28,6 @@
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.2.0",
-    "@types/crypto-js": "^4.1.1",
     "@types/latinize": "^0.2.15",
     "@types/node": "^20.3.3",
     "@types/nodemailer": "^6.4.8",
