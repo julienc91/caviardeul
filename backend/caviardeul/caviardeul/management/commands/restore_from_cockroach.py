@@ -24,14 +24,15 @@ class Command(BaseCommand):
             "model": User,
             "columns": [
                 ("id", "id"),
-                ("createdAt", "created_at"),
+                ("id", "username"),
+                ("createdAt", "date_joined"),
                 ("lastSeenAt", "last_login"),
             ],
             "adapters": {
-                "created_at": lambda v: make_aware(v),
+                "date_joined": lambda v: make_aware(v),
                 "last_login": lambda v: make_aware(v),
             },
-            "ordering": None,
+            "ordering": "createdAt",
         },
         {
             "table_name": "DailyArticle",
