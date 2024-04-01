@@ -1,14 +1,11 @@
-from django.contrib.auth.models import AbstractBaseUser
-from django.db import models
-from django.utils import timezone
 import uuid
 
+from django.contrib.auth.models import AbstractUser
+from django.db import models
 
-class User(AbstractBaseUser):
+
+class User(AbstractUser):
     USERNAME_FIELD = "id"
+    REQUIRED_FIELDS = ["username"]
 
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
-    created_at = models.DateTimeField(default=timezone.now)
-
-    def get_username(self):
-        return str(getattr(self, self.USERNAME_FIELD))
