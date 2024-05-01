@@ -7,12 +7,17 @@ from caviardeul.services.encryption import generate_encryption_key, encrypt_data
 
 
 class CustomArticleSerializer(serializers.Serializer):
-    page_id = serializers.CharField(required=True, write_only=True, source="pageId")
+    page_id = serializers.CharField(required=True, write_only=True)
 
     def validate_page_id(self, value):
         if ":" in value or "/" in value:
             raise ValidationError("La page est invalide")
         return value
+
+    def to_internal_value(self, data):
+        if "pageId" in data:
+            data["page_id"] = data.pop("pageId")
+        return super().to_internal_value(data)
 
     def to_representation(self, instance: CustomArticle):
         content = get_article_content(instance)
@@ -28,4 +33,5 @@ class CustomArticleSerializer(serializers.Serializer):
             "custom": True,
             "pageName": encrypted_page_name,
             "content": encrypted_content,
+            "userScore": None,
         }
