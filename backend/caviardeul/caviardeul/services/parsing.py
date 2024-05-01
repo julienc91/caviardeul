@@ -1,4 +1,4 @@
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Comment, NavigableString
 
 elements_to_remove = [
     "audio",
@@ -6,6 +6,7 @@ elements_to_remove = [
     "figure",
     "img",
     "iframe",
+    "meta",
     # ---
     "#toc",
     ".API.nowrap",  # Phonetical pronunciation
@@ -53,26 +54,35 @@ elements_to_flatten = [
 
 def strip_html_article(html_content: str) -> str:
     soup = BeautifulSoup(html_content, "html.parser")
-    for element in soup.find_all(elements_to_remove):
-        element.decompose()
+    for comment in soup.find_all(text=lambda text: isinstance(text, Comment)):
+        comment.extract()
+
+    for selector in elements_to_remove:
+        for element in soup.select(selector):
+            element.decompose()
 
     for selector in elements_to_strip_after:
-        if not (element := soup.find(selector)):
+        if not (element := soup.select_one(selector)):
             continue
 
         element = element.parent
-        for sibling in element.next_siblings:
-            sibling.decompose()
+        for sibling in list(element.next_siblings):
+            if isinstance(sibling, NavigableString):
+                sibling.extract()
+            else:
+                sibling.decompose()
         element.decompose()
 
-    for element in soup.find_all(elements_to_flatten):
-        element.replace_with(element.text)
+    for selector in elements_to_flatten:
+        for element in soup.select(selector):
+            value = element.get_text()
+            element.replace_with(value)
 
-    for element in soup.find_all(".mw-parser-output"):
-        element.replace_with(element.decode_contents())
+    for element in soup.select(".mw-parser-output"):
+        element.replace_with_children()
 
-    element = soup.find("#Voir_aussi")
+    element = soup.select_one("#Voir_aussi")
     if element:
         element.closest("h2").decompose()
 
-    return str(soup)
+    return str(soup).replace("\\n", "\n").strip()
