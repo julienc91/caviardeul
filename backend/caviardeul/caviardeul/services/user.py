@@ -8,9 +8,11 @@ from caviardeul.models import User, DailyArticleScore
 
 def create_user_for_request(request):
     now = timezone.now()
+    user_id = uuid.uuid4()
     user = User.objects.create(
-        id=uuid.uuid4(),
-        created_at=now,
+        id=user_id,
+        username=str(user_id),
+        date_joined=now,
         last_login=now,
     )
     request.user = user
