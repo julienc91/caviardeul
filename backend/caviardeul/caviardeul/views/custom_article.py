@@ -18,7 +18,7 @@ class CustomArticleViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet)
 
     def perform_create(self, serializer: CustomArticleSerializer):
         serializer.is_valid(raise_exception=True)
-        page_id = serializer.validated_data["pageId"]
+        page_id = serializer.validated_data["page_id"]
 
         try:
             page_title, _ = get_article_html_from_wikipedia(page_id)

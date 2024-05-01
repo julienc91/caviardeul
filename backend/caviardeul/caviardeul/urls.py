@@ -21,7 +21,7 @@ from caviardeul.views.daily_article import DailyArticleViewSet
 from rest_framework.routers import DefaultRouter
 from caviardeul.views.user import UserViewSet
 
-api_router = DefaultRouter()
+api_router = DefaultRouter(trailing_slash=False)
 api_router.register("articles", DailyArticleViewSet)
 api_router.register("articles/custom", CustomArticleViewSet)
 api_router.register("users", UserViewSet)

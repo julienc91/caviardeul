@@ -1,5 +1,6 @@
 from django.db.models import FilteredRelation, Q
 from rest_framework.decorators import action
+from rest_framework.exceptions import NotFound
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 from django.utils import timezone
@@ -33,7 +34,10 @@ class DailyArticleViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
 
     def get_object(self):
         if self.action == "current":
-            return self.get_queryset().order_by("-date")[:1].get()
+            try:
+                return self.get_queryset().order_by("-date")[:1].get()
+            except DailyArticle.DoesNotExist:
+                raise NotFound
         return super().get_object()
 
     def get_serializer_context(self):
