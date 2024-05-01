@@ -109,3 +109,6 @@ dist
 !.env.example
 __pycache__
 /data/db/
+
+# Django
+static/
