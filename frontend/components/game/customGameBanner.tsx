@@ -1,9 +1,10 @@
-import { ArticleSafety } from "@prisma/client";
 import React, { useState } from "react";
 
-const CustomGameBanner: React.FC<{ safetyLevel: ArticleSafety }> = ({
-  safetyLevel,
-}) => {
+import { ArticleSafety } from "@caviardeul/types";
+
+const CustomGameBanner: React.FC<{
+  safetyLevel: ArticleSafety;
+}> = ({ safetyLevel }) => {
   const [show, setShow] = useState(true);
   if (!show || safetyLevel === "SAFE") {
     return null;
