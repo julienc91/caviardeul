@@ -7,9 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "eslint": "eslint . --fix",
-    "vercel-build": "prisma generate && prisma migrate deploy && next build",
-    "prisma:generate": "prisma generate"
+    "eslint": "eslint . --fix"
   },
   "dependencies": {
     "@types/fernet": "^0.4.3",
@@ -18,8 +16,6 @@
     "latinize": "^2.0.0",
     "next": "^13.5.4",
     "node-html-parser": "^6.1.8",
-    "nodemailer": "^6.9.3",
-    "prisma": "^5.2.0",
     "qrcode.react": "^3.1.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
@@ -30,7 +26,6 @@
     "@trivago/prettier-plugin-sort-imports": "^4.2.0",
     "@types/latinize": "^0.2.15",
     "@types/node": "^20.3.3",
-    "@types/nodemailer": "^6.4.8",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
     "eslint": "^8.15.0",

@@ -104,7 +104,6 @@ dist
 .tern-port
 
 .idea
-.env
 .env.*
 !.env.example
 __pycache__

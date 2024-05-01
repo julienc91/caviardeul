@@ -1,0 +1,52 @@
+services:
+  frontend:
+    build: frontend
+    env_file:
+      - frontend/.env
+    depends_on:
+      - backend
+    networks:
+      - nginx_network
+    expose:
+      - 3000
+  backend:
+    build: backend
+    env_file:
+      - backend/.env
+    depends_on:
+      - postgres
+    networks:
+      - db_network
+      - nginx_network
+    expose:
+      - 5000
+  nginx:
+    image: nginx:stable-alpine
+    volumes:
+      - ./nginx/caviardeul.conf:/etc/nginx/nginx.conf
+    ports:
+      - "3000:3000"
+    networks:
+      - nginx_network
+    depends_on:
+      - backend
+      - frontend
+  postgres:
+    image: postgres:16-alpine
+    env_file:
+      - postgres/.env
+    networks:
+      - db_network
+    expose:
+      - 5432
+    volumes:
+      - "dbdata:/var/lib/postgresql/data"
+
+networks:
+  db_network:
+    driver: bridge
+  nginx_network:
+    driver: bridge
+
+volumes:
+  dbdata:

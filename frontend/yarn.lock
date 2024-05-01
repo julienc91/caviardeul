@@ -300,42 +300,6 @@
   resolved "https://registry.yarnpkg.com/@pkgr/core/-/core-0.1.1.tgz#1ec17e2edbec25c8306d424ecfbf13c7de1aaa31"
   integrity sha512-cq8o4cWH0ibXh9VGi5P20Tu9XF/0fFXl9EUinr9QfTM7a7p0oTA4iJRCQWppXR1Pg8dSM0UCItCkPwsk9qWWYA==
 
-"@prisma/debug@5.9.1":
-  version "5.9.1"
-  resolved "https://registry.yarnpkg.com/@prisma/debug/-/debug-5.9.1.tgz#906274e73d3267f88b69459199fa3c51cd9511a3"
-  integrity sha512-yAHFSFCg8KVoL0oRUno3m60GAjsUKYUDkQ+9BA2X2JfVR3kRVSJFc/GpQ2fSORi4pSHZR9orfM4UC9OVXIFFTA==
-
-"@prisma/engines-version@5.9.0-32.23fdc5965b1e05fc54e5f26ed3de66776b93de64":
-  version "5.9.0-32.23fdc5965b1e05fc54e5f26ed3de66776b93de64"
-  resolved "https://registry.yarnpkg.com/@prisma/engines-version/-/engines-version-5.9.0-32.23fdc5965b1e05fc54e5f26ed3de66776b93de64.tgz#54d2164f28d23e09d41cf9eb0bddbbe7f3aaa660"
-  integrity sha512-HFl7275yF0FWbdcNvcSRbbu9JCBSLMcurYwvWc8WGDnpu7APxQo2ONtZrUggU3WxLxUJ2uBX+0GOFIcJeVeOOQ==
-
-"@prisma/engines@5.9.1":
-  version "5.9.1"
-  resolved "https://registry.yarnpkg.com/@prisma/engines/-/engines-5.9.1.tgz#767539afc6f193a182d0495b30b027f61f279073"
-  integrity sha512-gkdXmjxQ5jktxWNdDA5aZZ6R8rH74JkoKq6LD5mACSvxd2vbqWeWIOV0Py5wFC8vofOYShbt6XUeCIUmrOzOnQ==
-  dependencies:
-    "@prisma/debug" "5.9.1"
-    "@prisma/engines-version" "5.9.0-32.23fdc5965b1e05fc54e5f26ed3de66776b93de64"
-    "@prisma/fetch-engine" "5.9.1"
-    "@prisma/get-platform" "5.9.1"
-
-"@prisma/fetch-engine@5.9.1":
-  version "5.9.1"
-  resolved "https://registry.yarnpkg.com/@prisma/fetch-engine/-/fetch-engine-5.9.1.tgz#5d3b2c9af54a242e37b3f9561b59ab72f8e92818"
-  integrity sha512-l0goQOMcNVOJs1kAcwqpKq3ylvkD9F04Ioe1oJoCqmz05mw22bNAKKGWuDd3zTUoUZr97va0c/UfLNru+PDmNA==
-  dependencies:
-    "@prisma/debug" "5.9.1"
-    "@prisma/engines-version" "5.9.0-32.23fdc5965b1e05fc54e5f26ed3de66776b93de64"
-    "@prisma/get-platform" "5.9.1"
-
-"@prisma/get-platform@5.9.1":
-  version "5.9.1"
-  resolved "https://registry.yarnpkg.com/@prisma/get-platform/-/get-platform-5.9.1.tgz#a66bb46ab4d30db786c84150ef074ab0aad4549e"
-  integrity sha512-6OQsNxTyhvG+T2Ksr8FPFpuPeL4r9u0JF0OZHUBI/Uy9SS43sPyAIutt4ZEAyqWQt104ERh70EZedkHZKsnNbg==
-  dependencies:
-    "@prisma/debug" "5.9.1"
-
 "@rushstack/eslint-patch@^1.3.3":
   version "1.7.2"
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.7.2.tgz#2d4260033e199b3032a08b41348ac10de21c47e9"
@@ -387,24 +351,17 @@
   resolved "https://registry.yarnpkg.com/@types/latinize/-/latinize-0.2.18.tgz#18ff876bae9c4e01b8e5efc2a67f6e26cb17a982"
   integrity sha512-QjX4tcVEOcqDakv96sLMA2ESMcxSJel5KHxmcBgeTlZI7v6gFx9Tjqmt5+Pp8ijfGGr6CxuXzDNYk8A/iZ/GiA==
 
-"@types/node@*", "@types/node@^20.3.3":
-  version "20.11.17"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.11.17.tgz#cdd642d0e62ef3a861f88ddbc2b61e32578a9292"
-  integrity sha512-QmgQZGWu1Yw9TDyAP9ZzpFJKynYNeOvwMJmaxABfieQoVoiVOS6MN1WSpqpRcbeA5+RW82kraAVxCCJg+780Qw==
-  dependencies:
-    undici-types "~5.26.4"
-
 "@types/node@^16.10.2":
   version "16.18.80"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-16.18.80.tgz#9644e2d8acaf8163d46d23e05ce3822e9379dfc3"
   integrity sha512-vFxJ1Iyl7A0+xB0uW1r1v504yItKZLdqg/VZELUZ4H02U0bXAgBisSQ8Erf0DMruNFz9ggoiEv6T8Ll9bTg8Jw==
 
-"@types/nodemailer@^6.4.8":
-  version "6.4.14"
-  resolved "https://registry.yarnpkg.com/@types/nodemailer/-/nodemailer-6.4.14.tgz#5c81a5e856db7f8ede80013e6dbad7c5fb2283e2"
-  integrity sha512-fUWthHO9k9DSdPCSPRqcu6TWhYyxTBg382vlNIttSe9M7XfsT06y0f24KHXtbnijPGGRIcVvdKHTNikOI6qiHA==
+"@types/node@^20.3.3":
+  version "20.11.17"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.11.17.tgz#cdd642d0e62ef3a861f88ddbc2b61e32578a9292"
+  integrity sha512-QmgQZGWu1Yw9TDyAP9ZzpFJKynYNeOvwMJmaxABfieQoVoiVOS6MN1WSpqpRcbeA5+RW82kraAVxCCJg+780Qw==
   dependencies:
-    "@types/node" "*"
+    undici-types "~5.26.4"
 
 "@types/prop-types@*":
   version "15.7.11"
@@ -2011,11 +1968,6 @@ node-html-parser@^6.1.8:
     css-select "^5.1.0"
     he "1.2.0"
 
-nodemailer@^6.9.3:
-  version "6.9.9"
-  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-6.9.9.tgz#4549bfbf710cc6addec5064dd0f19874d24248d9"
-  integrity sha512-dexTll8zqQoVJEZPwQAKzxxtFn0qTnjdQTchoU6Re9BUUGBJiOy3YMn/0ShTW6J5M0dfQ1NeDeRTTl4oIWgQMA==
-
 normalize-path@^3.0.0, normalize-path@~3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/normalize-path/-/normalize-path-3.0.0.tgz#0dcd69ff23a1c9b11fd0978316644a0388216a65"
@@ -2199,13 +2151,6 @@ prettier@^3.0.3:
   version "3.2.5"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.2.5.tgz#e52bc3090586e824964a8813b09aba6233b28368"
   integrity sha512-3/GWa9aOC0YeD7LUfvOG2NiDyhOWRvt1k+rcKhOuYnMY24iiCphgneUfJDyFXd6rZCAnuLBv6UeAULtrhT/F4A==
-
-prisma@^5.2.0:
-  version "5.9.1"
-  resolved "https://registry.yarnpkg.com/prisma/-/prisma-5.9.1.tgz#baa3dd635fbf71504980978f10f55ea11068f6aa"
-  integrity sha512-Hy/8KJZz0ELtkw4FnG9MS9rNWlXcJhf98Z2QMqi0QiVMoS8PzsBkpla0/Y5hTlob8F3HeECYphBjqmBxrluUrQ==
-  dependencies:
-    "@prisma/engines" "5.9.1"
 
 prop-types@^15.8.1:
   version "15.8.1"

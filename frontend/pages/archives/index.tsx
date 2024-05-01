@@ -227,7 +227,6 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
 
   const handleReset = useCallback(() => {
     SaveManagement.clearProgress(true, true, true);
-    deleteCookie("userId");
     setReset(true);
     setIsLoggedIn(false);
     setShowConfirmModal(false);

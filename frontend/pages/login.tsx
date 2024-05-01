@@ -31,7 +31,6 @@ export const getServerSideProps: GetServerSideProps = async ({
       },
     });
   }
-  setCookie("userId", targetUserId, { req, res, maxAge: COOKIE_MAX_AGE });
   return { props: {} };
 };
 

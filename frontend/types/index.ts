@@ -1,6 +1,5 @@
-import { ArticleSafety } from "@prisma/client";
-
 export type ArticleId = number | string;
+export type ArticleSafety = "SAFE" | "UNSAFE" | "UNKNOWN";
 
 export type Article = {
   articleId: ArticleId;
