@@ -62,7 +62,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "caviardeul.wsgi.application"
+WSGI_APPLICATION = "wsgi.application"
 
 
 # Database

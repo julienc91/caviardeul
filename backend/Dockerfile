@@ -6,9 +6,8 @@ ENV POETRY_NO_INTERACTION=1 \
     POETRY_VIRTUALENVS_CREATE=1 \
     APP_USER=appuser
 
-COPY caviardeul/pyproject.toml caviardeul/poetry.lock ./caviardeul/
+COPY pyproject.toml poetry.lock ./
 RUN pip install poetry~=1.7 \
-    && cd caviardeul \
     && poetry install --no-root
 
 FROM python:3.12-slim
@@ -20,9 +19,8 @@ USER django
 
 WORKDIR /app
 ENV PATH="/venv/bin:$PATH"
-COPY --from=build /app/caviardeul/.venv /venv
-
-COPY caviardeul ./
+COPY --from=build /app/.venv /venv
+COPY . ./
 
 EXPOSE 8000
-CMD python -m gunicorn caviardeul.wsgi:application --bind 0.0.0.0:5000
+CMD python -m gunicorn wsgi:application --bind 0.0.0.0:5000
