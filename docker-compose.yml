@@ -15,6 +15,7 @@ services:
       - backend/.env
     depends_on:
       - postgres
+      - redis
     networks:
       - db_network
       - nginx_network
@@ -43,6 +44,15 @@ services:
       - 5432
     volumes:
       - "dbdata:/var/lib/postgresql/data"
+  redis:
+    image: redis:7-alpine
+    env_file:
+      - redis/.env
+    networks:
+      - db_network
+    expose:
+      - 6379
+    command: /bin/sh -c "redis-server --requirepass $$REDIS_PASSWORD"
 
 networks:
   db_network:

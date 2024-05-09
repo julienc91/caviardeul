@@ -24,7 +24,9 @@ class ScoreViewSet(CreateModelMixin, GenericViewSet):
         custom = serializer.validated_data["custom"]
         try:
             if custom:
-                article = CustomArticle.objects.select_for_update().get(public_id=article_id)
+                article = CustomArticle.objects.select_for_update().get(
+                    public_id=article_id
+                )
             else:
                 article = DailyArticle.objects.select_for_update().get(id=article_id)
         except (CustomArticle.DoesNotExist, DailyArticle.DoesNotExist):
@@ -50,10 +52,7 @@ class ScoreViewSet(CreateModelMixin, GenericViewSet):
             _, created = DailyArticleScore.objects.get_or_create(
                 daily_article=article,
                 user=self.request.user,
-                defaults={
-                    "nb_attempts": nb_attempts,
-                    "nb_correct": nb_correct
-                },
+                defaults={"nb_attempts": nb_attempts, "nb_correct": nb_correct},
             )
             if created:
                 article.save(update_fields=["stats", "nb_winners", "nb_daily_winners"])
