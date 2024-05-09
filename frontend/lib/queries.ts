@@ -2,6 +2,7 @@ import useSWRMutation from "swr/mutation";
 
 import { Article } from "@caviardeul/types";
 import { API_URL } from "@caviardeul/utils/config";
+import { decode } from "@caviardeul/utils/encryption";
 
 class APIError extends Error {
   status: number;
@@ -54,7 +55,11 @@ export const useCreateCustomGame = () => {
     endpoint: string,
     { arg }: { arg: { pageId: string } },
   ): Promise<{ articleId: string; pageName: string }> => {
-    return await sendRequest(endpoint, { arg });
+    const data = await sendRequest(endpoint, { arg });
+    return {
+      articleId: data.articleId,
+      pageName: decode(data.pageName, data.key),
+    };
   };
   return useSWRMutation(`articles/custom`, sender, { throwOnError: false });
 };
