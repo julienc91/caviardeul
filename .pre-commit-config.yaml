@@ -27,6 +27,14 @@ repos:
         pass_filenames: false
         stages: [commit, push]
 
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.4
+    hooks:
+      - id: ruff
+        args: [--fix, --config=backend/pyproject.toml]
+      - id: ruff-format
+        args: [--config=backend/pyproject.toml]
+
   - repo: https://github.com/gitguardian/ggshield
     rev: v1.20.0
     hooks:

@@ -1,6 +1,6 @@
 from rest_framework.exceptions import ValidationError
+from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin
 from rest_framework.viewsets import GenericViewSet
-from rest_framework.mixins import RetrieveModelMixin, CreateModelMixin
 
 from caviardeul.constants import Safety
 from caviardeul.exceptions import ArticleFetchError

@@ -3,7 +3,7 @@ import uuid
 from django.db import transaction
 from django.utils import timezone
 
-from caviardeul.models import User, DailyArticleScore
+from caviardeul.models import DailyArticleScore, User
 
 
 def create_user_for_request(request):

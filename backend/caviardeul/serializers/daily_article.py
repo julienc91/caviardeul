@@ -4,7 +4,7 @@ from caviardeul.constants import Safety
 from caviardeul.models import DailyArticle
 from caviardeul.serializers.score import DailyArticleScoreSerializer
 from caviardeul.services.articles import get_article_content
-from caviardeul.services.encryption import generate_encryption_key, encrypt_data
+from caviardeul.services.encryption import encrypt_data, generate_encryption_key
 
 
 class _BaseDailyArticleSerializer(serializers.Serializer):

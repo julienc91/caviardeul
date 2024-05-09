@@ -1,12 +1,12 @@
 from collections.abc import Callable
-from typing import TypedDict, Any
+from typing import Any, TypedDict
 
 import psycopg
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Model
 from django.utils.timezone import make_aware
 
-from caviardeul.models import User, DailyArticle, CustomArticle, DailyArticleScore
+from caviardeul.models import CustomArticle, DailyArticle, DailyArticleScore, User
 
 
 class RestoreConfig(TypedDict):
