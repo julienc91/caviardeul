@@ -23,6 +23,7 @@ export const saveGameScore = (
   return fetch(`${API_URL}/scores`, {
     method: "POST",
     body: JSON.stringify({ articleId, custom, nbAttempts, nbCorrect }),
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -35,6 +36,7 @@ const sendRequest = async (endpoint: string, { arg }: any) => {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(arg),
   });
 

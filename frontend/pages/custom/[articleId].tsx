@@ -26,10 +26,14 @@ const CustomGame: NextPage<{
 
 export default CustomGame;
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  params,
+}) => {
+  const { userId } = req.cookies;
   const articleId = (params?.articleId || "") as string;
   try {
-    const data = await getEncodedArticle(articleId, true);
+    const data = await getEncodedArticle(articleId, true, userId);
     return { props: { encodedArticle: data } };
   } catch (error) {
     return { notFound: true };

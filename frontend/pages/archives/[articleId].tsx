@@ -26,11 +26,15 @@ const ArchiveGame: NextPage<{
 
 export default ArchiveGame;
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  params,
+}) => {
+  const { userId } = req.cookies;
   const articleId = parseInt(params?.articleId as string);
   let encodedArticle;
   try {
-    encodedArticle = await getEncodedArticle(articleId, false);
+    encodedArticle = await getEncodedArticle(articleId, false, userId);
   } catch (error) {
     return { notFound: true };
   }

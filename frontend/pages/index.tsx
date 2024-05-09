@@ -25,10 +25,11 @@ const Home: NextPage<{
 
 export default Home;
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const { userId } = req.cookies;
   let encodedArticle;
   try {
-    encodedArticle = await getEncodedArticle();
+    encodedArticle = await getEncodedArticle(undefined, undefined, userId);
   } catch (error) {
     console.log(error);
     return { props: { encodedArticle: null } };
