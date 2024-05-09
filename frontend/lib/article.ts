@@ -1,9 +1,10 @@
 import { ArticleId, EncodedArticle } from "@caviardeul/types";
 import { API_URL } from "@caviardeul/utils/config";
 
-export const getEncodedArticle = (
+export const getEncodedArticle = async (
   articleId?: ArticleId,
   custom?: boolean,
+  userId?: string,
 ): Promise<EncodedArticle> => {
   let url = `${API_URL}/articles/`;
   if (!articleId) {
@@ -13,31 +14,27 @@ export const getEncodedArticle = (
   } else {
     url += `${articleId}`;
   }
-  return fetch(url)
-    .then((res) => res.json())
-    .then((res) => {
-      if (res.error) {
-        throw res.error;
-      }
-      const {
-        key,
-        articleId,
-        safety,
-        archive,
-        custom,
-        pageName,
-        content,
-        userScore,
-      } = res;
-      return {
-        key,
-        articleId,
-        safety,
-        archive,
-        custom,
-        pageName,
-        content,
-        userScore,
-      };
-    });
+
+  const res = await fetch(url, {
+    credentials: "include",
+    headers: {
+      Cookie: (userId ?? "") !== "" ? `userId=${userId}` : "",
+    },
+  });
+
+  const data = await res.json();
+  if (data.error) {
+    throw data.error;
+  }
+
+  return {
+    key: data.key,
+    articleId: data.articleId,
+    safety: data.safety,
+    archive: data.archive,
+    custom: data.custom,
+    pageName: data.pageName,
+    content: data.content,
+    userScore: data.userScore,
+  };
 };

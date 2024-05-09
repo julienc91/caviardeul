@@ -1,4 +1,4 @@
-import { deleteCookie, getCookie } from "cookies-next";
+import { getCookie } from "cookies-next";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -402,8 +402,15 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
 
 export default Archives;
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const response = await fetch(`${API_URL}/articles`);
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  console.log("XXXXXX", req.cookies);
+  console.log("YYYYYY", req.headers.cookie);
+  const response = await fetch(`${API_URL}/articles`, {
+    credentials: "include",
+    headers: {
+      Cookie: req.headers.cookie ?? "",
+    },
+  });
   const articles = await response.json();
   return {
     props: {
