@@ -10,9 +10,19 @@ class ArticleScoreCreateSerializer(serializers.Serializer):
     article_id = serializers.CharField(required=True)
     custom = serializers.BooleanField(required=True)
 
+    def to_internal_value(self, data):
+        if "nbAttempts" in data:
+            data["nb_attempts"] = data.pop("nbAttempts")
+        if "nbCorrect" in data:
+            data["nb_correct"] = data.pop("nbCorrect")
+        if "articleId" in data:
+            data["article_id"] = data.pop("articleId")
+        return super().to_internal_value(data)
+
     def validate(self, attrs):
         if attrs["nb_correct"] > attrs["nb_attempts"]:
             raise ValidationError()
+        return super().validate(attrs)
 
 
 class DailyArticleScoreSerializer(serializers.Serializer):
