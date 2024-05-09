@@ -13,11 +13,17 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
-ALLOWED_HOSTS = ["caviardeul.fr"]
-CORS_ALLOWED_ORIGINS = ["https://caviardeul.fr"]
+DEBUG = str(os.environ.get("DEBUG", "").lower()) in {"1", "true"}
+HOST_NAME = os.environ["HOST_NAME"]
+
+if DEBUG and HOST_NAME == "caviardeul.fr":
+    raise RuntimeError("Debug mode enabled with production host name")
+
+SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
+BASE_DIR = Path(__file__).resolve().parent.parent
+ALLOWED_HOSTS = [HOST_NAME]
+CORS_ALLOWED_ORIGINS = [f"https://{HOST_NAME}"]
 
 # Application definition
 
