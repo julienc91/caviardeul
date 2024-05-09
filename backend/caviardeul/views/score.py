@@ -24,7 +24,7 @@ class ScoreViewSet(CreateModelMixin, GenericViewSet):
         custom = serializer.validated_data["custom"]
         try:
             if custom:
-                article = CustomArticle.objects.select_for_update().get(id=article_id)
+                article = CustomArticle.objects.select_for_update().get(public_id=article_id)
             else:
                 article = DailyArticle.objects.select_for_update().get(id=article_id)
         except (CustomArticle.DoesNotExist, DailyArticle.DoesNotExist):
