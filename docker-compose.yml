@@ -22,8 +22,10 @@ services:
       - 5000
   nginx:
     image: nginx:stable-alpine
+    env_file:
+      - nginx/.env
     volumes:
-      - ./nginx/caviardeul.conf:/etc/nginx/nginx.conf
+      - ./nginx/caviardeul.conf.template:/etc/nginx/templates/caviardeul.conf.template:ro
     ports:
       - "3000:3000"
     networks:
@@ -44,9 +46,7 @@ services:
 
 networks:
   db_network:
-    driver: bridge
   nginx_network:
-    driver: bridge
 
 volumes:
   dbdata:
