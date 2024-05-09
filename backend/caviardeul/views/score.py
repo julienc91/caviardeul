@@ -11,6 +11,12 @@ from caviardeul.services.user import create_user_for_request
 class ScoreViewSet(CreateModelMixin, GenericViewSet):
     lookup_field = "public_id"
     serializer_class = ArticleScoreCreateSerializer
+    queryset = DailyArticleScore.objects.all()
+
+    def get_queryset(self):
+        if self.request.user.is_anonymous:
+            return self.queryset.none()
+        return self.queryset.filter(user=self.request.user)
 
     @transaction.atomic()
     def perform_create(self, serializer: ArticleScoreCreateSerializer):
@@ -40,14 +46,17 @@ class ScoreViewSet(CreateModelMixin, GenericViewSet):
             article.save(update_fields=["stats", "nb_winners"])
         else:
             article.nb_daily_winners += 1
-            article.save(update_fields=["stats", "nb_winners", "nb_daily_winners"])
 
-            DailyArticleScore.objects.get_or_create(
+            _, created = DailyArticleScore.objects.get_or_create(
                 daily_article=article,
                 user=self.request.user,
-                nb_attempts=nb_attempts,
-                nb_correct=nb_correct,
+                defaults={
+                    "nb_attempts": nb_attempts,
+                    "nb_correct": nb_correct
+                },
             )
+            if created:
+                article.save(update_fields=["stats", "nb_winners", "nb_daily_winners"])
 
     def create(self, request, *args, **kwargs):
         is_authenticated = request.user.is_authenticated

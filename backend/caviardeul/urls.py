@@ -20,10 +20,12 @@ from caviardeul.views.custom_article import CustomArticleViewSet
 from caviardeul.views.daily_article import DailyArticleViewSet
 from rest_framework.routers import DefaultRouter
 from caviardeul.views.user import UserViewSet
+from caviardeul.views.score import ScoreViewSet
 
 api_router = DefaultRouter(trailing_slash=False)
 api_router.register("articles", DailyArticleViewSet)
 api_router.register("articles/custom", CustomArticleViewSet)
+api_router.register("scores", ScoreViewSet)
 api_router.register("users", UserViewSet)
 
 urlpatterns = [
