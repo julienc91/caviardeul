@@ -1,7 +1,7 @@
 from django.db import transaction
 from rest_framework.exceptions import ValidationError
-from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import CreateModelMixin
+from rest_framework.viewsets import GenericViewSet
 
 from caviardeul.models import CustomArticle, DailyArticle, DailyArticleScore
 from caviardeul.serializers.score import ArticleScoreCreateSerializer

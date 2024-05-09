@@ -3,7 +3,7 @@ from rest_framework.exceptions import ValidationError
 
 from caviardeul.models import CustomArticle
 from caviardeul.services.articles import get_article_content
-from caviardeul.services.encryption import generate_encryption_key, encrypt_data
+from caviardeul.services.encryption import encrypt_data, generate_encryption_key
 
 
 class CustomArticleSerializer(serializers.Serializer):

@@ -1,13 +1,13 @@
 from datetime import timedelta
 
-from django.core.cache import cache
 import httpx
+from django.core.cache import cache
 from django.utils import timezone
 
 from caviardeul.exceptions import ArticleFetchError
 from caviardeul.models.article import Article
-from caviardeul.services.parsing import strip_html_article
 from caviardeul.services.logging import logger
+from caviardeul.services.parsing import strip_html_article
 
 
 def get_article_content(article: Article) -> str:

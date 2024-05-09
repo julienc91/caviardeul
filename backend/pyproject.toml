@@ -23,6 +23,9 @@ pytest-django = "^4.8.0"
 pytest-cov = "^5.0.0"
 factory-boy = "^3.3.0"
 
+[tool.ruff.lint]
+extend-select = ["I"]
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

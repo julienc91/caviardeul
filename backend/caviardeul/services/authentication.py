@@ -1,7 +1,8 @@
+from uuid import UUID
+
 from rest_framework.authentication import BaseAuthentication
 
 from caviardeul.models import User
-from uuid import UUID
 
 
 class UserIDAuthentication(BaseAuthentication):
