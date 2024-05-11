@@ -1,0 +1,7 @@
+Dockerfile
+.env.example
+.git
+
+.eslintrc.json
+.next
+node_modules

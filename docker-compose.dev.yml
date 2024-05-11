@@ -1,8 +1,46 @@
 services:
+  frontend:
+    extends:
+      file: docker-compose.yml
+      service: frontend
+    build:
+      context: frontend
+      target: dev
+    volumes:
+      - ./frontend/.next/:/app/.next/
+      - ./frontend/:/app/:ro
+
   backend:
+    extends:
+      file: docker-compose.yml
+      service: backend
+    build:
+      context: backend
+      target: dev
     volumes:
       - ./backend/:/app/:ro
     command: python manage.py runserver 0.0.0.0:5000
+
+  nginx:
+    extends:
+      file: docker-compose.yml
+      service: nginx
+
   postgres:
+    extends:
+      file: docker-compose.yml
+      service: postgres
     ports:
       - 127.0.0.1:5432:5432
+
+  redis:
+    extends:
+      file: docker-compose.yml
+      service: redis
+
+networks:
+  db_network:
+  nginx_network:
+
+volumes:
+  dbdata:

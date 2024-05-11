@@ -1,11 +1,6 @@
 Dockerfile
-.dockerignore
-node_modules
 .env.example
 .git
-
-.eslintrc.json
-.next
 
 .pytest_cache
 .ruff_cache

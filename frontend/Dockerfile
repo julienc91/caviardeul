@@ -6,22 +6,35 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn --frozen-lockfile
 
-FROM base AS builder
+FROM base AS dev
+WORKDIR /app
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+RUN mkdir .next \
+    && chown node:node .next
+
+USER node
+EXPOSE 3000
+CMD yarn dev
+
+FROM base AS build_prod
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN npm run build
+RUN yarn build
 
-FROM base AS runner
+FROM base AS prod
 WORKDIR /app
 
 ENV NODE_ENV=production
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
+RUN addgroup -g 65332 -S nextjs \
+    && adduser -S nextjs -u 65332
 
-COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=build_prod /app/public ./public
+COPY --from=build_prod --chown=nextjs:nextjs /app/.next/standalone ./
+COPY --from=build_prod --chown=nextjs:nextjs /app/.next/static ./.next/static
 
 USER nextjs
 EXPOSE 3000
