@@ -1,24 +1,48 @@
-FROM python:3.12-slim as build
+FROM python:3.12-slim AS base
+
+FROM base AS build_dev
 
 WORKDIR /app
-ENV APP_USER=appuser
+COPY pyproject.toml requirements-dev.txt ./
+RUN pip install uv~=0.1 \
+    && uv venv \
+    && uv pip sync requirements-dev.txt
 
+FROM base AS dev
+
+RUN groupadd -r -g 1000 django \
+    && useradd -r -u 1000 -g django -s /sbin/nologin django
+
+USER django
+WORKDIR /app
+
+ENV PATH="/venv/bin:$PATH"
+COPY --from=build_dev /app/.venv /venv
+COPY . ./
+
+EXPOSE 5000
+CMD python mnange.py runserver 0.0.0.0:5000
+
+
+FROM base AS build_prod
+
+WORKDIR /app
 COPY pyproject.toml requirements.txt ./
 RUN pip install uv~=0.1 \
     && uv venv \
     && uv pip sync requirements.txt
 
-FROM python:3.12-slim
+FROM base AS prod
 
-RUN groupadd -r -g 1001 django \
-    && useradd -r -u 1001 -g django -s /sbin/nologin django
+RUN groupadd -r -g 65332 django \
+    && useradd -r -u 65332 -g django -s /sbin/nologin django
 
 USER django
-
 WORKDIR /app
+
 ENV PATH="/venv/bin:$PATH"
-COPY --from=build /app/.venv /venv
+COPY --from=build_prod /app/.venv /venv
 COPY . ./
 
-EXPOSE 8000
+EXPOSE 5000
 CMD python -m gunicorn wsgi:application --bind 0.0.0.0:5000

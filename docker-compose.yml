@@ -1,6 +1,8 @@
 services:
   frontend:
-    build: frontend
+    build:
+      context: frontend
+      target: prod
     env_file:
       - frontend/.env
     depends_on:
@@ -9,8 +11,12 @@ services:
       - nginx_network
     expose:
       - 3000
+    restart: always
+
   backend:
-    build: backend
+    build:
+      context: backend
+      target: prod
     env_file:
       - backend/.env
     depends_on:
@@ -21,6 +27,8 @@ services:
       - nginx_network
     expose:
       - 5000
+    restart: always
+
   nginx:
     image: nginx:stable-alpine
     env_file:
@@ -28,12 +36,14 @@ services:
     volumes:
       - ./nginx/caviardeul.conf.template:/etc/nginx/templates/caviardeul.conf.template:ro
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     networks:
       - nginx_network
     depends_on:
       - backend
       - frontend
+    restart: always
+
   postgres:
     image: postgres:16-alpine
     env_file:
@@ -44,6 +54,8 @@ services:
       - 5432
     volumes:
       - "dbdata:/var/lib/postgresql/data"
+    restart: always
+
   redis:
     image: redis:7-alpine
     env_file:
@@ -53,6 +65,7 @@ services:
     expose:
       - 6379
     command: /bin/sh -c "redis-server --requirepass $$REDIS_PASSWORD"
+    restart: always
 
 networks:
   db_network:

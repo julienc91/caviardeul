@@ -107,6 +107,8 @@ dist
 .env.*
 !.env.example
 __pycache__
+.pytest_cache
+.ruff_cache
 /data/db/
 
 # Django
