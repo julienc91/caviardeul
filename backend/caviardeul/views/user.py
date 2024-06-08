@@ -1,9 +1,10 @@
 import uuid
 
+from django.http import HttpResponseRedirect
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 
 from caviardeul.models import User
@@ -25,19 +26,28 @@ class UserViewSet(GenericViewSet):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
 
-    @action(methods=("POST",), url_path="me/merge", detail=False)
-    def merge(self, request):
-        target_user_id = request.data.get("target_id")
+
+class LoginView(APIView):
+    permission_classes = []
+
+    def get(self, request):
+        response = HttpResponseRedirect("/archives")
+
+        target_user_id = request.query_params.get("user")
+        if not target_user_id:
+            return response
+
         try:
             target_user = User.objects.get(id=uuid.UUID(target_user_id))
         except (ValueError, User.DoesNotExist):
-            raise ValidationError("Target user doesn't exist")
-
-        response = Response(None, 204)
-        if target_user == self.request.user:
             return response
 
-        merge_users(self.request.user, target_user)
-        request.user = target_user
+        current_user = request.user
+
         response.set_cookie("userId", str(target_user.id))
+        request.user = target_user
+        if not current_user.is_authenticated or current_user == target_user:
+            return response
+
+        merge_users(current_user, target_user)
         return response

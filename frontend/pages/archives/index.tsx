@@ -403,8 +403,6 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
 export default Archives;
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  console.log("XXXXXX", req.cookies);
-  console.log("YYYYYY", req.headers.cookie);
   const response = await fetch(`${API_URL}/articles`, {
     credentials: "include",
     headers: {
