@@ -20,6 +20,22 @@ server {
         proxy_set_header X-Forwarded-For $remote_addr;
     }
 
+    location /admin {
+        proxy_pass http://backend;
+        proxy_set_header Host ${SERVER_NAME};
+        proxy_set_header Cookie $http_cookie;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Forwarded-For $remote_addr;
+    }
+
+    location /api/static {
+        proxy_pass http://backend;
+        proxy_set_header Host ${SERVER_NAME};
+        proxy_set_header Cookie $http_cookie;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Forwarded-For $remote_addr;
+    }
+
     location / {
         proxy_pass http://frontend;
         proxy_set_header Host ${SERVER_NAME};

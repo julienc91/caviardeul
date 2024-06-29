@@ -22,6 +22,7 @@ if DEBUG and HOST_NAME == "caviardeul.fr":
 SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 BASE_DIR = Path(__file__).resolve().parent.parent
 ALLOWED_HOSTS = [HOST_NAME]
+CSRF_TRUSTED_ORIGINS = [f"https://{HOST_NAME}"]
 CORS_ALLOWED_ORIGINS = [f"https://{HOST_NAME}"]
 
 # Application definition
@@ -157,7 +158,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/api/static/"
 STATIC_ROOT = "static"
 
 # Default primary key field type
