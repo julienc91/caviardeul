@@ -7,6 +7,15 @@ Encryption is used to send the article to the client, to not
 make cheating too easy.
 */
 
+export const checkEncryptionKey = (key: string): boolean => {
+  try {
+    new fernet.Secret(key);
+  } catch (e) {
+    return false;
+  }
+  return true;
+};
+
 /**
  * Decrypt a string using AES.
  * @param encoded

@@ -1,5 +1,10 @@
 import { Article, GameHistory, Settings } from "@caviardeul/types";
-import { decode, encode, generateKey } from "@caviardeul/utils/encryption";
+import {
+  checkEncryptionKey,
+  decode,
+  encode,
+  generateKey,
+} from "@caviardeul/utils/encryption";
 
 class SaveManagement {
   static getIsTutorialSkipped() {
@@ -15,6 +20,9 @@ class SaveManagement {
     raise: boolean = true,
   ): string {
     let key = localStorage.getItem("key");
+    if (key && !checkEncryptionKey(key)) {
+      key = null;
+    }
     if (!key && generate) {
       key = generateKey();
       localStorage.setItem("key", key);
