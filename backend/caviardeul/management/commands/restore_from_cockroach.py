@@ -64,6 +64,7 @@ class Command(BaseCommand):
             ],
             "adapters": {
                 "created_at": lambda v: make_aware(v),
+                "safety": lambda v: v.lower(),
                 "stats": lambda v: v or {},
             },
             "ordering": "createdAt",

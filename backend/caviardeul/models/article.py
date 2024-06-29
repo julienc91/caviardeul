@@ -44,3 +44,6 @@ class CustomArticle(Article):
             ),
             models.UniqueConstraint("public_id", name="custom_article_public_id_unq"),
         ]
+
+    def get_absolute_url(self):
+        return f"/custom/{self.public_id}"
