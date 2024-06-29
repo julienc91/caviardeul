@@ -68,10 +68,11 @@ class DailyArticleStatsSerializer(serializers.Serializer):
         distribution = instance.stats["distribution"]
         index = instance.nb_winners // 2
         median = 10
-        for nb_attempts in sorted(distribution.keys()):
-            index -= distribution[nb_attempts]
+        categories = [int(key) for key in distribution.keys()]
+        for category in sorted(categories):
+            index -= distribution[str(category)]
             if index <= 0:
-                median = int(nb_attempts) * 10
+                median = category * 10
                 break
         return {
             "median": median,

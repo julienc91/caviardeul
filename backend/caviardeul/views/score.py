@@ -39,7 +39,7 @@ class ScoreViewSet(CreateModelMixin, GenericViewSet):
         nb_correct = serializer.validated_data["nb_correct"]
 
         stats = article.stats or {"distribution": {}}
-        key = min(nb_attempts / 10, 500)
+        key = min(nb_attempts // 10, 500)
         stats["distribution"][key] = stats["distribution"].get(key, 0) + 1
         article.nb_winners += 1
         article.stats = stats
