@@ -54,7 +54,7 @@ elements_to_flatten = [
 
 def strip_html_article(html_content: str) -> str:
     soup = BeautifulSoup(html_content, "html.parser")
-    for comment in soup.find_all(text=lambda text: isinstance(text, Comment)):
+    for comment in soup.find_all(string=lambda text: isinstance(text, Comment)):
         comment.extract()
 
     for selector in elements_to_remove:

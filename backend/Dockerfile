@@ -5,8 +5,8 @@ FROM base AS build_dev
 WORKDIR /app
 COPY pyproject.toml requirements-dev.txt ./
 RUN pip install uv~=0.1 \
-    && uv venv \
-    && uv pip sync requirements-dev.txt
+    && uv venv /venv \
+    && uv pip sync -p /venv/bin/python requirements-dev.txt
 
 FROM base AS dev
 
@@ -17,11 +17,11 @@ USER django
 WORKDIR /app
 
 ENV PATH="/venv/bin:$PATH"
-COPY --from=build_dev /app/.venv /venv
+COPY --from=build_dev /venv /venv
 COPY . ./
 
 EXPOSE 5000
-CMD python mnange.py runserver 0.0.0.0:5000
+CMD python manage.py runserver 0.0.0.0:5000
 
 
 FROM base AS build_prod
@@ -29,8 +29,8 @@ FROM base AS build_prod
 WORKDIR /app
 COPY pyproject.toml requirements.txt ./
 RUN pip install uv~=0.1 \
-    && uv venv \
-    && uv pip sync requirements.txt
+    && uv venv /venv \
+    && uv pip sync -p /venv/bin/python requirements.txt
 
 FROM base AS prod
 
@@ -41,7 +41,7 @@ USER django
 WORKDIR /app
 
 ENV PATH="/venv/bin:$PATH"
-COPY --from=build_prod /app/.venv /venv
+COPY --from=build_prod /venv /venv
 COPY . ./
 
 EXPOSE 5000
