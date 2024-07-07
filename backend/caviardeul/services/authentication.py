@@ -19,7 +19,7 @@ class UserIDAuthentication(BaseAuthentication):
             return None
 
         now = timezone.now()
-        if user.last_login <= now - timedelta(hours=1):
+        if user.last_login and user.last_login <= now - timedelta(hours=1):
             user.last_login = now
             user.save(update_fields=["last_login"])
 

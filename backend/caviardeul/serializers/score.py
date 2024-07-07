@@ -24,6 +24,16 @@ class ArticleScoreCreateSerializer(serializers.Serializer):
             raise ValidationError()
         return super().validate(attrs)
 
+    def to_representation(self, instance):
+        res = super().to_representation(instance)
+        article_id = res["article_id"] if res["custom"] else int(res["article_id"])
+        return {
+            "nbAttempts": res["nb_attempts"],
+            "nbCorrect": res["nb_correct"],
+            "articleId": article_id,
+            "custom": res["custom"],
+        }
+
 
 class DailyArticleScoreSerializer(serializers.Serializer):
     def to_representation(self, instance: DailyArticleScore):

@@ -9,5 +9,7 @@ from caviardeul.models import User
 class Command(BaseCommand):
     def handle(self, *args, **options):
         threshold = timezone.now() - timedelta(days=180)
-        count = User.objects.filter(is_staff=False, last_login__lt=threshold).delete()
+        count, _ = User.objects.filter(
+            is_staff=False, last_login__lt=threshold
+        ).delete()
         return f"{count} inactive user(s) deleted"

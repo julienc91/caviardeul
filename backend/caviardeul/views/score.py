@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.viewsets import GenericViewSet
@@ -13,22 +14,20 @@ class ScoreViewSet(CreateModelMixin, GenericViewSet):
     serializer_class = ArticleScoreCreateSerializer
     queryset = DailyArticleScore.objects.all()
 
-    def get_queryset(self):
-        if self.request.user.is_anonymous:
-            return self.queryset.none()
-        return self.queryset.filter(user=self.request.user)
-
     @transaction.atomic()
     def perform_create(self, serializer: ArticleScoreCreateSerializer):
         article_id = serializer.validated_data["article_id"]
         custom = serializer.validated_data["custom"]
+        now = timezone.now()
         try:
             if custom:
                 article = CustomArticle.objects.select_for_update().get(
                     public_id=article_id
                 )
             else:
-                article = DailyArticle.objects.select_for_update().get(id=article_id)
+                article = DailyArticle.objects.select_for_update().get(
+                    id=article_id, date__lte=now
+                )
         except (CustomArticle.DoesNotExist, DailyArticle.DoesNotExist):
             raise ValidationError("L'article n'a pas été trouvé")
 
@@ -39,7 +38,7 @@ class ScoreViewSet(CreateModelMixin, GenericViewSet):
         nb_correct = serializer.validated_data["nb_correct"]
 
         stats = article.stats or {"distribution": {}}
-        key = min(nb_attempts // 10, 500)
+        key = str(min(nb_attempts // 10, 500))
         stats["distribution"][key] = stats["distribution"].get(key, 0) + 1
         article.nb_winners += 1
         article.stats = stats
@@ -47,7 +46,8 @@ class ScoreViewSet(CreateModelMixin, GenericViewSet):
         if custom:
             article.save(update_fields=["stats", "nb_winners"])
         else:
-            article.nb_daily_winners += 1
+            if article.date.date() == timezone.now().date():
+                article.nb_daily_winners += 1
 
             _, created = DailyArticleScore.objects.get_or_create(
                 daily_article=article,

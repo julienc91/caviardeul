@@ -9,7 +9,9 @@ from caviardeul.services.articles import get_article_html_from_wikipedia
 class Command(BaseCommand):
     def handle(self, *args, **options):
         now = timezone.now()
-        next_article = DailyArticle.objects.filter(date__gt=now).order_by("id").first()
+        next_article = (
+            DailyArticle.objects.filter(date__gt=now).order_by("date").first()
+        )
         if not next_article:
             raise CommandError("No daily article left")
 

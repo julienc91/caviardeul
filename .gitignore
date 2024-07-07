@@ -113,3 +113,6 @@ __pycache__
 
 # Django
 static/
+
+# Tests
+.coverage

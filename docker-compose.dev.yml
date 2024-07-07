@@ -18,7 +18,7 @@ services:
       context: backend
       target: dev
     volumes:
-      - ./backend/:/app/:ro
+      - ./backend/:/app/
     command: python manage.py runserver 0.0.0.0:5000
 
   nginx:
@@ -31,7 +31,7 @@ services:
       file: docker-compose.yml
       service: postgres
     ports:
-      - 127.0.0.1:5432:5432
+      - "127.0.0.1:5432:5432"
 
   redis:
     extends:

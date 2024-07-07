@@ -3,7 +3,7 @@ import uuid
 from django.db import transaction
 from django.utils import timezone
 
-from caviardeul.models import DailyArticleScore, User
+from caviardeul.models import CustomArticle, DailyArticleScore, User
 
 
 def create_user_for_request(request):
@@ -20,7 +20,10 @@ def create_user_for_request(request):
 
 
 @transaction.atomic()
-def merge_users(current_user: User, target_user: User):
+def merge_users(current_user: User, target_user: User) -> None:
+    if current_user == target_user:
+        raise ValueError("Merging needs distinct users")
+
     current_user_scores = DailyArticleScore.objects.filter(user=current_user)
     target_user_scores_by_article_id = {
         score.daily_article_id: score
@@ -47,5 +50,11 @@ def merge_users(current_user: User, target_user: User):
     DailyArticleScore.objects.bulk_update(
         scores_to_update, fields=["created_at", "nb_attempts", "nb_correct"]
     )
+
+    CustomArticle.objects.filter(created_by=current_user).exclude(
+        page_id__in=CustomArticle.objects.filter(created_by=target_user).values_list(
+            "page_id", flat=True
+        )
+    ).update(created_by=target_user)
 
     current_user.delete()

@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.db import models
 from django.utils import timezone
 
@@ -26,6 +28,14 @@ class DailyArticle(Article):
             models.UniqueConstraint("date", name="daily_article_date_unq"),
             models.UniqueConstraint("page_id", name="daily_article_page_id_unq"),
         ]
+
+    def get_absolute_url(self):
+        now = timezone.now()
+        if self.date < now - timedelta(days=1):
+            return f"/archives/{self.id}"
+        elif self.date < now:
+            return "/"
+        return None
 
 
 class CustomArticle(Article):
