@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.db import transaction
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
@@ -46,7 +48,7 @@ class ScoreViewSet(CreateModelMixin, GenericViewSet):
         if custom:
             article.save(update_fields=["stats", "nb_winners"])
         else:
-            if article.date.date() == timezone.now().date():
+            if now - article.date < timedelta(days=1):
                 article.nb_daily_winners += 1
 
             _, created = DailyArticleScore.objects.get_or_create(
