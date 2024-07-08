@@ -55,7 +55,6 @@ class TestGetCustomArticle:
         res = client.get(f"/articles/custom/{article.public_id}0")
         assert res.status_code == 404, res.content
 
-    @pytest.mark.xfail()
     def test_get_invalid_custom_article(self, mock_wiki_api_error, client):
         article = CustomArticleFactory()
         mock_wiki_api_error(article.page_id)

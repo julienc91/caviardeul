@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from caviardeul.models import DailyArticleScore
-
 
 class ArticleScoreCreateSerializer(serializers.Serializer):
     nb_attempts = serializers.IntegerField(min_value=1, required=True)
@@ -32,12 +30,4 @@ class ArticleScoreCreateSerializer(serializers.Serializer):
             "nbCorrect": res["nb_correct"],
             "articleId": article_id,
             "custom": res["custom"],
-        }
-
-
-class DailyArticleScoreSerializer(serializers.Serializer):
-    def to_representation(self, instance: DailyArticleScore):
-        return {
-            "nbAttempts": instance.nb_attempts,
-            "nbCorrect": instance.nb_correct,
         }

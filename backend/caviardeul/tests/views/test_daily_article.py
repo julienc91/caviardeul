@@ -40,7 +40,7 @@ class DailyArticleDetailSchema(BaseModel):
 
 class DailyArticleListSchema(BaseModel):
     articleId: int
-    archive: Literal[True]
+    archive: bool
     pageName: str | None
     userScore: UserScoreSchema | None
     stats: ArticleStatsSchema
@@ -183,21 +183,22 @@ class TestListArchivedArticles:
         data = res.json()
         assert len(data) == len(articles)
 
-        for item, expected_aticle in zip(data, articles, strict=True):
+        for item, expected_article in zip(data, articles, strict=True):
             DailyArticleListSchema.model_validate(item)
-            assert item["articleId"] == expected_aticle.id
+            assert item["articleId"] == expected_article.id
 
             expected_score = None
             if authenticated:
                 expected_score = DailyArticleScore.objects.filter(
-                    daily_article=expected_aticle, user=user
+                    daily_article=expected_article, user=user
                 ).first()
 
+            assert item["archive"] == (expected_article != articles[-1])
             if not expected_score:
                 assert item["userScore"] is None
                 assert item["pageName"] is None
             else:
-                assert item["pageName"] == expected_aticle.page_name
+                assert item["pageName"] == expected_article.page_name
                 assert item["userScore"] == {
                     "nbAttempts": expected_score.nb_attempts,
                     "nbCorrect": expected_score.nb_correct,
