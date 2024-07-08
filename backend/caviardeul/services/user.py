@@ -6,7 +6,7 @@ from django.utils import timezone
 from caviardeul.models import CustomArticle, DailyArticleScore, User
 
 
-def create_user_for_request(request):
+def create_user_for_request(request, response = None):
     now = timezone.now()
     user_id = uuid.uuid4()
     user = User.objects.create(
@@ -16,6 +16,9 @@ def create_user_for_request(request):
         last_login=now,
     )
     request.user = user
+    request.auth = user
+    if response:
+        response.set_cookie("userId", str(user.id))
     return user
 
 

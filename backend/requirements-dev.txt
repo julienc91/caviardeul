@@ -172,10 +172,15 @@ django==5.0.6 \
     # via
     #   caviardeul (pyproject.toml)
     #   django-cors-headers
+    #   django-ninja
     #   djangorestframework
 django-cors-headers==4.4.0 \
     --hash=sha256:5c6e3b7fe870876a1efdfeb4f433782c3524078fa0dc9e0195f6706ce7a242f6 \
     --hash=sha256:92cf4633e22af67a230a1456cb1b7a02bb213d6536d2dcb2a4a24092ea9cebc2
+    # via caviardeul (pyproject.toml)
+django-ninja==1.2.1 \
+    --hash=sha256:667ff27304039d4692421709ae532fd62b16a4d34a969ef850d5cd22cb46090a \
+    --hash=sha256:acb7a0005e84acdb0ae96066c42c7f304f988a078d370e5952382b928bb28a08
     # via caviardeul (pyproject.toml)
 djangorestframework==3.15.2 \
     --hash=sha256:2b8871b062ba1aefc2de01f773875441a961fefbf79f5eed1e32b2f096944b20 \
@@ -293,7 +298,9 @@ pycparser==2.22 \
 pydantic==2.8.2 \
     --hash=sha256:6f62c13d067b0755ad1c21a34bdd06c0c12625a22b0fc09c6b149816604f7c2a \
     --hash=sha256:73ee9fddd406dc318b885c7a2eab8a6472b68b8fb5ba8150949fc3db939f23c8
-    # via caviardeul (pyproject.toml)
+    # via
+    #   caviardeul (pyproject.toml)
+    #   django-ninja
 pydantic-core==2.20.1 \
     --hash=sha256:035ede2e16da7281041f0e626459bcae33ed998cca6a0a007a5ebb73414ac72d \
     --hash=sha256:04024d270cf63f586ad41fff13fde4311c4fc13ea74676962c876d9577bcc78f \

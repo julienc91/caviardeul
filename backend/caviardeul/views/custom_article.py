@@ -1,50 +1,66 @@
-from rest_framework.exceptions import ValidationError
-from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin
-from rest_framework.viewsets import GenericViewSet
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import get_object_or_404
+from ninja.errors import HttpError
 
 from caviardeul.constants import Safety
 from caviardeul.exceptions import ArticleFetchError
 from caviardeul.models import CustomArticle
-from caviardeul.serializers.custom_article import CustomArticleSerializer
-from caviardeul.services.articles import get_article_html_from_wikipedia
+from caviardeul.serializers.custom_article import (
+    CustomArticleCreateSchema,
+    CustomArticleSchema,
+)
+from caviardeul.services.articles import (
+    get_article_content,
+    get_article_html_from_wikipedia,
+)
+from caviardeul.services.authentication import OptionalAPIAuthentication
 from caviardeul.services.custom_article import generate_public_id
 from caviardeul.services.user import create_user_for_request
 
+from .api import api
 
-class CustomArticleViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet):
-    queryset = CustomArticle.objects.all()
-    lookup_field = "public_id"
-    serializer_class = CustomArticleSerializer
 
-    def perform_create(self, serializer: CustomArticleSerializer):
-        serializer.is_valid(raise_exception=True)
-        page_id = serializer.validated_data["page_id"]
+@api.get("/articles/custom/{public_id}", response=CustomArticleSchema)
+def get_custom_article(request: HttpRequest, public_id: str) -> CustomArticle:
+    article = get_object_or_404(CustomArticle, public_id=public_id)
 
-        try:
-            page_title, _ = get_article_html_from_wikipedia(page_id)
-        except ArticleFetchError:
-            raise ValidationError("L'article n'a pas été trouvé")
+    try:
+        content = get_article_content(article)
+    except ArticleFetchError:
+        raise HttpError(400, "L'article n'a pas été trouvé")
 
-        if not self.request.user.is_authenticated:
-            create_user_for_request(self.request)
+    article.content = content
+    return article
 
-        public_id = generate_public_id()
-        custom_article, _ = CustomArticle.objects.get_or_create(
-            page_id=page_id,
-            created_by=self.request.user,
-            defaults=dict(
-                public_id=public_id,
-                page_name=page_title,
-                nb_winners=0,
-                stats={},
-                safety=Safety.UNKNOWN,
-            ),
-        )
-        serializer.instance = custom_article
 
-    def create(self, request, *args, **kwargs):
-        is_authenticated = request.user.is_authenticated
-        response = super().create(request, *args, **kwargs)
-        if not is_authenticated and response.status_code == 201:
-            response.set_cookie("userId", request.user.id)
-        return response
+@api.post(
+    "/articles/custom",
+    auth=OptionalAPIAuthentication(),
+    response={201: CustomArticleSchema},
+)
+def create_custom_article(
+    request: HttpRequest, payload: CustomArticleCreateSchema, response: HttpResponse
+) -> CustomArticle:
+    try:
+        page_title, _ = get_article_html_from_wikipedia(payload.page_id)
+    except ArticleFetchError:
+        raise HttpError(400, "L'article n'a pas été trouvé")
+
+    if not request.auth.is_authenticated:
+        create_user_for_request(request, response)
+
+    public_id = generate_public_id()
+    article, _ = CustomArticle.objects.get_or_create(
+        page_id=payload.page_id,
+        created_by=request.auth,
+        defaults=dict(
+            public_id=public_id,
+            page_name=page_title,
+            nb_winners=0,
+            stats={},
+            safety=Safety.UNKNOWN,
+        ),
+    )
+
+    article.content = get_article_content(article)
+    return article

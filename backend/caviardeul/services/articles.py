@@ -6,6 +6,7 @@ from django.utils import timezone
 
 from caviardeul.exceptions import ArticleFetchError
 from caviardeul.models.article import Article
+from caviardeul.services.encryption import generate_encryption_key, encrypt_data
 from caviardeul.services.logging import logger
 from caviardeul.services.parsing import strip_html_article
 
@@ -58,3 +59,9 @@ def get_article_html_from_wikipedia(page_id: str) -> tuple[str, str]:
 
 def _prepare_article_content_from_html(page_title: str, html_content: str) -> str:
     return f"<h1>{page_title}</h1>" + strip_html_article(html_content)
+
+
+def prepare_encrypted_article(article: Article, content: str) -> None:
+    article.key = generate_encryption_key()
+    article.page_name = encrypt_data(article.page_name, article.key)
+    article.content = encrypt_data(content, article.key)

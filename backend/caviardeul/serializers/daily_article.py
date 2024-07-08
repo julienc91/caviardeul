@@ -1,72 +1,30 @@
-from rest_framework import serializers
+from datetime import datetime, timedelta
+from typing import Literal
+
+from django.utils import timezone
+from ninja import Schema
+from pydantic import Field, computed_field, field_validator, model_validator
 
 from caviardeul.constants import Safety
 from caviardeul.models import DailyArticle
-from caviardeul.serializers.score import DailyArticleScoreSerializer
-from caviardeul.services.articles import get_article_content
-from caviardeul.services.encryption import encrypt_data, generate_encryption_key
+from caviardeul.serializers.article import BaseEncryptedArticleSchema
 
 
-class _BaseDailyArticleSerializer(serializers.Serializer):
-    def to_representation(self, instance: DailyArticle):
-        user_score = None
-        if article_score := getattr(instance, "user_score", None):
-            user_score = DailyArticleScoreSerializer(article_score).data
-
-        stats = DailyArticleStatsSerializer(instance).data
-        return {
-            "articleId": instance.id,
-            "archive": not self.context["current"],
-            "custom": False,
-            "safety": Safety.SAFE,
-            "userScore": user_score,
-            "stats": stats,
-        }
+class DailyArticleScoreSchema(Schema):
+    nbAttempts: int = Field(alias="nb_attempts")
+    nbCorrect: int = Field(alias="nb_correct")
 
 
-class DailyArticleListSerializer(_BaseDailyArticleSerializer):
-    def to_representation(self, instance: DailyArticle):
-        data = super().to_representation(instance)
-        data["pageName"] = instance.page_name if data["userScore"] is not None else None
-        return data
+class DailyArticleStatsSchema(Schema):
+    median: int = Field(alias="stats")
+    nbWinners: int = Field(alias="nb_winners")
 
-
-class DailyArticleDetailSerializer(_BaseDailyArticleSerializer):
-    def to_representation(self, instance: DailyArticle):
-        data = super().to_representation(instance)
-        content = get_article_content(instance)
-        key = generate_encryption_key()
-        encrypted_page_name = encrypt_data(instance.page_name, key)
-        encrypted_content = encrypt_data(content, key)
-
-        data["key"] = key
-        data["pageName"] = encrypted_page_name
-        data["content"] = encrypted_content
-        return data
-
-
-class DailyArticleStatsSerializer(serializers.Serializer):
-    def _get_difficulty_category_from_median_attempts(self, median: int) -> int:
-        if median < 30:
-            return 0
-        elif median < 75:
-            return 1
-        elif median < 125:
-            return 2
-        elif median < 200:
-            return 3
-        return 4
-
-    def to_representation(self, instance: DailyArticle):
-        if not instance.stats.get("distribution"):
-            return {
-                "median": 0,
-                "nbWinners": 0,
-                "category": 0,
-            }
-
-        distribution = instance.stats["distribution"]
-        index = instance.nb_winners // 2
+    @field_validator("median", mode="before")
+    @classmethod
+    def set_median(cls, value):
+        distribution = value.get("distribution", {})
+        nb_winners = sum(distribution.values())
+        index = nb_winners // 2
         median = 10
         categories = [int(key) for key in distribution.keys()]
         for category in sorted(categories):
@@ -74,8 +32,61 @@ class DailyArticleStatsSerializer(serializers.Serializer):
             if index <= 0:
                 median = category * 10
                 break
-        return {
-            "median": median,
-            "nbWinners": instance.nb_winners,
-            "category": self._get_difficulty_category_from_median_attempts(median),
-        }
+        return median
+
+    @computed_field
+    def category(self) -> int:
+        thresholds = [30, 75, 125, 200]
+        for category, threshold in enumerate(thresholds):
+            if self.median < threshold:
+                return category
+        return len(thresholds)
+
+
+class DailyArticleSchema(BaseEncryptedArticleSchema):
+    articleId: int = Field(alias="id")
+    safety: Literal[Safety.SAFE] = Safety.SAFE
+    archive: bool = Field(alias="date")
+    custom: Literal[False] = False
+    pageName: str = Field(alias="page_name")
+    content: str
+    userScore: DailyArticleScoreSchema | None = Field(alias="user_score", default=None)
+    stats: DailyArticleStatsSchema = Field(alias="_self")
+
+    @model_validator(mode="before")
+    @classmethod
+    def set_stats(cls, obj: DailyArticle):
+        obj._self = obj
+        return obj
+
+    @field_validator("archive", mode="before")
+    @classmethod
+    def set_archive(cls, value: datetime) -> bool:
+        return timezone.now() - value > timedelta(days=1)
+
+
+class DailyArticleListSchema(Schema):
+    articleId: int = Field(alias="id")
+    safety: Literal[Safety.SAFE] = Safety.SAFE
+    archive: bool = Field(alias="date")
+    custom: Literal[False] = False
+    pageName: str | None = Field(alias="page_name")
+    userScore: DailyArticleScoreSchema | None = Field(alias="user_score", default=None)
+    stats: DailyArticleStatsSchema = Field(alias="_self")
+
+    @model_validator(mode="before")
+    @classmethod
+    def set_stats(cls, obj: DailyArticle):
+        obj._self = obj
+        return obj
+
+    @model_validator(mode="after")
+    def set_page_name(self):
+        if not self.userScore:
+            self.pageName = None
+        return self
+
+    @field_validator("archive", mode="before")
+    @classmethod
+    def set_archive(cls, value: datetime) -> bool:
+        return timezone.now() - value > timedelta(days=1)
