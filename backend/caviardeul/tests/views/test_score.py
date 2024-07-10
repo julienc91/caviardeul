@@ -32,10 +32,7 @@ class TestPostArticleScore:
         res = client.post(
             "/scores", json.dumps(payload), content_type="application/json"
         )
-        assert res.status_code == 201, res.content
-
-        data = res.json()
-        assert data == payload
+        assert res.status_code == 204, res.content
 
         article.refresh_from_db()
         assert article.nb_winners == initial_nb_winners + 1
@@ -76,10 +73,7 @@ class TestPostArticleScore:
         res = client.post(
             "/scores", json.dumps(payload), content_type="application/json"
         )
-        assert res.status_code == 201, res.content
-
-        data = res.json()
-        assert data == payload
+        assert res.status_code == 204, res.content
 
         score = DailyArticleScore.objects.get()
         assert score.daily_article_id == article.id
@@ -105,7 +99,6 @@ class TestPostArticleScore:
             expected_stats["distribution"]["5"] += 1
         assert article.stats == expected_stats
 
-    @pytest.mark.xfail()
     def test_post_already_saved_score(self, client):
         user = UserFactory()
         client.cookies.load({"userId": str(user.id)})
@@ -125,7 +118,7 @@ class TestPostArticleScore:
         res = client.post(
             "/scores", json.dumps(payload), content_type="application/json"
         )
-        assert res.status_code == 202, res.content
+        assert res.status_code == 204, res.content
 
         article.refresh_from_db()
         assert article.stats == initial_stats
@@ -134,7 +127,7 @@ class TestPostArticleScore:
 
         score_ = DailyArticleScore.objects.get()
         assert score_.id == score.id
-        assert score_.date == score.date
+        assert score_.created_at == score.created_at
 
     def test_post_score_on_future_article(self, client):
         article = DailyArticleFactory(trait_future=True)
@@ -164,4 +157,4 @@ class TestPostArticleScore:
         res = client.post(
             "/scores", json.dumps(payload), content_type="application/json"
         )
-        assert res.status_code == 400, res.content
+        assert res.status_code == 422, res.content
