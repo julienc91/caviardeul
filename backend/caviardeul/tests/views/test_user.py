@@ -17,7 +17,7 @@ class TestGetCurrentUser:
 
         res = client.get("/users/me")
         if not authenticated:
-            assert res.status_code == 403, res.content
+            assert res.status_code == 401, res.content
         else:
             assert res.status_code == 200, res.content
 
@@ -34,7 +34,7 @@ class TestDeleteCurrentUser:
 
         res = client.delete("/users/me")
         if not authenticated:
-            assert res.status_code == 403, res.content
+            assert res.status_code == 401, res.content
         else:
             assert res.status_code == 204, res.content
 

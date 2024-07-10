@@ -1,8 +1,7 @@
-from rest_framework import serializers
+import uuid
 
-from caviardeul.models import User
+from ninja import Schema
 
 
-class UserSerializer(serializers.Serializer):
-    def to_representation(self, instance: User):
-        return {"id": instance.id}
+class UserSchema(Schema):
+    id: uuid.UUID

@@ -21,6 +21,7 @@ def test_create_user_for_request():
     assert user.date_joined is not None
     assert user.last_login is not None
     assert user == User.objects.get()
+    assert request.auth == user
     assert request.user == user
 
 
