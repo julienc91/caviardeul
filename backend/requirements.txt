@@ -23,12 +23,9 @@ django==5.0.6
     #   caviardeul (pyproject.toml)
     #   django-cors-headers
     #   django-ninja
-    #   djangorestframework
 django-cors-headers==4.4.0
     # via caviardeul (pyproject.toml)
 django-ninja==1.2.1
-    # via caviardeul (pyproject.toml)
-djangorestframework==3.15.2
     # via caviardeul (pyproject.toml)
 gunicorn==22.0.0
     # via caviardeul (pyproject.toml)
