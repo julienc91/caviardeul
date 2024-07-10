@@ -51,7 +51,9 @@ psycopg-binary==3.2.1
 pycparser==2.22
     # via cffi
 pydantic==2.8.2
-    # via django-ninja
+    # via
+    #   caviardeul (pyproject.toml)
+    #   django-ninja
 pydantic-core==2.20.1
     # via pydantic
 redis==5.0.7
