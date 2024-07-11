@@ -23,8 +23,8 @@ export const getEncodedArticle = async (
   });
 
   const data = await res.json();
-  if (data.error) {
-    throw data.error;
+  if (!res.ok) {
+    throw data.detail;
   }
 
   return {
