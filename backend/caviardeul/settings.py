@@ -24,6 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 ALLOWED_HOSTS = [HOST_NAME]
 CSRF_TRUSTED_ORIGINS = [f"https://{HOST_NAME}"]
 CORS_ALLOWED_ORIGINS = [f"https://{HOST_NAME}"]
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Application definition
 
