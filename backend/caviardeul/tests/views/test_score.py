@@ -24,7 +24,7 @@ class TestPostArticleScore:
         initial_nb_winners = article.nb_winners
 
         payload = {
-            "nbAttempts": 52,
+            "nbAttempts": 72,
             "nbCorrect": 26,
             "articleId": article.public_id,
             "custom": True,
@@ -35,13 +35,14 @@ class TestPostArticleScore:
         assert res.status_code == 204, res.content
 
         article.refresh_from_db()
+        assert article.median == (70 if is_first_win else 50)
         assert article.nb_winners == initial_nb_winners + 1
 
         if is_first_win:
-            expected_stats = {"distribution": {"5": 1}}
+            expected_stats = {"distribution": {"7": 1}}
         else:
             expected_stats = {"distribution": {**initial_stats["distribution"]}}
-            expected_stats["distribution"]["5"] += 1
+            expected_stats["distribution"]["7"] = 1
         assert article.stats == expected_stats
 
     @pytest.mark.parametrize("authenticated", [True, False])
@@ -65,7 +66,7 @@ class TestPostArticleScore:
         initial_nb_daily_winners = article.nb_daily_winners
 
         payload = {
-            "nbAttempts": 52,
+            "nbAttempts": 72,
             "nbCorrect": 26,
             "articleId": article.id,
             "custom": False,
@@ -87,16 +88,17 @@ class TestPostArticleScore:
             assert score.user_id == new_user.id
 
         article.refresh_from_db()
+        assert article.median == (70 if is_first_win else 50)
         assert article.nb_winners == initial_nb_winners + 1
         assert article.nb_daily_winners == initial_nb_daily_winners + (
             1 if is_current else 0
         )
 
         if is_first_win:
-            expected_stats = {"distribution": {"5": 1}}
+            expected_stats = {"distribution": {"7": 1}}
         else:
             expected_stats = {"distribution": {**initial_stats["distribution"]}}
-            expected_stats["distribution"]["5"] += 1
+            expected_stats["distribution"]["7"] = 1
         assert article.stats == expected_stats
 
     def test_post_already_saved_score(self, client):
@@ -104,6 +106,7 @@ class TestPostArticleScore:
         client.cookies.load({"userId": str(user.id)})
 
         article = DailyArticleFactory(trait_past=True)
+        initial_median = article.median
         initial_stats = article.stats
         initial_nb_winners = article.nb_winners
         initial_nb_daily_winners = article.nb_daily_winners
@@ -121,6 +124,7 @@ class TestPostArticleScore:
         assert res.status_code == 204, res.content
 
         article.refresh_from_db()
+        assert article.median == initial_median
         assert article.stats == initial_stats
         assert article.nb_winners == initial_nb_winners
         assert article.nb_daily_winners == initial_nb_daily_winners

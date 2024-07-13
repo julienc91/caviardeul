@@ -10,6 +10,7 @@ from caviardeul.serializers.score import ArticleScoreCreateSchema
 from caviardeul.services.authentication import OptionalAPIAuthentication
 from caviardeul.services.user import create_user_for_request
 
+from ..services.score import compute_median_from_distribution
 from .api import api
 
 
@@ -42,9 +43,10 @@ def post_article_score(
     stats["distribution"][key] = stats["distribution"].get(key, 0) + 1
     article.nb_winners += 1
     article.stats = stats
+    article.median = compute_median_from_distribution(stats["distribution"])
 
     if payload.custom:
-        article.save(update_fields=["stats", "nb_winners"])
+        article.save(update_fields=["stats", "median", "nb_winners"])
     else:
         if now - article.date < timedelta(days=1):
             article.nb_daily_winners += 1
@@ -55,4 +57,6 @@ def post_article_score(
             defaults={"nb_attempts": nb_attempts, "nb_correct": nb_correct},
         )
         if created:
-            article.save(update_fields=["stats", "nb_winners", "nb_daily_winners"])
+            article.save(
+                update_fields=["stats", "median", "nb_winners", "nb_daily_winners"]
+            )

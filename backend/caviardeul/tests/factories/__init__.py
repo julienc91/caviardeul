@@ -10,6 +10,7 @@ from factory.django import DjangoModelFactory
 
 from caviardeul.constants import Safety
 from caviardeul.services.custom_article import generate_public_id
+from caviardeul.services.score import compute_median_from_distribution
 
 
 class Faker(factory.Faker):
@@ -42,6 +43,9 @@ class _ArticleFactory(DjangoModelFactory):
         lambda obj: {"distribution": {"10": obj.nb_winners}}
         if obj.nb_winners > 0
         else {}
+    )
+    median = factory.LazyAttribute(
+        lambda obj: compute_median_from_distribution(obj.stats.get("distribution", {}))
     )
 
 

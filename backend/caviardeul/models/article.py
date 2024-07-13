@@ -13,6 +13,7 @@ class Article(models.Model):
     page_id = models.CharField(max_length=256)
     page_name = models.CharField(max_length=256)
     nb_winners = models.PositiveIntegerField()
+    median = models.PositiveIntegerField()
     stats = models.JSONField()
 
 

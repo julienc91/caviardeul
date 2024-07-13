@@ -57,6 +57,7 @@ def create_custom_article(
             public_id=public_id,
             page_name=page_title,
             nb_winners=0,
+            median=0,
             stats={},
             safety=Safety.UNKNOWN,
         ),

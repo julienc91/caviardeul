@@ -16,23 +16,8 @@ class DailyArticleScoreSchema(Schema):
 
 
 class DailyArticleStatsSchema(Schema):
-    median: int = Field(alias="stats")
+    median: int = Field(alias="median")
     nbWinners: int = Field(alias="nb_winners")
-
-    @field_validator("median", mode="before")
-    @classmethod
-    def set_median(cls, value):
-        distribution = value.get("distribution", {})
-        nb_winners = sum(distribution.values())
-        index = nb_winners // 2
-        median = 10
-        categories = [int(key) for key in distribution.keys()]
-        for category in sorted(categories):
-            index -= distribution[str(category)]
-            if index <= 0:
-                median = category * 10
-                break
-        return median
 
     @computed_field
     def category(self) -> int:

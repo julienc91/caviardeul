@@ -19,8 +19,9 @@ import SaveManagement from "@caviardeul/utils/save";
 
 const Difficulty: React.FC<{ stats: ArticleInfoStats }> = ({ stats }) => {
   const { category, median } = stats;
+  const display = median >= 10 ? `${median}` : "Moins de 10";
   return (
-    <div className="article-difficulty" title={`${median} coups en moyenne`}>
+    <div className="article-difficulty" title={`${display} coups en moyenne`}>
       {[0, 1, 2, 3, 4].map((level) => (
         <span
           key={level}

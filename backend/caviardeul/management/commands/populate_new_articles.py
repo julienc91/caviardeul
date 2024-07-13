@@ -61,6 +61,7 @@ class Command(BaseCommand):
                 date=date + timedelta(days=i),
                 page_id=page_id,
                 page_name=page_name,
+                median=0,
                 stats={},
                 nb_winners=0,
                 nb_daily_winners=0,
