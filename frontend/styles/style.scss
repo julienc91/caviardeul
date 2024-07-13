@@ -451,6 +451,10 @@ main {
       height: calc(100% - #{$guessInputHeight});
     }
 
+    h1, h2 {
+      line-height: normal;
+    }
+
     .word {
       box-sizing: border-box;
       border: 1px solid transparent;
