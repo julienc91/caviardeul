@@ -1,3 +1,4 @@
+from .csrf import set_csrf_token
 from .custom_article import create_custom_article, get_custom_article
 from .daily_article import (
     get_archived_article,
@@ -21,4 +22,6 @@ __all__ = [
     "get_current_user",
     "delete_current_user",
     "login",
+    # CSRF
+    "set_csrf_token",
 ]

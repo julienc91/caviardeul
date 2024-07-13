@@ -22,6 +22,8 @@ if DEBUG and HOST_NAME == "caviardeul.fr":
 SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 BASE_DIR = Path(__file__).resolve().parent.parent
 ALLOWED_HOSTS = [HOST_NAME]
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = "Strict"
 CSRF_TRUSTED_ORIGINS = [f"https://{HOST_NAME}"]
 CORS_ALLOWED_ORIGINS = [f"https://{HOST_NAME}"]
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

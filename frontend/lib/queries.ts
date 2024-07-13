@@ -1,3 +1,4 @@
+import { getCookie } from "cookies-next";
 import useSWRMutation from "swr/mutation";
 
 import { Article } from "@caviardeul/types";
@@ -15,30 +16,40 @@ class APIError extends Error {
   }
 }
 
-export const saveGameScore = (
+export const saveGameScore = async (
   article: Article,
   nbAttempts: number,
   nbCorrect: number,
 ) => {
   const { articleId, custom } = article;
-  return fetch(`${API_URL}/scores`, {
-    method: "POST",
-    body: JSON.stringify({ articleId, custom, nbAttempts, nbCorrect }),
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
+  await sendRequest("scores", {
+    body: { articleId, custom, nbAttempts, nbCorrect },
   });
 };
 
-const sendRequest = async (endpoint: string, { arg }: any) => {
+export const useCreateCustomGame = () => {
+  const sender = async (
+    endpoint: string,
+    { arg }: { arg: { pageId: string } },
+  ): Promise<{ articleId: string; pageName: string }> => {
+    const data = await sendRequest(endpoint, { body: arg });
+    return {
+      articleId: data.articleId,
+      pageName: decode(data.pageName, data.key),
+    };
+  };
+  return useSWRMutation(`articles/custom`, sender, { throwOnError: false });
+};
+
+const sendRequest = async (endpoint: string, { body }: any) => {
+  const csrfToken = await getCsrfToken();
   const response = await fetch(`${API_URL}/${endpoint}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "X-CSRFToken": csrfToken,
     },
-    credentials: "include",
-    body: JSON.stringify(arg),
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {
@@ -47,19 +58,16 @@ const sendRequest = async (endpoint: string, { arg }: any) => {
     throw new APIError(status, details);
   }
 
+  if (response.status === 204) {
+    return null;
+  }
   return response.json();
 };
 
-export const useCreateCustomGame = () => {
-  const sender = async (
-    endpoint: string,
-    { arg }: { arg: { pageId: string } },
-  ): Promise<{ articleId: string; pageName: string }> => {
-    const data = await sendRequest(endpoint, { arg });
-    return {
-      articleId: data.articleId,
-      pageName: decode(data.pageName, data.key),
-    };
-  };
-  return useSWRMutation(`articles/custom`, sender, { throwOnError: false });
+const getCsrfToken = async () => {
+  const token = getCookie("csrftoken") ?? "";
+  if (!token.length) {
+    await fetch(`${API_URL}/csrf`, { method: "POST" });
+  }
+  return getCookie("csrftoken") ?? "";
 };
