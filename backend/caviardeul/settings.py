@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
+import caviardeul.sentry  # noqa F401
+
 DEBUG = str(os.environ.get("DEBUG", "").lower()) in {"1", "true"}
 HOST_NAME = os.environ["HOST_NAME"]
 

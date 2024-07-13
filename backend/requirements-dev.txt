@@ -24,6 +24,7 @@ certifi==2024.7.4 \
     # via
     #   httpcore
     #   httpx
+    #   sentry-sdk
 cffi==1.16.0 \
     --hash=sha256:0c9ef6ff37e974b73c25eecc13952c55bceed9112be2d9d938ded8e856138bcc \
     --hash=sha256:131fd094d1065b19540c3d72594260f118b231090295d8c34e19a7bbcf2e860a \
@@ -173,6 +174,7 @@ django==5.0.7 \
     #   caviardeul (pyproject.toml)
     #   django-cors-headers
     #   django-ninja
+    #   sentry-sdk
 django-cors-headers==4.4.0 \
     --hash=sha256:5c6e3b7fe870876a1efdfeb4f433782c3524078fa0dc9e0195f6706ce7a242f6 \
     --hash=sha256:92cf4633e22af67a230a1456cb1b7a02bb213d6536d2dcb2a4a24092ea9cebc2
@@ -420,6 +422,10 @@ redis==5.0.7 \
     --hash=sha256:0e479e24da960c690be5d9b96d21f7b918a98c0cf49af3b6fafaa0753f93a0db \
     --hash=sha256:8f611490b93c8109b50adc317b31bfd84fff31def3475b92e7e80bf39f48175b
     # via caviardeul (pyproject.toml)
+sentry-sdk==2.9.0 \
+    --hash=sha256:0bea5fa8b564cc0d09f2e6f55893e8f70286048b0ffb3a341d5b695d1af0e6ee \
+    --hash=sha256:4c85bad74df9767976afb3eeddc33e0e153300e887d637775a753a35ef99bee6
+    # via caviardeul (pyproject.toml)
 six==1.16.0 \
     --hash=sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926 \
     --hash=sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254
@@ -445,3 +451,7 @@ typing-extensions==4.11.0 \
     #   psycopg
     #   pydantic
     #   pydantic-core
+urllib3==2.2.2 \
+    --hash=sha256:a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472 \
+    --hash=sha256:dd505485549a7a552833da5e6063639d0d177c04f23bc3864e41e5dc5f612168
+    # via sentry-sdk
