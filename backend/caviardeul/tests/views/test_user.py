@@ -1,3 +1,4 @@
+import json
 from unittest.mock import Mock
 
 import pytest
@@ -53,15 +54,14 @@ class TestLogin:
         if authenticated:
             client.cookies.load({"userId": str(user.id)})
 
-        query_params = {}
+        payload = {}
         if target:
-            query_params["user"] = (
-                str(user.id) if target == "user" else str(other_user.id)
-            )
+            payload["userId"] = str(user.id) if target == "user" else str(other_user.id)
 
-        res = client.get("/login", query_params)
-        assert res.status_code == 302
-        assert res.url == "/archives"
+        res = client.post(
+            "/login", json.dumps(payload), content_type="application/json"
+        )
+        assert res.status_code == 204
 
         if target == "other_user" and authenticated:
             mock_merge_users.assert_called_once_with(user, other_user)
@@ -84,9 +84,10 @@ class TestLogin:
         if authenticated:
             client.cookies.load({"userId": str(user.id)})
 
-        res = client.get("/login", {"user": "unknwon"})
-        assert res.status_code == 302
-        assert res.url == "/archives"
+        res = client.post(
+            "/login", json.dumps({"userId": "unknown"}), content_type="application/json"
+        )
+        assert res.status_code == 204
 
         mock_merge_users.assert_not_called()
         if authenticated:
