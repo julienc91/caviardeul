@@ -45,4 +45,4 @@ COPY --from=build_prod /venv /venv
 COPY . ./
 
 EXPOSE 5000
-CMD python -m gunicorn wsgi:application --bind 0.0.0.0:5000
+CMD ./start.sh
