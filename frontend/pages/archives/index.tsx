@@ -404,7 +404,6 @@ export default Archives;
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const response = await fetch(`${API_URL}/articles`, {
-    credentials: "include",
     headers: {
       Cookie: req.headers.cookie ?? "",
     },

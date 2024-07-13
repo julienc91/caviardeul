@@ -16,7 +16,6 @@ export const getEncodedArticle = async (
   }
 
   const res = await fetch(url, {
-    credentials: "include",
     headers: {
       Cookie: (userId ?? "") !== "" ? `userId=${userId}` : "",
     },
