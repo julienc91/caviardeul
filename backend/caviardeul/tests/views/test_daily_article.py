@@ -103,7 +103,7 @@ class TestGetCurrentArticle:
 
         assert data["stats"] == {
             "median": 20,
-            "category": 0,
+            "category": 1,
             "nbWinners": article.nb_winners,
         }
 
