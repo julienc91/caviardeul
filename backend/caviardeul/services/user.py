@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import transaction
+from django.http import HttpResponse
 from django.utils import timezone
 
 from caviardeul.models import CustomArticle, DailyArticleScore, User
@@ -17,8 +18,12 @@ def create_user_for_request(request, response=None):
     )
     request.auth = user
     if response:
-        response.set_cookie("userId", str(user.id))
+        set_user_cookie(response, user)
     return user
+
+
+def set_user_cookie(response: HttpResponse, user: User):
+    response.set_cookie("userId", str(user.id))
 
 
 @transaction.atomic()

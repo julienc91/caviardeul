@@ -41,6 +41,10 @@ export const useCreateCustomGame = () => {
   return useSWRMutation(`articles/custom`, sender, { throwOnError: false });
 };
 
+export const sendLoginRequest = async (userId: string) => {
+  return await sendRequest("login", { body: { userId } });
+};
+
 const sendRequest = async (endpoint: string, { body }: any) => {
   const csrfToken = await getCsrfToken();
   const response = await fetch(`${API_URL}/${endpoint}`, {
