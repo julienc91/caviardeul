@@ -1,6 +1,9 @@
+from collections import defaultdict
+from datetime import datetime
 from typing import Literal
 
 import pytest
+from django.utils.timezone import make_aware
 from pydantic import BaseModel
 
 from caviardeul.constants import Safety
@@ -239,4 +242,56 @@ class TestListArchivedArticles:
         assert all(
             item["articleId"] == article.id
             for item, article in zip(data, expected_articles, strict=True)
+        )
+
+    @pytest.mark.parametrize("authenticated", [True, False])
+    @pytest.mark.parametrize("order", ["date", "difficulty", "score"])
+    @pytest.mark.parametrize("asc", [True, False])
+    def test_order_archived_articles(self, client, authenticated, order, asc):
+        articles = [
+            DailyArticleFactory(date=make_aware(datetime(2024, 1, 1)), median=10),
+            DailyArticleFactory(date=make_aware(datetime(2024, 1, 2)), median=5),
+            DailyArticleFactory(date=make_aware(datetime(2024, 1, 3)), median=15),
+            DailyArticleFactory(date=make_aware(datetime(2024, 1, 4)), median=10),
+            DailyArticleFactory(date=make_aware(datetime(2024, 1, 5)), median=5),
+        ]
+
+        user, other_user = UserFactory.create_batch(2)
+        if authenticated:
+            client.cookies.load({"userId": str(user.id)})
+
+        DailyArticleScoreFactory(user=user, daily_article=articles[0], nb_attempts=50)
+        DailyArticleScoreFactory(user=user, daily_article=articles[2], nb_attempts=30)
+        DailyArticleScoreFactory(user=user, daily_article=articles[3], nb_attempts=50)
+        DailyArticleScoreFactory(user=other_user, daily_article=articles[2])
+        DailyArticleScoreFactory(user=other_user, daily_article=articles[2])
+        DailyArticleScoreFactory(user=other_user, daily_article=articles[3])
+
+        scores = defaultdict(int)
+        for score in DailyArticleScore.objects.filter(user=user):
+            scores[score.daily_article_id] = score.nb_attempts
+
+        params = {"order": order, "asc": asc}
+        res = client.get("/articles", params)
+        assert res.status_code == 200, res.content
+
+        if order == "date":
+            articles = sorted(articles, key=lambda a: a.date, reverse=not asc)
+        elif order == "difficulty":
+            if asc:
+                articles = sorted(articles, key=lambda a: (a.median, a.date))
+            else:
+                articles = sorted(articles, key=lambda a: (-a.median, a.date))
+        elif order == "score":
+            if not authenticated:
+                articles = sorted(articles, key=lambda a: a.date)
+            elif asc:
+                articles = sorted(articles, key=lambda a: (scores[a.id], a.date))
+            else:
+                articles = sorted(articles, key=lambda a: (-scores[a.id], a.date))
+
+        data = res.json()
+        assert all(
+            item["articleId"] == article.id
+            for item, article in zip(data, articles, strict=True)
         )

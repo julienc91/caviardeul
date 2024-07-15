@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Literal
 
-from django.db.models import Q
+from django.db.models import F, Q
 from django.utils import timezone
 from ninja import FilterSchema, Schema
 from pydantic import Field, computed_field, field_validator, model_validator
@@ -60,6 +60,29 @@ class DailyArticleListFilter(FilterSchema):
         elif value == "not_finished":
             return Q(user_score=None)
         return Q()
+
+
+class DailyArticleListOrdering(Schema):
+    order: Literal["date", "difficulty", "score"] = "date"
+    asc: bool = True
+
+    def _translate_ordering(self, value: str):
+        if value == "difficulty":
+            return "median"
+        elif value == "score":
+            return "user_score__nb_attempts"
+        return value
+
+    def apply(self, queryset):
+        ordering = F(self._translate_ordering(self.order))
+        if self.asc:
+            ordering = ordering.asc(nulls_first=True)
+        else:
+            ordering = ordering.desc(nulls_last=True)
+        fields = [ordering]
+        if self.order != "date":
+            fields.append("date")
+        return queryset.order_by(*fields)
 
 
 class DailyArticleListSchema(Schema):
