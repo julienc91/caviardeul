@@ -1,10 +1,12 @@
 from django.contrib.auth.models import AnonymousUser
-from django.db.models import FilteredRelation, Q
+from django.db.models import BooleanField, FilteredRelation, Q, Value
 from django.http import Http404, HttpRequest
 from django.utils import timezone
+from ninja import Query
 
 from caviardeul.models import DailyArticle, User
 from caviardeul.serializers.daily_article import (
+    DailyArticleListFilter,
     DailyArticleListSchema,
     DailyArticleSchema,
 )
@@ -23,6 +25,10 @@ def _get_queryset(user: User | AnonymousUser):
                 condition=Q(dailyarticlescore__user=user),
             )
         ).select_related("user_score")
+    else:
+        queryset = queryset.annotate(
+            user_score=Value(None, output_field=BooleanField())
+        )
     return queryset
 
 
@@ -57,5 +63,9 @@ def get_archived_article(request: HttpRequest, article_id: int):
 @api.get(
     "/articles", auth=OptionalAPIAuthentication(), response=list[DailyArticleListSchema]
 )
-def list_archived_articles(request: HttpRequest):
-    return _get_queryset(request.auth).order_by("date")
+def list_archived_articles(
+    request: HttpRequest, filters: DailyArticleListFilter = Query(...)
+):
+    qs = _get_queryset(request.auth).order_by("date")
+    qs = filters.filter(qs)
+    return qs
