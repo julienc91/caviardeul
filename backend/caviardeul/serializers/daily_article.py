@@ -1,8 +1,9 @@
 from datetime import datetime, timedelta
 from typing import Literal
 
+from django.db.models import Q
 from django.utils import timezone
-from ninja import Schema
+from ninja import FilterSchema, Schema
 from pydantic import Field, computed_field, field_validator, model_validator
 
 from caviardeul.constants import Safety
@@ -48,6 +49,17 @@ class DailyArticleSchema(BaseEncryptedArticleSchema):
     @classmethod
     def set_archive(cls, value: datetime) -> bool:
         return timezone.now() - value > timedelta(days=1)
+
+
+class DailyArticleListFilter(FilterSchema):
+    status: Literal["finished", "not_finished", ""] = ""
+
+    def filter_status(self, value) -> Q:
+        if value == "finished":
+            return ~Q(user_score=None)
+        elif value == "not_finished":
+            return Q(user_score=None)
+        return Q()
 
 
 class DailyArticleListSchema(Schema):

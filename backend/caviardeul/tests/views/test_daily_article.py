@@ -203,3 +203,40 @@ class TestListArchivedArticles:
                     "nbAttempts": expected_score.nb_attempts,
                     "nbCorrect": expected_score.nb_correct,
                 }
+
+    @pytest.mark.parametrize("authenticated", [True, False])
+    @pytest.mark.parametrize("status", ["finished", "not_finished", None])
+    def test_filter_archived_articles(self, client, authenticated, status):
+        articles = DailyArticleFactory.create_batch(5, trait_past=True)
+        articles = sorted(articles, key=lambda a: a.date)
+
+        user, other_user = UserFactory.create_batch(2)
+        if authenticated:
+            client.cookies.load({"userId": str(user.id)})
+
+        DailyArticleScoreFactory(user=user, daily_article=articles[0])
+        DailyArticleScoreFactory(user=user, daily_article=articles[2])
+        DailyArticleScoreFactory(user=other_user, daily_article=articles[2])
+        DailyArticleScoreFactory(user=other_user, daily_article=articles[3])
+
+        params = {}
+        if status is not None:
+            params["status"] = status
+
+        res = client.get("/articles", params)
+        assert res.status_code == 200, res.content
+
+        if status == "finished":
+            expected_articles = [articles[0], articles[2]] if authenticated else []
+        elif status == "not_finished":
+            expected_articles = (
+                [articles[1], articles[3], articles[4]] if authenticated else articles
+            )
+        else:
+            expected_articles = articles
+
+        data = res.json()
+        assert all(
+            item["articleId"] == article.id
+            for item, article in zip(data, expected_articles, strict=True)
+        )
