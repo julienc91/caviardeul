@@ -6,7 +6,7 @@ from django.utils import timezone
 
 from caviardeul.exceptions import ArticleFetchError
 from caviardeul.models.article import Article
-from caviardeul.services.encryption import generate_encryption_key, encrypt_data
+from caviardeul.services.encryption import encrypt_data, generate_encryption_key
 from caviardeul.services.logging import logger
 from caviardeul.services.parsing import strip_html_article
 
@@ -41,11 +41,17 @@ def _set_article_to_cache(page_id: str, content: str) -> None:
 
 
 def get_article_html_from_wikipedia(page_id: str) -> tuple[str, str]:
-    article_url = (
-        "https://fr.wikipedia.org/w/api.php?action=parse&format=json&"
-        f"page={page_id}&prop=text&formatversion=2&origin=*"
+    response = httpx.get(
+        "https://fr.wikipedia.org/w/api.php",
+        params={
+            "action": "parse",
+            "format": "json",
+            "prop": "text",
+            "formatversion": 2,
+            "origin": "*",
+            "page": page_id,
+        },
     )
-    response = httpx.get(article_url)
     if response.status_code != 200:
         raise ArticleFetchError
 
