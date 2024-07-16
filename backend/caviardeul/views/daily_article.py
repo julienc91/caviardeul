@@ -3,6 +3,7 @@ from django.db.models import FilteredRelation, Q
 from django.http import Http404, HttpRequest
 from django.utils import timezone
 from ninja import Query
+from ninja.pagination import paginate
 
 from caviardeul.models import DailyArticle, User
 from caviardeul.serializers.daily_article import (
@@ -61,6 +62,7 @@ def get_archived_article(request: HttpRequest, article_id: int):
 @api.get(
     "/articles", auth=OptionalAPIAuthentication(), response=list[DailyArticleListSchema]
 )
+@paginate
 def list_archived_articles(
     request: HttpRequest,
     filters: DailyArticleListFilter = Query(...),

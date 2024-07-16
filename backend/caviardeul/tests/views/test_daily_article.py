@@ -183,7 +183,7 @@ class TestListArchivedArticles:
         res = client.get("/articles")
         assert res.status_code == 200, res.content
 
-        data = res.json()
+        data = res.json()["items"]
         assert len(data) == len(articles)
 
         for item, expected_article in zip(data, articles, strict=True):
@@ -238,7 +238,7 @@ class TestListArchivedArticles:
         else:
             expected_articles = articles
 
-        data = res.json()
+        data = res.json()["items"]
         assert all(
             item["articleId"] == article.id
             for item, article in zip(data, expected_articles, strict=True)
@@ -290,8 +290,22 @@ class TestListArchivedArticles:
             else:
                 articles = sorted(articles, key=lambda a: (-scores[a.id], a.date))
 
-        data = res.json()
+        data = res.json()["items"]
         assert all(
             item["articleId"] == article.id
             for item, article in zip(data, articles, strict=True)
+        )
+
+    def test_pagination(self, client):
+        articles = DailyArticleFactory.create_batch(10, trait_past=True)
+        articles = sorted(articles, key=lambda a: a.date)
+
+        params = {"limit": 3, "offset": 4, "order": "date", "asc": True}
+        res = client.get("/articles", params)
+        assert res.status_code == 200, res.content
+
+        data = res.json()
+        assert data["count"] == len(articles)
+        assert tuple(item["articleId"] for item in data["items"]) == tuple(
+            article.id for article in articles[4:7]
         )
