@@ -3,6 +3,7 @@ from .custom_article import create_custom_article, get_custom_article
 from .daily_article import (
     get_archived_article,
     get_current_article,
+    get_daily_article_stats,
     list_archived_articles,
 )
 from .score import post_article_score
@@ -16,6 +17,7 @@ __all__ = [
     "get_archived_article",
     "get_current_article",
     "list_archived_articles",
+    "get_daily_article_stats",
     # Score
     "post_article_score",
     # Users

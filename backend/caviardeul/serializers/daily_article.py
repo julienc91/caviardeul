@@ -110,3 +110,15 @@ class DailyArticleListSchema(Schema):
     @classmethod
     def set_archive(cls, value: datetime) -> bool:
         return timezone.now() - value > timedelta(days=1)
+
+
+class DailyArticlesStatsSchema(Schema):
+    total: int
+    totalFinished: int = Field(alias="total_finished")
+    averageNbAttempts: int = Field(alias="average_nb_attempts")
+    averageNbCorrect: int = Field(alias="average_nb_correct")
+
+    @field_validator("averageNbAttempts", "averageNbCorrect", mode="before")
+    @classmethod
+    def round_average(cls, value: float | None) -> int:
+        return int(round(value or 0, 0))
