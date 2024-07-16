@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.contrib.auth.models import AnonymousUser
 from django.db.models import FilteredRelation, Q
 from django.http import Http404, HttpRequest
@@ -68,7 +70,8 @@ def list_archived_articles(
     filters: DailyArticleListFilter = Query(...),
     ordering: DailyArticleListOrdering = Query(...),
 ):
-    qs = _get_queryset(request.auth)
+    now = timezone.now()
+    qs = _get_queryset(request.auth).filter(date__lt=now - timedelta(days=1))
     qs = filters.filter(qs)
     qs = ordering.apply(qs)
     return qs

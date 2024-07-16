@@ -164,8 +164,8 @@ class TestGetAchivedArticle:
 class TestListArchivedArticles:
     @pytest.mark.parametrize("authenticated", [True, False])
     def test_list_archived_articles(self, client, authenticated):
-        *articles, _ = [
-            *DailyArticleFactory.create_batch(3, trait_past=True),
+        *articles, _, _ = [
+            *DailyArticleFactory.create_batch(4, trait_past=True),
             DailyArticleFactory(trait_current=True),
             DailyArticleFactory(trait_future=True),
         ]
@@ -196,7 +196,7 @@ class TestListArchivedArticles:
                     daily_article=expected_article, user=user
                 ).first()
 
-            assert item["archive"] == (expected_article != articles[-1])
+            assert item["archive"] is True
             if not expected_score:
                 assert item["userScore"] is None
                 assert item["pageName"] is None
