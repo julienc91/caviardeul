@@ -309,3 +309,42 @@ class TestListArchivedArticles:
         assert tuple(item["articleId"] for item in data["items"]) == tuple(
             article.id for article in articles[4:7]
         )
+
+
+class TestGetDailyArticleStats:
+    @pytest.mark.parametrize("authenticated", [True, False])
+    def test_get_daily_article_stats(self, client, authenticated):
+        *articles, _ = [
+            *DailyArticleFactory.create_batch(5, trait_past=True),
+            DailyArticleFactory(trait_current=True),
+            DailyArticleFactory(trait_future=True),
+        ]
+
+        user, other_user = UserFactory.create_batch(2)
+        if authenticated:
+            client.cookies.load({"userId": str(user.id)})
+
+        DailyArticleScoreFactory(
+            user=user, daily_article=articles[0], nb_attempts=59, nb_correct=26
+        )
+        DailyArticleScoreFactory(
+            user=user, daily_article=articles[2], nb_attempts=33, nb_correct=21
+        )
+        DailyArticleScoreFactory(
+            user=user, daily_article=articles[3], nb_attempts=42, nb_correct=12
+        )
+        DailyArticleScoreFactory(user=other_user, daily_article=articles[2])
+        DailyArticleScoreFactory(user=other_user, daily_article=articles[2])
+
+        res = client.get("/articles/stats")
+        assert res.status_code == 200, res.content
+
+        expected = {
+            "total": len(articles),
+            "totalFinished": 3 if authenticated else 0,
+            "averageNbAttempts": 45 if authenticated else 0,
+            "averageNbCorrect": 20 if authenticated else 0,
+        }
+
+        data = res.json()
+        assert data == expected

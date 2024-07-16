@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 from django.contrib.auth.models import AnonymousUser
-from django.db.models import FilteredRelation, Q
+from django.db.models import Avg, Count, FilteredRelation, Q
 from django.http import Http404, HttpRequest
 from django.utils import timezone
 from ninja import Query
@@ -13,6 +13,7 @@ from caviardeul.serializers.daily_article import (
     DailyArticleListOrdering,
     DailyArticleListSchema,
     DailyArticleSchema,
+    DailyArticlesStatsSchema,
 )
 from caviardeul.services.articles import get_article_content
 from caviardeul.services.authentication import OptionalAPIAuthentication
@@ -44,6 +45,20 @@ def get_current_article(request: HttpRequest):
 
     article.content = get_article_content(article)
     return article
+
+
+@api.get(
+    "/articles/stats",
+    auth=OptionalAPIAuthentication(),
+    response=DailyArticlesStatsSchema,
+)
+def get_daily_article_stats(request: HttpRequest):
+    return _get_queryset(request.auth).aggregate(
+        total=Count("id"),
+        total_finished=Count("id", filter=Q(user_score__isnull=False)),
+        average_nb_attempts=Avg("user_score__nb_attempts"),
+        average_nb_correct=Avg("user_score__nb_correct"),
+    )
 
 
 @api.get(
