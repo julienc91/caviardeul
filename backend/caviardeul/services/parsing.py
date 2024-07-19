@@ -83,6 +83,9 @@ def strip_html_article(html_content: str) -> str:
 
     element = soup.select_one("#Voir_aussi")
     if element:
-        element.closest("h2").decompose()
+        try:
+            element.closest("h2").decompose()
+        except TypeError:
+            element.decompose()
 
     return str(soup).replace("\\n", "\n").strip()
