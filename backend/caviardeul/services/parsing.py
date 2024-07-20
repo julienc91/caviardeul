@@ -30,6 +30,14 @@ elements_to_remove = [
 ]
 
 elements_to_strip_after = [
+    "h2#Annexes",
+    "h2#Bibliographie",
+    "h2#Notes_et_références",
+    "h2#Notes",
+    "h2#Références",
+    "h2#Voir_aussi",
+    "h3#Notes_et_références",
+    # --- Old format
     "h2 #Annexes",
     "h2 #Bibliographie",
     "h2 #Notes_et_références",
@@ -37,6 +45,11 @@ elements_to_strip_after = [
     "h2 #Références",
     "h2 #Voir_aussi",
     "h3 #Notes_et_références",
+]
+
+elements_to_replace_with_children = [
+    ".mw-heading",
+    ".mw-parser-output",
 ]
 
 elements_to_flatten = [
@@ -78,8 +91,9 @@ def strip_html_article(html_content: str) -> str:
             value = element.get_text()
             element.replace_with(value)
 
-    for element in soup.select(".mw-parser-output"):
-        element.replace_with_children()
+    for selector in elements_to_replace_with_children:
+        for element in soup.select(selector):
+            element.replace_with_children()
 
     element = soup.select_one("#Voir_aussi")
     if element:
