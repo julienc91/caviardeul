@@ -42,6 +42,13 @@ export type ArticleInfo = {
   stats: ArticleInfoStats;
 };
 
+export type DailyArticleStats = {
+  total: number;
+  totalFinished: number;
+  averageNbAttempts: number;
+  averageNbCorrect: number;
+};
+
 export type GameHistory = [string, number][];
 
 export type Settings = {

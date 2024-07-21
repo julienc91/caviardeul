@@ -777,6 +777,10 @@ main {
     }
   }
 
+  .loader {
+    height: auto;
+  }
+
   .empty-state {
     color: var(--color-text);
     text-align: center;

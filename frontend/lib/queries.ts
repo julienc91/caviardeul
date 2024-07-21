@@ -1,7 +1,7 @@
 import { getCookie } from "cookies-next";
 import useSWRMutation from "swr/mutation";
 
-import { Article } from "@caviardeul/types";
+import { Article, DailyArticleStats } from "@caviardeul/types";
 import { API_URL } from "@caviardeul/utils/config";
 import { decode } from "@caviardeul/utils/encryption";
 
@@ -43,6 +43,17 @@ export const useCreateCustomGame = () => {
 
 export const sendLoginRequest = async (userId: string) => {
   return await sendRequest("login", { body: { userId } });
+};
+
+export const getUserDailyArticleStats = async (
+  userId: string | undefined,
+): Promise<DailyArticleStats> => {
+  const response = await fetch(`${API_URL}/articles/stats`, {
+    headers: {
+      Cookie: (userId ?? "") !== "" ? `userId=${userId}` : "",
+    },
+  });
+  return await response.json();
 };
 
 const sendRequest = async (endpoint: string, { body }: any) => {

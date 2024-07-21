@@ -1,9 +1,10 @@
-import { getCookie } from "cookies-next";
-import { GetServerSideProps } from "next";
+import { deleteCookie, getCookie } from "cookies-next";
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { QRCodeSVG } from "qrcode.react";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   FaEye,
   FaEyeSlash,
@@ -13,7 +14,13 @@ import {
 
 import ConfirmModal from "@caviardeul/components/modals/confirmModal";
 import Modal from "@caviardeul/components/modals/modal";
-import { ArticleInfo, ArticleInfoStats } from "@caviardeul/types";
+import Loader from "@caviardeul/components/utils/loader";
+import { getUserDailyArticleStats } from "@caviardeul/lib/queries";
+import {
+  ArticleInfo,
+  ArticleInfoStats,
+  DailyArticleStats,
+} from "@caviardeul/types";
 import { API_URL, BASE_URL } from "@caviardeul/utils/config";
 import SaveManagement from "@caviardeul/utils/save";
 
@@ -34,7 +41,7 @@ const Difficulty: React.FC<{ stats: ArticleInfoStats }> = ({ stats }) => {
   );
 };
 
-type SortType = "id" | "median" | "userScore";
+type SortType = "date" | "difficulty" | "score";
 
 const SortSelection: React.FC<{
   sortBy: SortType;
@@ -51,19 +58,19 @@ const SortSelection: React.FC<{
             onChange(value as SortType);
           }}
         >
-          <option value="id">Date</option>
-          <option value="median">Difficulté</option>
-          <option value="userScore">Mon score</option>
+          <option value="date">Date</option>
+          <option value="difficulty">Difficulté</option>
+          <option value="score">Mon score</option>
         </select>
       </label>
       <button onClick={() => onChange(sortBy)}>
-        {sortOrder ? <FaSortAmountDown /> : <FaSortAmountUp />}
+        {sortOrder ? <FaSortAmountUp /> : <FaSortAmountDown />}
       </button>
     </>
   );
 };
 
-type FilterType = "finished" | "not_finished" | "all";
+type FilterType = "finished" | "not_finished" | "";
 
 const FilterSelection: React.FC<{
   filterBy: FilterType;
@@ -79,7 +86,7 @@ const FilterSelection: React.FC<{
             onChange(value as FilterType);
           }}
         >
-          <option value="all">Tous</option>
+          <option value="">Tous</option>
           <option value="not_finished">À faire</option>
           <option value="finished">Terminés</option>
         </select>
@@ -139,100 +146,95 @@ const SynchronizationModal: React.FC<{
   );
 };
 
-const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
-  const [sortBy, setSortBy] = useState<SortType>("id");
-  const [sortOrder, setSortOrder] = useState<boolean>(false);
-  const [filterBy, setFilterBy] = useState<FilterType>("all");
-  const [reset, setReset] = useState<boolean>(false);
-  const [showSynchronizationModal, setShowSynchronizationModal] =
-    useState<boolean>(false);
-  const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>();
+const ArticleCard: React.FC<{ articleInfo: ArticleInfo }> = ({
+  articleInfo,
+}) => {
+  const isOver = !!articleInfo.userScore;
 
-  const title = "Caviardeul - Archives";
-
-  const displayArticles = useMemo(
-    () =>
-      articles
-        .slice(1)
-        .filter(
-          (article) =>
-            filterBy === "all" ||
-            (filterBy === "not_finished" && !article.userScore) ||
-            (filterBy === "finished" && !!article.userScore),
-        )
-        .sort((a, b) => {
-          let sortValue = 0;
-          if (sortBy === "median") {
-            sortValue = a.stats.median - b.stats.median;
-          } else if (sortBy === "userScore") {
-            sortValue =
-              (a?.userScore?.nbAttempts ?? 0) - (b?.userScore?.nbAttempts ?? 0);
-          } else if (sortBy === "id") {
-            sortValue = a.articleId - b.articleId;
-          }
-
-          if (sortValue === 0) {
-            sortValue = a.articleId - b.articleId;
-          } else {
-            sortValue *= sortOrder ? 1 : -1;
-          }
-          return sortValue;
-        })
-        .map((article) =>
-          reset
-            ? {
-                articleId: article.articleId,
-                stats: article.stats,
-              }
-            : article,
-        ),
-    [articles, sortBy, sortOrder, filterBy, reset],
+  let container = (
+    <div
+      className={"archive-item" + (isOver ? " completed" : "")}
+      key={articleInfo.articleId}
+    >
+      <div className="archive-info">
+        <h3>
+          N°{articleInfo.articleId} - {isOver ? articleInfo.pageName : "?"}
+        </h3>
+        {isOver && !!articleInfo.userScore ? (
+          <>
+            <span>Essais&nbsp;: {articleInfo.userScore.nbAttempts}</span>
+            <span>
+              Précision&nbsp;:{" "}
+              {Math.floor(
+                (articleInfo.userScore.nbCorrect * 100) /
+                  Math.max(articleInfo.userScore.nbAttempts, 1),
+              )}
+              %
+            </span>
+          </>
+        ) : (
+          <span>► Jouer</span>
+        )}
+      </div>
+      {<Difficulty stats={articleInfo.stats} />}
+    </div>
   );
 
-  const nbGames = articles.length;
-  const finishedGames = articles.filter(
-    (articleInfo) => !!articleInfo.userScore,
-  );
-  const nbFinishedGames = finishedGames.length;
+  if (!isOver) {
+    container = (
+      <Link
+        href={`/archives/${articleInfo.articleId}`}
+        key={articleInfo.articleId}
+        prefetch={false}
+      >
+        {container}
+      </Link>
+    );
+  }
+  return container;
+};
 
-  const avgTrials = useMemo(
-    () =>
-      Math.floor(
-        finishedGames.reduce(
-          (acc, { userScore }) => acc + (userScore?.nbAttempts || 0),
-          0,
-        ) / Math.max(nbFinishedGames, 1),
-      ),
-    [finishedGames, nbFinishedGames],
-  );
-  const avgAccuracy = useMemo(
-    () =>
-      Math.floor(
-        finishedGames.reduce(
-          (acc, { userScore }) =>
-            acc +
-            ((userScore?.nbCorrect || 0) * 100) /
-              Math.max(userScore?.nbAttempts || 0, 1),
-          0,
-        ) / Math.max(nbFinishedGames, 1),
-      ),
-    [finishedGames, nbFinishedGames],
-  );
-
-  useEffect(() => {
-    if (getCookie("userId")) {
-      setIsLoggedIn(true);
+const arrayEqual = (arr1: any[], arr2: any[]): boolean => {
+  if (arr1.length != arr2.length) {
+    return false;
+  }
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return false;
     }
-  }, []);
+  }
+  return true;
+};
 
-  const handleReset = useCallback(() => {
-    SaveManagement.clearProgress(true, true, true);
-    setReset(true);
-    setIsLoggedIn(false);
-    setShowConfirmModal(false);
-    setShowSynchronizationModal(false);
-  }, [setReset]);
+const fetchArticles = async (
+  order: SortType,
+  asc: boolean,
+  status: FilterType,
+  offset: number = 0,
+  limit: number = 50,
+) => {
+  const urlParams = new URLSearchParams({
+    limit: limit.toString(),
+    offset: offset.toString(),
+    order: order,
+    asc: asc.toString(),
+    status,
+  });
+  const response = await fetch(`${API_URL}/articles?` + urlParams.toString());
+  const data = await response.json();
+  return data.items;
+};
+
+const ArticleList: React.FC = () => {
+  const [sortBy, setSortBy] = useState<SortType>("date");
+  const [sortOrder, setSortOrder] = useState<boolean>(false);
+  const [filterBy, setFilterBy] = useState<FilterType>("");
+  const [articleList, setArticleList] = useState<ArticleInfo[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  const params = useRef<any[]>([]);
+  const observerTarget = useRef<HTMLDivElement>(null);
 
   const handleSortByChanged = useCallback(
     (value: SortType) => {
@@ -253,51 +255,141 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
     [],
   );
 
-  const gamesContainer = displayArticles.map((articleInfo) => {
-    const isOver = !!articleInfo.userScore;
+  const fetchNextPage = useCallback(async () => {
+    if (loading || !hasMore) {
+      return;
+    }
 
-    let container = (
-      <div
-        className={"archive-item" + (isOver ? " completed" : "")}
-        key={articleInfo.articleId}
-      >
-        <div className="archive-info">
-          <h3>
-            N°{articleInfo.articleId} - {isOver ? articleInfo.pageName : "?"}
-          </h3>
-          {isOver && !!articleInfo.userScore ? (
-            <>
-              <span>Essais&nbsp;: {articleInfo.userScore.nbAttempts}</span>
-              <span>
-                Précision&nbsp;:{" "}
-                {Math.floor(
-                  (articleInfo.userScore.nbCorrect * 100) /
-                    Math.max(articleInfo.userScore.nbAttempts, 1),
-                )}
-                %
-              </span>
-            </>
-          ) : (
-            <span>► Jouer</span>
-          )}
-        </div>
-        {<Difficulty stats={articleInfo.stats} />}
-      </div>
+    setLoading(true);
+    const articles = await fetchArticles(
+      sortBy,
+      sortOrder,
+      filterBy,
+      articleList.length,
+    );
+    const queryParams = [filterBy, sortBy, sortOrder];
+    if (arrayEqual(queryParams, params.current)) {
+      setArticleList([...articleList, ...articles]);
+      if (!articles.length) {
+        setHasMore(false);
+      }
+    }
+    setLoading(false);
+  }, [loading, hasMore, articleList, sortBy, sortOrder, filterBy]);
+
+  useEffect(() => {
+    const target = observerTarget.current;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 1 },
     );
 
-    if (!isOver) {
-      container = (
-        <Link
-          href={`/archives/${articleInfo.articleId}`}
-          key={articleInfo.articleId}
-          prefetch={false}
-        >
-          {container}
-        </Link>
-      );
+    if (target) {
+      observer.observe(target);
     }
-    return container;
-  });
+
+    return () => {
+      if (target) {
+        observer.unobserve(target);
+      }
+    };
+  }, [observerTarget, fetchNextPage]);
+
+  useEffect(() => {
+    const newParams = [filterBy, sortBy, sortOrder];
+    if (!arrayEqual(newParams, params.current)) {
+      params.current = newParams;
+      setHasMore(true);
+      setLoading(true);
+      setArticleList([]);
+      (async () => {
+        const articles = await fetchArticles(sortBy, sortOrder, filterBy);
+        if (arrayEqual(newParams, params.current)) {
+          setArticleList(articles);
+        }
+        setLoading(false);
+      })();
+    }
+  }, [articleList, filterBy, sortBy, sortOrder]);
+
+  const gamesContainer = articleList.map((articleInfo) => (
+    <ArticleCard key={articleInfo.articleId} articleInfo={articleInfo} />
+  ));
+
+  return (
+    <div>
+      <div className="list-filters">
+        <FilterSelection filterBy={filterBy} onChange={handleFilterByChanged} />
+        <SortSelection
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onChange={handleSortByChanged}
+        />
+      </div>
+      {articleList.length === 0 && !loading ? (
+        <div className="empty-state">
+          {filterBy === "finished" && (
+            <div>
+              Vous n&apos;avez terminé aucune partie archivée, c&apos;est le
+              moment de commencer&nbsp;!
+            </div>
+          )}
+          {filterBy === "not_finished" && (
+            <div>
+              Félicitations, vous avez terminé toutes les parties
+              archivées&nbsp;!
+            </div>
+          )}
+        </div>
+      ) : (
+        <>
+          <div className="archive-grid">{gamesContainer}</div>
+          {loading && <Loader />}
+          <div ref={observerTarget} />
+        </>
+      )}
+    </div>
+  );
+};
+
+const Archives: React.FC<{ userStats: DailyArticleStats }> = ({
+  userStats,
+}) => {
+  const [showSynchronizationModal, setShowSynchronizationModal] =
+    useState<boolean>(false);
+  const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>();
+  const router = useRouter();
+
+  const title = "Caviardeul - Archives";
+
+  const nbGames = userStats.total;
+  const nbFinishedGames = userStats.totalFinished;
+
+  const avgTrials = userStats.averageNbAttempts;
+  const avgAccuracy = Math.round(
+    (100 * userStats.averageNbCorrect) /
+      Math.max(userStats.averageNbAttempts, 1),
+  );
+
+  useEffect(() => {
+    if (getCookie("userId")) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const handleReset = useCallback(() => {
+    SaveManagement.clearProgress(true, true, true);
+    setIsLoggedIn(false);
+    setShowConfirmModal(false);
+    setShowSynchronizationModal(false);
+    deleteCookie("userId");
+    router.reload();
+  }, [router]);
 
   return (
     <>
@@ -310,36 +402,7 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
         <div className="left-container">
           <h1>Archives</h1>
 
-          <div className="list-filters">
-            <FilterSelection
-              filterBy={filterBy}
-              onChange={handleFilterByChanged}
-            />
-            <SortSelection
-              sortBy={sortBy}
-              sortOrder={sortOrder}
-              onChange={handleSortByChanged}
-            />
-          </div>
-
-          <div className="archive-grid">{gamesContainer}</div>
-
-          {displayArticles.length === 0 && (
-            <div className="empty-state">
-              {filterBy === "finished" && (
-                <div>
-                  Vous n&apos;avez terminé aucune partie archivée, c&apos;est le
-                  moment de commencer&nbsp;!
-                </div>
-              )}
-              {filterBy === "not_finished" && (
-                <div>
-                  Félicitations, vous avez terminé toutes les parties
-                  archivées&nbsp;!
-                </div>
-              )}
-            </div>
-          )}
+          <ArticleList />
         </div>
         <div className="right-container">
           <h1>Score</h1>
@@ -404,15 +467,9 @@ const Archives: React.FC<{ articles: ArticleInfo[] }> = ({ articles }) => {
 export default Archives;
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const response = await fetch(`${API_URL}/articles`, {
-    headers: {
-      Cookie: req.headers.cookie ?? "",
-    },
-  });
-  const articles = await response.json();
+  const { userId } = req.cookies;
+  const userStats = await getUserDailyArticleStats(userId);
   return {
-    props: {
-      articles: articles.reverse(),
-    },
+    props: { userStats },
   };
 };
