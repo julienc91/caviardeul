@@ -2,7 +2,7 @@ default_stages: [commit]
 
 repos:
   - repo: https://github.com/Woile/commitizen
-    rev: v3.27.0
+    rev: v3.28.0
     hooks:
       - id: commitizen
         stages: [commit-msg]
@@ -28,7 +28,7 @@ repos:
         stages: [commit, push]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.5.1
+    rev: v0.5.4
     hooks:
       - id: ruff
         args: [--fix, --config=backend/pyproject.toml]
