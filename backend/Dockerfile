@@ -21,7 +21,7 @@ COPY --from=build_dev /venv /venv
 COPY . ./
 
 EXPOSE 5000
-CMD python manage.py runserver 0.0.0.0:5000
+CMD ["python", "manage.py", "runserver", "0.0.0.0:5000"]
 
 
 FROM base AS build_prod
@@ -35,14 +35,16 @@ RUN pip install uv~=0.1 \
 FROM base AS prod
 
 RUN groupadd -r -g 65332 django \
-    && useradd -r -u 65332 -g django -s /sbin/nologin django
+    && useradd -r -u 65332 -g django -s /sbin/nologin django \
+    && mkdir -p /app/static/ \
+    && chown django:django /app
+
+ENV PATH="/venv/bin:$PATH"
+COPY --from=build_prod /venv /venv
+COPY --chown=django:django . /app
 
 USER django
 WORKDIR /app
 
-ENV PATH="/venv/bin:$PATH"
-COPY --from=build_prod /venv /venv
-COPY . ./
-
 EXPOSE 5000
-CMD ./start.sh
+CMD ["./start.sh"]

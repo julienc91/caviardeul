@@ -1,9 +1,13 @@
 Dockerfile
-.env.example
+.dockerignore
+.env
+.env.*
 .git
+.gitignore
 
+__pycache__
+.coverage
 .pytest_cache
+.python-version
 .ruff_cache
-.env.example
-.python_version
 .venv

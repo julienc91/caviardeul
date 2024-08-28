@@ -1,6 +1,9 @@
 Dockerfile
-.env.example
+.dockerignore
+.env
+.env.*
 .git
+.gitignore
 
 .eslintrc.json
 .next

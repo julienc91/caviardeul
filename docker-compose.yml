@@ -19,6 +19,8 @@ services:
       target: prod
     env_file:
       - backend/.env
+    volumes:
+      - staticdata:/app/static
     depends_on:
       - postgres
       - redis
@@ -35,6 +37,7 @@ services:
       - nginx/.env
     volumes:
       - ./nginx/caviardeul.conf.template:/etc/nginx/templates/caviardeul.conf.template:ro
+      - staticdata:/app/static:ro
     ports:
       - "127.0.0.1:3000:3000"
     networks:
@@ -73,3 +76,4 @@ networks:
 
 volumes:
   dbdata:
+  staticdata:

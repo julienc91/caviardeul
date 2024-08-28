@@ -17,7 +17,7 @@ RUN mkdir .next \
 
 USER node
 EXPOSE 3000
-CMD yarn dev
+CMD ["yarn", "dev"]
 
 FROM base AS build_prod
 WORKDIR /app
@@ -39,4 +39,4 @@ COPY --from=build_prod --chown=nextjs:nextjs /app/.next/static ./.next/static
 USER nextjs
 EXPOSE 3000
 ENV PORT 3000
-CMD node server.js
+CMD ["node", "server.js"]
