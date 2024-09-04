@@ -2,11 +2,10 @@ FROM python:3.12-slim AS base
 
 FROM base AS build_dev
 
-WORKDIR /app
-COPY pyproject.toml requirements-dev.txt ./
-RUN pip install uv~=0.1 \
-    && uv venv /venv \
-    && uv pip sync -p /venv/bin/python requirements-dev.txt
+WORKDIR /build
+COPY pyproject.toml uv.lock ./
+RUN pip install uv~=0.4 \
+    && uv sync --extra tests
 
 FROM base AS dev
 
@@ -16,8 +15,8 @@ RUN groupadd -r -g 1000 django \
 USER django
 WORKDIR /app
 
-ENV PATH="/venv/bin:$PATH"
-COPY --from=build_dev /venv /venv
+ENV PATH="/build/.venv/bin:$PATH"
+COPY --from=build_dev /build/.venv /build/.venv
 COPY . ./
 
 EXPOSE 5000
@@ -26,11 +25,13 @@ CMD ["python", "manage.py", "runserver", "0.0.0.0:5000"]
 
 FROM base AS build_prod
 
-WORKDIR /app
-COPY pyproject.toml requirements.txt ./
-RUN pip install uv~=0.1 \
-    && uv venv /venv \
-    && uv pip sync -p /venv/bin/python requirements.txt
+ENV UV_LINK_MODE=copy \
+    UV_COMPILE_BYTECODE=1
+
+WORKDIR /build
+COPY pyproject.toml uv.lock ./
+RUN pip install uv~=0.4 \
+    && uv sync --no-dev
 
 FROM base AS prod
 
@@ -39,8 +40,8 @@ RUN groupadd -r -g 65332 django \
     && mkdir -p /app/static/ \
     && chown django:django /app
 
-ENV PATH="/venv/bin:$PATH"
-COPY --from=build_prod /venv /venv
+ENV PATH="/build/.venv/bin:$PATH"
+COPY --from=build_prod /build/.venv /build/.venv
 COPY --chown=django:django . /app
 
 USER django
