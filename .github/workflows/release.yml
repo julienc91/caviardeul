@@ -1,14 +1,11 @@
 name: Release
 on:
-  workflow_dispatch:
-    inputs:
-      dryRun:
-        description: 'Dry Run'
-        required: true
-        default: 'true'
+  release:
+    types: [released]
 
 jobs:
   release:
+    name: Build and publish images for release
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -38,7 +35,19 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ${{ matrix.context }}
-          push: ${{ github.event.inputs.dryRun == 'false' }}
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           target: prod
+
+  clean:
+    name: Delete old images
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: snok/container-retention-policy@v3.0.0
+        with:
+          account: ${{ github.actor }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          image-names: "caviardeul-backend caviardeul-frontend"
+          keep-n-most-recent: 5
