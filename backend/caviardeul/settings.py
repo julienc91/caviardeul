@@ -89,10 +89,15 @@ DATABASES = {
     }
 }
 
+
+__redis_password = os.environ.get("REDIS_PASSWORD") or ""
+if __redis_password:
+    __redis_password = f":{__redis_password}@"
+
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": f"redis://:{os.environ['REDIS_PASSWORD']}@{os.environ['REDIS_HOST']}:{os.environ.get('REDIS_PORT', '6379')}",
+        "LOCATION": f"redis://{__redis_password}{os.environ['REDIS_HOST']}:{os.environ.get('REDIS_PORT', '6379')}",
     }
 }
 
@@ -169,7 +174,7 @@ ADMINS = [
     if item
 ]
 EMAIL_HOST = os.environ["SMTP_HOSTNAME"]
-EMAIL_PORT = int(os.environ["SMTP_PORT"])
+EMAIL_PORT = int(os.environ.get("SMTP_PORT", 465))
 EMAIL_USE_SSL = os.environ.get("SMTP_USE_SSL", EMAIL_PORT == 465)
 EMAIL_USE_TLS = os.environ.get("SMTP_USE_TLS", EMAIL_PORT == 587)
 EMAIL_HOST_PASSWORD = os.environ["SMTP_PASSWORD"]

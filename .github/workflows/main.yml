@@ -1,0 +1,70 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: Lint
+        working-directory: ./backend/
+        run: |
+          uvx ruff check .
+          uvx ruff format --check .
+
+  test-backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: tests
+          POSTGRES_DB: tests
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
+        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        working-directory: ./backend/
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          uv venv
+          uv sync --extra tests
+      - name: Tests
+        working-directory: ./backend/
+        run: |
+          source .venv/bin/activate
+          python manage.py migrate
+          pytest --create-db
+        env:
+          DJANGO_SETTINGS_MODULE: caviardeul.settings
+          HOST_NAME: caviardeul.dev
+          DJANGO_SECRET_KEY: tests
+          POSTGRES_DB: tests
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: tests
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+          SMTP_HOSTNAME: localhost
+          SMTP_PORT: 465
+          SMTP_LOGIN: mail
+          SMTP_PASSWORD: tests
+          EMAIL_FROM: debug@caviardeul.dev

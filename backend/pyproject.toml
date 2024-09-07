@@ -36,7 +36,7 @@ include = ["caviardeul/**/*.py"]
 omit = ["caviardeul/tests/*"]
 
 [tool.pytest.ini_options]
-addopts = "--disable-socket --allow-hosts=redis,postgres"
+addopts = "--disable-socket --allow-hosts=redis,postgres,localhost"
 
 [tool.ruff.lint]
 extend-select = ["I"]

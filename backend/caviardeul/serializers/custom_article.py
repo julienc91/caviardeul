@@ -1,8 +1,7 @@
 from typing import Literal
 
-from pydantic import Field
-
 from ninja import Schema
+from pydantic import Field
 
 from caviardeul.serializers.article import BaseEncryptedArticleSchema
 
