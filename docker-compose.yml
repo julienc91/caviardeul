@@ -1,8 +1,6 @@
 services:
   frontend:
-    build:
-      context: frontend
-      target: prod
+    image: ghcr.io/julienc91/caviardeul-frontend:latest
     env_file:
       - frontend/.env
     depends_on:
@@ -14,9 +12,7 @@ services:
     restart: always
 
   backend:
-    build:
-      context: backend
-      target: prod
+    image: ghcr.io/julienc91/caviardeul-backend:latest
     env_file:
       - backend/.env
     volumes:
