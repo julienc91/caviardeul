@@ -1,6 +1,7 @@
 services:
   frontend:
     image: ghcr.io/julienc91/caviardeul-frontend:latest
+    pull_policy: always
     env_file:
       - frontend/.env
     depends_on:
@@ -13,6 +14,7 @@ services:
 
   backend:
     image: ghcr.io/julienc91/caviardeul-backend:latest
+    pull_policy: always
     env_file:
       - backend/.env
     volumes:
