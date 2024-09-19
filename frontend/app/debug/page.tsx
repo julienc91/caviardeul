@@ -4,6 +4,7 @@ import { getCookie } from "cookies-next";
 import React, { useState } from "react";
 
 import SaveManagement from "@caviardeul/utils/save";
+import {VERSION} from "@caviardeul/utils/config";
 
 const Page = () => {
   const [ready, setReady] = useState(false);
@@ -14,6 +15,8 @@ const Page = () => {
         <h1>Debug</h1>
         {ready ? (
           <pre>
+            Version: {VERSION}
+            <br />
             User-Agent: {navigator.userAgent}
             <br />
             UserId:{" "}

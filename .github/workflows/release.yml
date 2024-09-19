@@ -16,8 +16,10 @@ jobs:
         include:
           - context: ./backend/
             image: ghcr.io/julienc91/caviardeul-backend
+            version-env-var: VERSION
           - context: ./frontend/
             image: ghcr.io/julienc91/caviardeul-frontend
+            version-env-var: NEXT_PUBLIC_VERSION
     steps:
       - uses: actions/checkout@v4
       - name: Log in to the Container registry
@@ -38,6 +40,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            ${{ matrix.version-env-var}}=${{ github.event.release.name }}
           target: prod
 
   clean:

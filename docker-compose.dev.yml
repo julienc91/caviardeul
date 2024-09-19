@@ -3,6 +3,8 @@ services:
     build:
       context: frontend
       target: prod
+      args:
+        NEXT_PUBLIC_BASE_URL: https://caviardeul.local
     env_file:
       - frontend/.env
     depends_on:

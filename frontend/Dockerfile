@@ -24,6 +24,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ARG NEXT_PUBLIC_BASE_URL=https://caviardeul.fr
+ARG NEXT_PUBLIC_VERSION
 RUN yarn build
 
 FROM base AS prod

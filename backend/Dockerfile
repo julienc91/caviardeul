@@ -40,7 +40,9 @@ RUN groupadd -r -g 65332 django \
     && mkdir -p /app/static/ \
     && chown django:django /app
 
+ARG VERSION
 ENV PATH="/build/.venv/bin:$PATH"
+ENV VERSION=$VERSION
 COPY --from=build_prod /build/.venv /build/.venv
 COPY --chown=django:django . /app
 

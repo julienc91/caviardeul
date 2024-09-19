@@ -16,6 +16,7 @@ from pathlib import Path
 import caviardeul.sentry  # noqa F401
 
 DEBUG = str(os.environ.get("DEBUG", "").lower()) in {"1", "true"}
+VERSION = os.environ.get("VERSION") or "dev"
 HOST_NAME = os.environ["HOST_NAME"]
 
 if DEBUG and HOST_NAME == "caviardeul.fr":
@@ -52,6 +53,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "caviardeul.middleware.VersionMiddleware",
 ]
 
 ROOT_URLCONF = "caviardeul.urls"
