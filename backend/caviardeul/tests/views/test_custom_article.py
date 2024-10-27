@@ -63,6 +63,7 @@ class TestGetCustomArticle:
         assert res.status_code == 400, res.content
 
 
+@pytest.mark.httpx_mock(can_send_already_matched_responses=True)
 class TestCreateCustomArticle:
     @pytest.mark.parametrize("authenticated", [True, False])
     def test_create_custom_article(self, mock_wiki_api, client, authenticated):
