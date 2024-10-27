@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+import httpx
 import pytest
 from django.core.cache import cache
 
@@ -23,9 +24,16 @@ def mock_wiki_api(httpx_mock):
         content: str,
     ):
         httpx_mock.add_response(
-            url=(
-                "https://fr.wikipedia.org/w/api.php?action=parse&format=json&"
-                f"page={page_id}&prop=text&formatversion=2&origin=*"
+            url=httpx.URL(
+                "https://fr.wikipedia.org/w/api.php",
+                params={
+                    "action": "parse",
+                    "format": "json",
+                    "prop": "text",
+                    "formatversion": 2,
+                    "origin": "*",
+                    "page": page_id,
+                },
             ),
             json={"parse": {"title": title, "text": content}},
         )
@@ -37,9 +45,16 @@ def mock_wiki_api(httpx_mock):
 def mock_wiki_api_error(httpx_mock):
     def inner(page_id: str):
         httpx_mock.add_response(
-            url=(
-                "https://fr.wikipedia.org/w/api.php?action=parse&format=json&"
-                f"page={page_id}&prop=text&formatversion=2&origin=*"
+            url=httpx.URL(
+                "https://fr.wikipedia.org/w/api.php",
+                params={
+                    "action": "parse",
+                    "format": "json",
+                    "prop": "text",
+                    "formatversion": 2,
+                    "origin": "*",
+                    "page": page_id,
+                },
             ),
             json={"error": "unknown article"},
         )
