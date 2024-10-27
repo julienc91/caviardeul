@@ -66,6 +66,7 @@ dependencies = [
     { name = "cryptography" },
     { name = "django" },
     { name = "django-cors-headers" },
+    { name = "django-import-export" },
     { name = "django-ninja" },
     { name = "gunicorn" },
     { name = "httpx" },
@@ -92,6 +93,7 @@ requires-dist = [
     { name = "cryptography", specifier = "~=43.0" },
     { name = "django", specifier = "~=5.0" },
     { name = "django-cors-headers", specifier = "~=4.4.0" },
+    { name = "django-import-export", specifier = ">=4.2.0" },
     { name = "django-ninja", specifier = "~=1.3.0" },
     { name = "factory-boy", marker = "extra == 'tests'", specifier = "~=3.3" },
     { name = "gunicorn", specifier = "~=23.0" },
@@ -266,6 +268,15 @@ wheels = [
 ]
 
 [[package]]
+name = "diff-match-patch"
+version = "20241021"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0e/ad/32e1777dd57d8e85fa31e3a243af66c538245b8d64b7265bec9a61f2ca33/diff_match_patch-20241021.tar.gz", hash = "sha256:beae57a99fa48084532935ee2968b8661db861862ec82c6f21f4acdd6d835073", size = 39962 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f7/bb/2aa9b46a01197398b901e458974c20ed107935c26e44e37ad5b0e5511e44/diff_match_patch-20241021-py3-none-any.whl", hash = "sha256:93cea333fb8b2bc0d181b0de5e16df50dd344ce64828226bda07728818936782", size = 43252 },
+]
+
+[[package]]
 name = "django"
 version = "5.1.1"
 source = { registry = "https://pypi.org/simple" }
@@ -290,6 +301,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/d3/34/f0c7a7241f885cbfc99b1edef0acc7915dd7a3fb749fe27de5e8a9fb2ccb/django_cors_headers-4.4.0.tar.gz", hash = "sha256:92cf4633e22af67a230a1456cb1b7a02bb213d6536d2dcb2a4a24092ea9cebc2", size = 21151 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/9d/0c/4201d5650199b3a36ef3f2ab91f44c4527a70685f3003ce9f3ed8c30780c/django_cors_headers-4.4.0-py3-none-any.whl", hash = "sha256:5c6e3b7fe870876a1efdfeb4f433782c3524078fa0dc9e0195f6706ce7a242f6", size = 12789 },
+]
+
+[[package]]
+name = "django-import-export"
+version = "4.2.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "diff-match-patch" },
+    { name = "django" },
+    { name = "tablib" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b5/35/8fd254421563a5ea57ed3f5e06b6cebc89f77251af839ddaa59ac4879ecf/django_import_export-4.2.0.tar.gz", hash = "sha256:6a616046498b44bf4291610609615b00101bb2b9c4701b59b78edfaa5552aa7b", size = 2209870 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3f/ec/1da370612ea9d81f28f108ec51cd3aed446afaf96f526ecf36e42ad5582e/django_import_export-4.2.0-py3-none-any.whl", hash = "sha256:bb8482bd8b124f1f47e58a877e34358820d09293c65fe36c21e9dbcdee170d4d", size = 134971 },
 ]
 
 [[package]]
@@ -674,6 +699,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/73/82/dfa23ec2cbed08a801deab02fe7c904bfb00765256b155941d789a338c68/sqlparse-0.5.1.tar.gz", hash = "sha256:bb6b4df465655ef332548e24f08e205afc81b9ab86cb1c45657a7ff173a3a00e", size = 84502 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/5d/a5/b2860373aa8de1e626b2bdfdd6df4355f0565b47e51f7d0c54fe70faf8fe/sqlparse-0.5.1-py3-none-any.whl", hash = "sha256:773dcbf9a5ab44a090f3441e2180efe2560220203dc2f8c0b0fa141e18b505e4", size = 44156 },
+]
+
+[[package]]
+name = "tablib"
+version = "3.7.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/41/78/afdf974431f58f0270113e8c50bb020f4d3927eaf0a47806c55e91da3e70/tablib-3.7.0.tar.gz", hash = "sha256:f9db84ed398df5109bd69c11d46613d16cc572fb9ad3213f10d95e2b5f12c18e", size = 121221 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5a/dd/d578310f8ae1cd8e0c6f16a2ff281b8f9993f6cdba1b3d48f92bfae536b6/tablib-3.7.0-py3-none-any.whl", hash = "sha256:9a6930037cfe0f782377963ca3f2b1dae3fd4cdbf0883848f22f1447e7bb718b", size = 47534 },
 ]
 
 [[package]]

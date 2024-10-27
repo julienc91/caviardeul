@@ -19,6 +19,7 @@ dependencies = [
     "redis ~= 5.0.7",
     "pydantic ~= 2.9.0",
     "sentry-sdk[django]",
+    "django-import-export>=4.2.0",
 ]
 
 [project.optional-dependencies]
