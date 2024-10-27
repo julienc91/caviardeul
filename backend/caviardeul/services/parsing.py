@@ -24,6 +24,7 @@ elements_to_remove = [
     ".reference",
     ".reference-cadre",
     ".thumb",
+    ".toc",
     ".wikitable",
     "style",
     "sup.reference",
