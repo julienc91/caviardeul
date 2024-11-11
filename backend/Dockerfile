@@ -4,7 +4,7 @@ FROM base AS build_dev
 
 WORKDIR /build
 COPY pyproject.toml uv.lock ./
-RUN pip install uv~=0.4 \
+RUN pip install uv \
     && uv sync --extra tests
 
 FROM base AS dev
@@ -30,7 +30,7 @@ ENV UV_LINK_MODE=copy \
 
 WORKDIR /build
 COPY pyproject.toml uv.lock ./
-RUN pip install uv~=0.4 \
+RUN pip install uv \
     && uv sync --no-dev
 
 FROM base AS prod
