@@ -53,14 +53,19 @@ def get_article_html_from_wikipedia(page_id: str) -> tuple[str, str]:
         },
     )
     if response.status_code != 200:
-        raise ArticleFetchError
+        raise ArticleFetchError(f"Unexected response from API: {response.status_code}")
 
     data = response.json()
     if "error" in data:
-        raise ArticleFetchError
+        raise ArticleFetchError("Error received in API response")
 
     data = data["parse"]
-    return data["title"], data["text"]
+    html_content = data["text"]
+
+    if 'class="redirectMsg"' in html_content:
+        raise ArticleFetchError("Redirection received in article payload")
+
+    return data["title"], html_content
 
 
 def _prepare_article_content_from_html(page_title: str, html_content: str) -> str:

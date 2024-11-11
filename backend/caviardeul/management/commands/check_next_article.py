@@ -16,9 +16,6 @@ class Command(BaseCommand):
             raise CommandError("No daily article left")
 
         try:
-            title, text = get_article_html_from_wikipedia(next_article.page_id)
+            get_article_html_from_wikipedia(next_article.page_id)
         except ArticleFetchError:
             raise CommandError("Error when retrieving daily article")
-
-        if "redirectMsg" in text:
-            raise CommandError("Next daily article has a redirect")

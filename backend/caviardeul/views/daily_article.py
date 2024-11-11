@@ -1,12 +1,13 @@
 from datetime import timedelta
 
 from django.contrib.auth.models import AnonymousUser
-from django.db.models import Avg, Count, FilteredRelation, Q
-from django.http import Http404, HttpRequest
+from django.db.models import Avg, Count, FilteredRelation, Q, QuerySet
+from django.http import HttpRequest
 from django.utils import timezone
 from ninja import Query
 from ninja.pagination import paginate
 
+from caviardeul.exceptions import ArticleFetchError
 from caviardeul.models import DailyArticle, User
 from caviardeul.serializers.daily_article import (
     DailyArticleListFilter,
@@ -15,36 +16,13 @@ from caviardeul.serializers.daily_article import (
     DailyArticleSchema,
     DailyArticlesStatsSchema,
 )
+from caviardeul.serializers.error import ErrorSchema
 from caviardeul.services.articles import get_article_content
 from caviardeul.services.authentication import OptionalAPIAuthentication
+from caviardeul.services.daily_article import get_current_daily_article_id
+from caviardeul.services.logging import logger
 
 from .api import api
-
-
-def _get_queryset(user: User | AnonymousUser):
-    queryset = DailyArticle.objects.filter(date__lte=timezone.now())
-    if not user.is_authenticated:
-        user = None
-
-    return queryset.annotate(
-        user_score=FilteredRelation(
-            "dailyarticlescore",
-            condition=Q(dailyarticlescore__user=user),
-        )
-    ).select_related("user_score")
-
-
-@api.get(
-    "/articles/current", auth=OptionalAPIAuthentication(), response=DailyArticleSchema
-)
-def get_current_article(request: HttpRequest):
-    try:
-        article = _get_queryset(request.auth).order_by("-date")[:1].get()
-    except DailyArticle.DoesNotExist:
-        raise Http404("L'article n'a pas été trouvé")
-
-    article.content = get_article_content(article)
-    return article
 
 
 @api.get(
@@ -61,18 +39,55 @@ def get_daily_article_stats(request: HttpRequest):
     )
 
 
+def _get_queryset(user: User | AnonymousUser):
+    queryset = DailyArticle.objects.filter(date__lte=timezone.now())
+    if not user.is_authenticated:
+        user = None
+
+    return queryset.annotate(
+        user_score=FilteredRelation(
+            "dailyarticlescore",
+            condition=Q(dailyarticlescore__user=user),
+        )
+    ).select_related("user_score")
+
+
+@api.get(
+    "/articles/current",
+    auth=OptionalAPIAuthentication(),
+    response={200: DailyArticleSchema, 404: ErrorSchema, 500: ErrorSchema},
+)
+def get_current_article(request: HttpRequest):
+    article_id = get_current_daily_article_id()
+    return _get_daily_article_response(
+        _get_queryset(request.auth).filter(id=article_id)
+    )
+
+
 @api.get(
     "/articles/{article_id}",
     auth=OptionalAPIAuthentication(),
-    response=DailyArticleSchema,
+    response={200: DailyArticleSchema, 404: ErrorSchema, 500: ErrorSchema},
 )
 def get_archived_article(request: HttpRequest, article_id: int):
-    try:
-        article = _get_queryset(request.auth).get(id=article_id)
-    except DailyArticle.DoesNotExist:
-        raise Http404("L'article n'a pas été trouvé")
+    return _get_daily_article_response(
+        _get_queryset(request.auth).filter(id=article_id)
+    )
 
-    article.content = get_article_content(article)
+
+def _get_daily_article_response(queryset: QuerySet[DailyArticle]):
+    try:
+        article = queryset.get()
+    except DailyArticle.DoesNotExist:
+        return 404, {"detail": "L'article n'a pas été trouvé"}
+
+    try:
+        article.content = get_article_content(article)
+    except ArticleFetchError:
+        logger.exception(
+            "Error encountered with daily article", extra={"article_id": article.id}
+        )
+        return 500, {"detail": "Un problème a été rencontré avec cet article"}
     return article
 
 

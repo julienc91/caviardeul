@@ -1,3 +1,4 @@
+import logging
 from collections import defaultdict
 from datetime import datetime
 from typing import Literal
@@ -110,11 +111,25 @@ class TestGetCurrentArticle:
             "nbWinners": article.nb_winners,
         }
 
+    def test_error_with_article(self, client, caplog, mock_wiki_api_redirect):
+        article = DailyArticleFactory(trait_current=True)
+        mock_wiki_api_redirect(article.page_id, article.page_name)
+
+        with caplog.at_level(logging.ERROR):
+            res = client.get("/articles/current")
+        assert "Redirection received in article payload" in caplog.text
+
+        assert res.status_code == 500, res.content
+        data = res.json()
+        assert data["detail"]
+
     def test_no_article_available(self, client):
         _ = DailyArticleFactory(trait_future=True)
 
         res = client.get("/articles/current")
         assert res.status_code == 404, res.content
+        data = res.json()
+        assert data["detail"]
 
 
 class TestGetAchivedArticle:

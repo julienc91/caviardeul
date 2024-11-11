@@ -5,15 +5,19 @@ import { Article, DailyArticleStats } from "@caviardeul/types";
 import { API_URL } from "@caviardeul/utils/config";
 import { decode } from "@caviardeul/utils/encryption";
 
-class APIError extends Error {
+export class APIError extends Error {
   status: number;
-  details: any;
+  details: string;
 
-  constructor(status: number, details: any) {
+  constructor(status: number, details: string) {
     super("API Call error");
     this.status = status;
     this.details = details;
   }
+}
+
+export const isAPIError = (error: unknown): error is APIError => {
+  return !!(error && typeof error === 'object' && 'status' in error && 'details' in error)
 }
 
 export const saveGameScore = async (
@@ -69,8 +73,8 @@ const sendRequest = async (endpoint: string, { body }: any) => {
 
   if (!response.ok) {
     const status = response.status;
-    const details = await response.json();
-    throw new APIError(status, details);
+    const data = await response.json();
+    throw new APIError(status, data?.details ?? "");
   }
 
   if (response.status === 204) {

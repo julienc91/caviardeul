@@ -1,38 +1,48 @@
 import type { GetServerSideProps, NextPage } from "next";
-import Error from "next/error";
 import React from "react";
 
 import Game from "@caviardeul/components/game/game";
 import { getEncodedArticle } from "@caviardeul/lib/article";
 import { EncodedArticle } from "@caviardeul/types";
 import { decodeArticle } from "@caviardeul/utils/encryption";
+import CustomError from "@caviardeul/components/utils/error";
+import {APIError, isAPIError} from "@caviardeul/lib/queries";
 
 const Home: NextPage<{
   encodedArticle: EncodedArticle | null;
   userScore?: { nbAttempts: number; nbCorrect: number };
-}> = ({ encodedArticle, userScore }) => {
-  const dailyArticle = encodedArticle ? decodeArticle(encodedArticle) : null;
-  return dailyArticle ? (
+  error?: APIError,
+}> = ({ encodedArticle, userScore, error }
+) => {
+  if (!encodedArticle) {
+    return <CustomError statusCode={error!.status} text={error!.details} />
+  }
+
+  const article = decodeArticle(encodedArticle);
+  return (
     <Game
-      key={dailyArticle.articleId}
-      article={dailyArticle}
+      key={article.articleId}
+      article={article}
       userScore={userScore}
     />
-  ) : (
-    <Error statusCode={500} title="Une erreur est survenue" />
-  );
+  )
 };
 
 export default Home;
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const { userId } = req.cookies;
-  let encodedArticle;
+  let encodedArticle = null;
   try {
     encodedArticle = await getEncodedArticle(undefined, undefined, userId);
   } catch (error) {
-    console.log(error);
-    return { props: { encodedArticle: null } };
+    let apiError
+    if (isAPIError(error)) {
+      apiError = error
+    } else {
+      apiError = new APIError(500, "Une erreur est survenue")
+    }
+    return {props: {encodedArticle, error: {status: apiError.status, details: apiError.details}}}
   }
 
   const { userScore } = encodedArticle;
