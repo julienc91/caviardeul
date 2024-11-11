@@ -384,6 +384,10 @@ main {
     flex-flow: row;
     justify-content: center;
     height: calc(100vh - #{$navbarHeight + $footerHeight});
+
+    > div {
+      height: auto !important;
+    }
   }
 
   .left-container {

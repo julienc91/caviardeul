@@ -50,7 +50,7 @@ def test_check_next_article_has_redirect(mock_wiki_api):
         '<ul class="redirectText"><li><a href="/wiki/foo" title="Foo">Foo</a></li></ul></div>',
     )
 
-    with pytest.raises(CommandError, match="Next daily article has a redirect"):
+    with pytest.raises(CommandError, match="Error when retrieving daily article"):
         call_command("check_next_article")
 
 
