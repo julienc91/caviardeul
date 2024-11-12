@@ -1,4 +1,4 @@
-import { deleteCookie, getCookie } from "cookies-next";
+import { deleteCookie, getCookie } from "cookies-next/client";
 import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";

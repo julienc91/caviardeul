@@ -1,4 +1,4 @@
-import { getCookie } from "cookies-next";
+import { getCookie } from "cookies-next/client";
 import useSWRMutation from "swr/mutation";
 
 import { Article, DailyArticleStats } from "@caviardeul/types";
@@ -17,8 +17,13 @@ export class APIError extends Error {
 }
 
 export const isAPIError = (error: unknown): error is APIError => {
-  return !!(error && typeof error === 'object' && 'status' in error && 'details' in error)
-}
+  return !!(
+    error &&
+    typeof error === "object" &&
+    "status" in error &&
+    "details" in error
+  );
+};
 
 export const saveGameScore = async (
   article: Article,
