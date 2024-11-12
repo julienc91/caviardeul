@@ -1,6 +1,6 @@
 "use client";
 
-import { getCookie } from "cookies-next";
+import { getCookie } from "cookies-next/client";
 import React, { useState } from "react";
 
 import SaveManagement from "@caviardeul/utils/save";
