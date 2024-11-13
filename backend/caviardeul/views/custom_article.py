@@ -13,7 +13,7 @@ from caviardeul.services.articles import (
     get_article_content,
     get_article_html_from_wikipedia,
 )
-from caviardeul.services.authentication import OptionalAPIAuthentication
+from caviardeul.services.authentication import optional_api_authentication
 from caviardeul.services.custom_article import generate_public_id
 from caviardeul.services.user import create_user_for_request
 
@@ -35,7 +35,7 @@ def get_custom_article(request: HttpRequest, public_id: str) -> CustomArticle:
 
 @api.post(
     "/articles/custom",
-    auth=OptionalAPIAuthentication(),
+    auth=optional_api_authentication,
     response={201: CustomArticleSchema},
 )
 def create_custom_article(

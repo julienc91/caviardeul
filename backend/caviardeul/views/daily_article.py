@@ -18,7 +18,7 @@ from caviardeul.serializers.daily_article import (
 )
 from caviardeul.serializers.error import ErrorSchema
 from caviardeul.services.articles import get_article_content
-from caviardeul.services.authentication import OptionalAPIAuthentication
+from caviardeul.services.authentication import optional_api_authentication
 from caviardeul.services.daily_article import get_current_daily_article_id
 from caviardeul.services.logging import logger
 
@@ -27,7 +27,7 @@ from .api import api
 
 @api.get(
     "/articles/stats",
-    auth=OptionalAPIAuthentication(),
+    auth=optional_api_authentication,
     response=DailyArticlesStatsSchema,
 )
 def get_daily_article_stats(request: HttpRequest):
@@ -54,7 +54,7 @@ def _get_queryset(user: User | AnonymousUser):
 
 @api.get(
     "/articles/current",
-    auth=OptionalAPIAuthentication(),
+    auth=optional_api_authentication,
     response={200: DailyArticleSchema, 404: ErrorSchema, 500: ErrorSchema},
 )
 def get_current_article(request: HttpRequest):
@@ -66,7 +66,7 @@ def get_current_article(request: HttpRequest):
 
 @api.get(
     "/articles/{article_id}",
-    auth=OptionalAPIAuthentication(),
+    auth=optional_api_authentication,
     response={200: DailyArticleSchema, 404: ErrorSchema, 500: ErrorSchema},
 )
 def get_archived_article(request: HttpRequest, article_id: int):
@@ -92,7 +92,7 @@ def _get_daily_article_response(queryset: QuerySet[DailyArticle]):
 
 
 @api.get(
-    "/articles", auth=OptionalAPIAuthentication(), response=list[DailyArticleListSchema]
+    "/articles", auth=optional_api_authentication, response=list[DailyArticleListSchema]
 )
 @paginate
 def list_archived_articles(

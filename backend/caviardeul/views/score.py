@@ -7,14 +7,14 @@ from ninja.errors import HttpError
 
 from caviardeul.models import CustomArticle, DailyArticle, DailyArticleScore
 from caviardeul.serializers.score import ArticleScoreCreateSchema
-from caviardeul.services.authentication import OptionalAPIAuthentication
+from caviardeul.services.authentication import optional_api_authentication
 from caviardeul.services.user import create_user_for_request
 
 from ..services.score import compute_median_from_distribution
 from .api import api
 
 
-@api.post("/scores", auth=OptionalAPIAuthentication(), response={204: None})
+@api.post("/scores", auth=optional_api_authentication, response={204: None})
 @transaction.atomic()
 def post_article_score(
     request: HttpRequest, payload: ArticleScoreCreateSchema, response: HttpResponse

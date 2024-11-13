@@ -5,26 +5,26 @@ from django.http import HttpRequest, HttpResponse
 from caviardeul.models import User
 from caviardeul.serializers.user import LoginSchema, UserSchema
 from caviardeul.services.authentication import (
-    APIAuthentication,
-    OptionalAPIAuthentication,
+    api_authentication,
+    optional_api_authentication,
 )
 from caviardeul.services.user import merge_users, set_user_cookie
 
 from .api import api
 
 
-@api.get("/users/me", auth=APIAuthentication(), response=UserSchema)
+@api.get("/users/me", auth=api_authentication, response=UserSchema)
 def get_current_user(request: HttpRequest):
     return request.auth
 
 
-@api.delete("/users/me", auth=APIAuthentication(), response={204: None})
+@api.delete("/users/me", auth=api_authentication, response={204: None})
 def delete_current_user(request: HttpRequest):
     request.auth.delete()
     return None
 
 
-@api.post("/login", auth=OptionalAPIAuthentication(), response={204: None})
+@api.post("/login", auth=optional_api_authentication, response={204: None})
 def login(request: HttpRequest, payload: LoginSchema, response: HttpResponse):
     response.status_code = 204
 

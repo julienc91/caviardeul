@@ -2,35 +2,38 @@ from datetime import timedelta
 from uuid import UUID
 
 from django.contrib.auth.models import AnonymousUser
+from django.http import HttpRequest
 from django.utils import timezone
-from ninja.security import APIKeyCookie
+from ninja.errors import HttpError
+from ninja.utils import check_csrf
 
 from caviardeul.models import User
 
 
-class APIAuthentication(APIKeyCookie):
-    param_name = "userId"
+def api_authentication(request: HttpRequest) -> User | None:
+    error_response = check_csrf(request)
+    if error_response:
+        raise HttpError(403, "CSRF check Failed")
 
-    def authenticate(self, request, key):
-        if not key:
-            return None
+    key = request.COOKIES.get("userId")
+    if not key:
+        return None
 
-        try:
-            user = User.objects.get(id=UUID(key))
-        except (ValueError, User.DoesNotExist):
-            return None
+    try:
+        user = User.objects.get(id=UUID(key))
+    except (ValueError, User.DoesNotExist):
+        return None
 
-        now = timezone.now()
-        if user.last_login and user.last_login <= now - timedelta(hours=1):
-            user.last_login = now
-            user.save(update_fields=["last_login"])
+    now = timezone.now()
+    if user.last_login and user.last_login <= now - timedelta(hours=1):
+        user.last_login = now
+        user.save(update_fields=["last_login"])
 
-        return user
+    return user
 
 
-class OptionalAPIAuthentication(APIAuthentication):
-    def authenticate(self, request, key):
-        res = super().authenticate(request, key)
-        if res is None:
-            return AnonymousUser()
-        return res
+def optional_api_authentication(request: HttpRequest) -> User | AnonymousUser:
+    user = api_authentication(request)
+    if user is None:
+        return AnonymousUser()
+    return user
