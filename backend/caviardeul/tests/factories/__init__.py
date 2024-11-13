@@ -4,6 +4,7 @@ from datetime import timezone as tz
 from typing import Literal
 
 import factory
+from asgiref.sync import sync_to_async
 from django.utils import timezone
 from django.utils.text import slugify
 from factory.django import DjangoModelFactory
@@ -11,6 +12,16 @@ from factory.django import DjangoModelFactory
 from caviardeul.constants import Safety
 from caviardeul.services.custom_article import generate_public_id
 from caviardeul.services.score import compute_median_from_distribution
+
+
+class AynscDjangoModelFactory(DjangoModelFactory):
+    @classmethod
+    async def acreate(cls, *args, **kwargs):
+        return await sync_to_async(cls.create)(*args, **kwargs)
+
+    @classmethod
+    async def acreate_batch(cls, *args, **kwargs):
+        return await sync_to_async(cls.create_batch)(*args, **kwargs)
 
 
 class Faker(factory.Faker):
@@ -22,7 +33,7 @@ class Faker(factory.Faker):
         return subfaker.format(self.provider, **extra)
 
 
-class UserFactory(DjangoModelFactory):
+class UserFactory(AynscDjangoModelFactory):
     class Meta:
         model = "caviardeul.User"
 
@@ -35,7 +46,7 @@ class UserFactory(DjangoModelFactory):
     )
 
 
-class _ArticleFactory(DjangoModelFactory):
+class _ArticleFactory(AynscDjangoModelFactory):
     page_name = Faker("city", unique=True)
     page_id = factory.LazyAttribute(lambda obj: slugify(obj.page_name))
     nb_winners = Faker("pyint")
@@ -92,7 +103,7 @@ class CustomArticleFactory(_ArticleFactory):
     created_by = factory.SubFactory(UserFactory)
 
 
-class DailyArticleScoreFactory(DjangoModelFactory):
+class DailyArticleScoreFactory(AynscDjangoModelFactory):
     class Meta:
         model = "caviardeul.DailyArticleScore"
         django_get_or_create = ("user", "daily_article")

@@ -1,5 +1,5 @@
 import json
-from unittest.mock import Mock
+from unittest.mock import AsyncMock, Mock
 
 import pytest
 
@@ -47,7 +47,7 @@ class TestLogin:
     @pytest.mark.parametrize("target", [None, "user", "other_user"])
     def test_login(self, monkeypatch, client, authenticated, target):
         monkeypatch.setattr(
-            "caviardeul.views.user.merge_users", mock_merge_users := Mock()
+            "caviardeul.views.user.merge_users", mock_merge_users := AsyncMock()
         )
 
         user, other_user = UserFactory.create_batch(2)

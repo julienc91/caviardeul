@@ -1,5 +1,5 @@
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import aget_object_or_404
 from ninja.errors import HttpError
 
 from caviardeul.constants import Safety
@@ -21,8 +21,8 @@ from .api import api
 
 
 @api.get("/articles/custom/{public_id}", response=CustomArticleSchema)
-def get_custom_article(request: HttpRequest, public_id: str) -> CustomArticle:
-    article = get_object_or_404(CustomArticle, public_id=public_id)
+async def get_custom_article(request: HttpRequest, public_id: str) -> CustomArticle:
+    article = await aget_object_or_404(CustomArticle, public_id=public_id)
 
     try:
         content = get_article_content(article)
@@ -38,7 +38,7 @@ def get_custom_article(request: HttpRequest, public_id: str) -> CustomArticle:
     auth=optional_api_authentication,
     response={201: CustomArticleSchema},
 )
-def create_custom_article(
+async def create_custom_article(
     request: HttpRequest, payload: CustomArticleCreateSchema, response: HttpResponse
 ) -> CustomArticle:
     try:
@@ -47,10 +47,10 @@ def create_custom_article(
         raise HttpError(400, "L'article n'a pas été trouvé")
 
     if not request.auth.is_authenticated:
-        create_user_for_request(request, response)
+        await create_user_for_request(request, response)
 
     public_id = generate_public_id()
-    article, _ = CustomArticle.objects.get_or_create(
+    article, _ = await CustomArticle.objects.aget_or_create(
         page_id=payload.page_id,
         created_by=request.auth,
         defaults=dict(

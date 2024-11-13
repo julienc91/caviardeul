@@ -7,5 +7,5 @@ from .api import api
 @api.post("/csrf")
 @ensure_csrf_cookie
 @csrf_exempt
-def set_csrf_token(request: HttpRequest):
+async def set_csrf_token(request: HttpRequest):
     return HttpResponse()

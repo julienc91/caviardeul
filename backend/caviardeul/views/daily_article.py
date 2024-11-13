@@ -22,6 +22,7 @@ from caviardeul.services.authentication import optional_api_authentication
 from caviardeul.services.daily_article import get_current_daily_article_id
 from caviardeul.services.logging import logger
 
+from ..utils import alist
 from .api import api
 
 
@@ -30,8 +31,8 @@ from .api import api
     auth=optional_api_authentication,
     response=DailyArticlesStatsSchema,
 )
-def get_daily_article_stats(request: HttpRequest):
-    return _get_queryset(request.auth).aggregate(
+async def get_daily_article_stats(request: HttpRequest):
+    return await _get_queryset(request.auth).aaggregate(
         total=Count("id"),
         total_finished=Count("id", filter=Q(user_score__isnull=False)),
         average_nb_attempts=Avg("user_score__nb_attempts"),
@@ -57,9 +58,9 @@ def _get_queryset(user: User | AnonymousUser):
     auth=optional_api_authentication,
     response={200: DailyArticleSchema, 404: ErrorSchema, 500: ErrorSchema},
 )
-def get_current_article(request: HttpRequest):
-    article_id = get_current_daily_article_id()
-    return _get_daily_article_response(
+async def get_current_article(request: HttpRequest):
+    article_id = await get_current_daily_article_id()
+    return await _get_daily_article_response(
         _get_queryset(request.auth).filter(id=article_id)
     )
 
@@ -69,15 +70,15 @@ def get_current_article(request: HttpRequest):
     auth=optional_api_authentication,
     response={200: DailyArticleSchema, 404: ErrorSchema, 500: ErrorSchema},
 )
-def get_archived_article(request: HttpRequest, article_id: int):
-    return _get_daily_article_response(
+async def get_archived_article(request: HttpRequest, article_id: int):
+    return await _get_daily_article_response(
         _get_queryset(request.auth).filter(id=article_id)
     )
 
 
-def _get_daily_article_response(queryset: QuerySet[DailyArticle]):
+async def _get_daily_article_response(queryset: QuerySet[DailyArticle]):
     try:
-        article = queryset.get()
+        article = await queryset.aget()
     except DailyArticle.DoesNotExist:
         return 404, {"detail": "L'article n'a pas été trouvé"}
 
@@ -95,7 +96,7 @@ def _get_daily_article_response(queryset: QuerySet[DailyArticle]):
     "/articles", auth=optional_api_authentication, response=list[DailyArticleListSchema]
 )
 @paginate
-def list_archived_articles(
+async def list_archived_articles(
     request: HttpRequest,
     filters: DailyArticleListFilter = Query(...),
     ordering: DailyArticleListOrdering = Query(...),
@@ -104,4 +105,4 @@ def list_archived_articles(
     qs = _get_queryset(request.auth).filter(date__lt=now - timedelta(days=1))
     qs = filters.filter(qs)
     qs = ordering.apply(qs)
-    return qs
+    return await alist(qs)

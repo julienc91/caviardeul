@@ -10,7 +10,7 @@ from ninja.utils import check_csrf
 from caviardeul.models import User
 
 
-def api_authentication(request: HttpRequest) -> User | None:
+async def api_authentication(request: HttpRequest) -> User | None:
     error_response = check_csrf(request)
     if error_response:
         raise HttpError(403, "CSRF check Failed")
@@ -20,20 +20,20 @@ def api_authentication(request: HttpRequest) -> User | None:
         return None
 
     try:
-        user = User.objects.get(id=UUID(key))
+        user = await User.objects.aget(id=UUID(key))
     except (ValueError, User.DoesNotExist):
         return None
 
     now = timezone.now()
     if user.last_login and user.last_login <= now - timedelta(hours=1):
         user.last_login = now
-        user.save(update_fields=["last_login"])
+        await user.asave(update_fields=["last_login"])
 
     return user
 
 
-def optional_api_authentication(request: HttpRequest) -> User | AnonymousUser:
-    user = api_authentication(request)
+async def optional_api_authentication(request: HttpRequest) -> User | AnonymousUser:
+    user = await api_authentication(request)
     if user is None:
         return AnonymousUser()
     return user

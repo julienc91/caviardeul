@@ -1,5 +1,6 @@
 import uuid
 
+from asgiref.sync import sync_to_async
 from django.db import transaction
 from django.http import HttpResponse
 from django.utils import timezone
@@ -7,10 +8,10 @@ from django.utils import timezone
 from caviardeul.models import CustomArticle, DailyArticleScore, User
 
 
-def create_user_for_request(request, response=None):
+async def create_user_for_request(request, response=None):
     now = timezone.now()
     user_id = uuid.uuid4()
-    user = User.objects.create(
+    user = await User.objects.acreate(
         id=user_id,
         username=str(user_id),
         date_joined=now,
@@ -26,6 +27,7 @@ def set_user_cookie(response: HttpResponse, user: User):
     response.set_cookie("userId", str(user.id))
 
 
+@sync_to_async()
 @transaction.atomic()
 def merge_users(current_user: User, target_user: User) -> None:
     if current_user == target_user:

@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from asgiref.sync import async_to_sync
 from django.db import transaction
 from django.http import HttpRequest, HttpResponse
 from django.utils import timezone
@@ -33,7 +34,7 @@ def post_article_score(
         raise HttpError(400, "L'article n'a pas été trouvé")
 
     if not request.auth.is_authenticated:
-        create_user_for_request(request, response)
+        async_to_sync(create_user_for_request)(request, response)
 
     nb_attempts = payload.nb_attempts
     nb_correct = payload.nb_correct
