@@ -14,18 +14,18 @@ from .api import api
 
 
 @api.get("/users/me", auth=api_authentication, response=UserSchema)
-def get_current_user(request: HttpRequest):
+async def get_current_user(request: HttpRequest):
     return request.auth
 
 
 @api.delete("/users/me", auth=api_authentication, response={204: None})
-def delete_current_user(request: HttpRequest):
-    request.auth.delete()
+async def delete_current_user(request: HttpRequest):
+    await request.auth.adelete()
     return None
 
 
 @api.post("/login", auth=optional_api_authentication, response={204: None})
-def login(request: HttpRequest, payload: LoginSchema, response: HttpResponse):
+async def login(request: HttpRequest, payload: LoginSchema, response: HttpResponse):
     response.status_code = 204
 
     target_user_id = payload.userId
@@ -33,7 +33,7 @@ def login(request: HttpRequest, payload: LoginSchema, response: HttpResponse):
         return response
 
     try:
-        target_user = User.objects.get(id=uuid.UUID(target_user_id))
+        target_user = await User.objects.aget(id=uuid.UUID(target_user_id))
     except (ValueError, User.DoesNotExist):
         return response
 
@@ -44,5 +44,5 @@ def login(request: HttpRequest, payload: LoginSchema, response: HttpResponse):
     if not current_user.is_authenticated or current_user == target_user:
         return response
 
-    merge_users(current_user, target_user)
+    await merge_users(current_user, target_user)
     return response

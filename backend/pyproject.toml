@@ -25,6 +25,7 @@ dependencies = [
 [project.optional-dependencies]
 tests = [
     "pytest ~= 8.3",
+    "pytest-asyncio ~= 0.24",
     "pytest-django ~= 4.8",
     "pytest-cov ~=6.0",
     "pytest-socket ~= 0.7",
@@ -38,6 +39,7 @@ omit = ["caviardeul/tests/*"]
 
 [tool.pytest.ini_options]
 addopts = "--disable-socket --allow-hosts=redis,postgres,localhost"
+asyncio_mode = "auto"
 
 [tool.ruff.lint]
 extend-select = ["I"]
