@@ -83,7 +83,7 @@ async def _get_daily_article_response(queryset: QuerySet[DailyArticle]):
         return 404, {"detail": "L'article n'a pas été trouvé"}
 
     try:
-        article.content = get_article_content(article)
+        article.content = await get_article_content(article)
     except ArticleFetchError:
         logger.exception(
             "Error encountered with daily article", extra={"article_id": article.id}

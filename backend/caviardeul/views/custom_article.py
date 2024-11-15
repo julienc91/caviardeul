@@ -25,7 +25,7 @@ async def get_custom_article(request: HttpRequest, public_id: str) -> CustomArti
     article = await aget_object_or_404(CustomArticle, public_id=public_id)
 
     try:
-        content = get_article_content(article)
+        content = await get_article_content(article)
     except ArticleFetchError:
         raise HttpError(400, "L'article n'a pas été trouvé")
 
@@ -42,7 +42,7 @@ async def create_custom_article(
     request: HttpRequest, payload: CustomArticleCreateSchema, response: HttpResponse
 ) -> CustomArticle:
     try:
-        page_title, _ = get_article_html_from_wikipedia(payload.page_id)
+        page_title, _ = await get_article_html_from_wikipedia(payload.page_id)
     except ArticleFetchError:
         raise HttpError(400, "L'article n'a pas été trouvé")
 
@@ -63,5 +63,5 @@ async def create_custom_article(
         ),
     )
 
-    article.content = get_article_content(article)
+    article.content = await get_article_content(article)
     return article
