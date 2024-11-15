@@ -11,47 +11,48 @@ from caviardeul.services.logging import logger
 from caviardeul.services.parsing import strip_html_article
 
 
-def get_article_content(article: Article) -> str:
-    content = _get_article_content_from_cache(article.page_id)
+async def get_article_content(article: Article) -> str:
+    content = await _get_article_content_from_cache(article.page_id)
     if content is not None:
         logger.debug("retrieved article from cache", extra={"page_id": article.page_id})
         return content
 
-    _, html_content = get_article_html_from_wikipedia(article.page_id)
+    _, html_content = await get_article_html_from_wikipedia(article.page_id)
     logger.info("retrieved article from wikipedia", extra={"page_id": article.page_id})
 
     article_content = _prepare_article_content_from_html(
         article.page_name, html_content
     )
-    _set_article_to_cache(article.page_id, article_content)
+    await _set_article_to_cache(article.page_id, article_content)
     return article_content
 
 
-def _get_article_content_from_cache(page_id: str) -> str | None:
-    return cache.get(f"wikipedia::{page_id}")
+async def _get_article_content_from_cache(page_id: str) -> str | None:
+    return await cache.aget(f"wikipedia::{page_id}")
 
 
-def _set_article_to_cache(page_id: str, content: str) -> None:
+async def _set_article_to_cache(page_id: str, content: str) -> None:
     now = timezone.now()
     tomorrow = (now + timedelta(days=1)).replace(
         hour=0, minute=0, second=0, microsecond=0
     )
     cache_timeout = int((tomorrow - now).total_seconds())
-    cache.set(f"wikipedia::{page_id}", content, timeout=cache_timeout)
+    await cache.aset(f"wikipedia::{page_id}", content, timeout=cache_timeout)
 
 
-def get_article_html_from_wikipedia(page_id: str) -> tuple[str, str]:
-    response = httpx.get(
-        "https://fr.wikipedia.org/w/api.php",
-        params={
-            "action": "parse",
-            "format": "json",
-            "prop": "text",
-            "formatversion": 2,
-            "origin": "*",
-            "page": page_id,
-        },
-    )
+async def get_article_html_from_wikipedia(page_id: str) -> tuple[str, str]:
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            "https://fr.wikipedia.org/w/api.php",
+            params={
+                "action": "parse",
+                "format": "json",
+                "prop": "text",
+                "formatversion": 2,
+                "origin": "*",
+                "page": page_id,
+            },
+        )
     if response.status_code != 200:
         raise ArticleFetchError(f"Unexected response from API: {response.status_code}")
 

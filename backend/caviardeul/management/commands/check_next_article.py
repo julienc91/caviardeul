@@ -1,3 +1,4 @@
+from asgiref.sync import async_to_sync
 from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
 
@@ -16,6 +17,6 @@ class Command(BaseCommand):
             raise CommandError("No daily article left")
 
         try:
-            get_article_html_from_wikipedia(next_article.page_id)
+            async_to_sync(get_article_html_from_wikipedia)(next_article.page_id)
         except ArticleFetchError:
             raise CommandError("Error when retrieving daily article")
