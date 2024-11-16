@@ -2,7 +2,7 @@ default_stages: [commit]
 
 repos:
   - repo: https://github.com/Woile/commitizen
-    rev: v3.30.1
+    rev: v3.31.0
     hooks:
       - id: commitizen
         stages: [commit-msg]
