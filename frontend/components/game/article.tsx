@@ -18,8 +18,6 @@ import {
 } from "@caviardeul/utils/caviarding";
 
 const _WordContainer: React.FC<{ word: string }> = ({ word }) => {
-  const { settings } = useContext(SettingsContext);
-
   const { revealedWords, isOver, selection } = useContext(GameContext);
   if (word === undefined) {
     return null;
@@ -35,12 +33,7 @@ const _WordContainer: React.FC<{ word: string }> = ({ word }) => {
     );
   } else {
     return (
-      <span
-        className={
-          "word caviarded" + (settings.displayWordLength ? " word-length" : "")
-        }
-        data-word-length={word.length}
-      >
+      <span className="word caviarded" data-word-length={word.length}>
         {"█".repeat(word.length)}
       </span>
     );

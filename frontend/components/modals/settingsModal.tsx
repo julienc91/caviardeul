@@ -8,15 +8,11 @@ const SettingsModal: React.FC<{ open: boolean; onClose: () => void }> = ({
   onClose,
 }) => {
   const { settings, onChangeSettings } = useContext(SettingsContext);
-  const { lightMode, displayWordLength, autoScroll } = settings;
+  const { lightMode, autoScroll } = settings;
 
   const handleToggleLightMode = useCallback(() => {
     onChangeSettings({ lightMode: !lightMode });
   }, [lightMode, onChangeSettings]);
-
-  const handleToggleDisplayWordLength = useCallback(() => {
-    onChangeSettings({ displayWordLength: !displayWordLength });
-  }, [displayWordLength, onChangeSettings]);
 
   const handleToggleAutoscroll = useCallback(() => {
     onChangeSettings({ autoScroll: !autoScroll });
@@ -37,15 +33,6 @@ const SettingsModal: React.FC<{ open: boolean; onClose: () => void }> = ({
             onChange={handleToggleLightMode}
           />
           Activer le mode sombre
-        </label>
-        <br />
-        <label>
-          <input
-            type="checkbox"
-            checked={displayWordLength}
-            onChange={handleToggleDisplayWordLength}
-          />
-          Afficher le nombre de lettres au clic
         </label>
         <br />
         <label>
