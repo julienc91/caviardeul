@@ -13,8 +13,9 @@ repos:
         name: eslint
         verbose: true
         language: node
-        entry: cd frontend && yarn --cwd run eslint
-        files: frontend/\.tsx?$
+        entry: yarn --cwd frontend run eslint
+        pass_filenames: false
+        files: .*\.tsx?$
 
   - repo: local
     hooks:
@@ -22,8 +23,8 @@ repos:
         name: tsc
         verbose: true
         language: node
-        entry: cd frontend && yarn --cwd run tsc --project tsconfig.json
-        files: frontend/\.tsx?$
+        entry: yarn --cwd frontend/ run tsc --project tsconfig.json
+        files: \.tsx?$
         pass_filenames: false
         stages: [commit, push]
 

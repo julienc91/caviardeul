@@ -53,6 +53,5 @@ export type GameHistory = [string, number][];
 
 export type Settings = {
   lightMode: boolean;
-  displayWordLength: boolean;
   autoScroll: boolean;
 };
