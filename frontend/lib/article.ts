@@ -1,6 +1,6 @@
+import { APIError } from "@caviardeul/lib/queries";
 import { ArticleId, EncodedArticle } from "@caviardeul/types";
 import { API_URL } from "@caviardeul/utils/config";
-import {APIError} from "@caviardeul/lib/queries";
 
 export const getEncodedArticle = async (
   articleId?: ArticleId,
@@ -24,7 +24,7 @@ export const getEncodedArticle = async (
 
   const data = await res.json();
   if (!res.ok) {
-    throw new APIError(res.status, data.details ?? "")
+    throw new APIError(res.status, data.details ?? "");
   }
 
   return {

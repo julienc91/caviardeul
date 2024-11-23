@@ -46,7 +46,7 @@ type SortType = "date" | "difficulty" | "score";
 const SortSelection: React.FC<{
   sortBy: SortType;
   sortOrder: boolean;
-  onChange: (value: SortType) => void;
+  onChange: (_value: SortType) => void;
 }> = ({ sortBy, sortOrder, onChange }) => {
   return (
     <>
@@ -74,7 +74,7 @@ type FilterType = "finished" | "not_finished" | "";
 
 const FilterSelection: React.FC<{
   filterBy: FilterType;
-  onChange: (value: FilterType) => void;
+  onChange: (_value: FilterType) => void;
 }> = ({ filterBy, onChange }) => {
   return (
     <div className="filter-selection">

@@ -13,7 +13,7 @@ const getInitialSettings = (): Settings => {
   let settings;
   try {
     settings = SaveManagement.getSettings();
-  } catch (e) {
+  } catch (_e) {
     return defaultSettings;
   }
   return {
@@ -24,7 +24,7 @@ const getInitialSettings = (): Settings => {
 
 export const SettingsContext = createContext<{
   settings: Settings;
-  onChangeSettings: (newSettings: Partial<Settings>) => void;
+  onChangeSettings: (_newSettings: Partial<Settings>) => void;
 }>({
   settings: defaultSettings,
   onChangeSettings: () => {},

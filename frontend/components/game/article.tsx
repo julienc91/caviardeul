@@ -17,7 +17,7 @@ import {
   standardizeText,
 } from "@caviardeul/utils/caviarding";
 
-const _WordContainer: React.FC<{ word: string }> = ({ word }) => {
+const WordContainer_: React.FC<{ word: string }> = ({ word }) => {
   const { revealedWords, isOver, selection } = useContext(GameContext);
   if (word === undefined) {
     return null;
@@ -40,7 +40,7 @@ const _WordContainer: React.FC<{ word: string }> = ({ word }) => {
   }
 };
 
-const WordContainer = React.memo(_WordContainer);
+const WordContainer = React.memo(WordContainer_);
 
 const parseHTML = (content: string): ReactNode => {
   const doc = parse(content);
