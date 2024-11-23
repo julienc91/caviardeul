@@ -3,8 +3,8 @@
 import { getCookie } from "cookies-next/client";
 import React, { useState } from "react";
 
+import { VERSION } from "@caviardeul/utils/config";
 import SaveManagement from "@caviardeul/utils/save";
-import {VERSION} from "@caviardeul/utils/config";
 
 const Page = () => {
   const [ready, setReady] = useState(false);

@@ -34,8 +34,8 @@ export const GameContext = createContext<{
   userScore?: UserScore;
   canPlay: boolean;
   // callbacks
-  updateSelection: (word: string | null) => void;
-  makeAttempt: (word: string) => void;
+  updateSelection: (_word: string | null) => void;
+  makeAttempt: (_word: string) => void;
 }>({
   isOver: false,
   canPlay: false,

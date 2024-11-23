@@ -1,12 +1,13 @@
 "use client";
 
 import { redirect } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 
 import Loader from "@caviardeul/components/utils/loader";
 import { sendLoginRequest } from "@caviardeul/lib/queries";
 
-const Page = ({ searchParams }: { searchParams: { user?: string } }) => {
+const Page = (props: { searchParams: Promise<{ user?: string }> }) => {
+  const searchParams = use(props.searchParams);
   const [loggedIn, setLoggedIn] = useState(false);
   const userIdRef = useRef<string | null>(null);
   const userId = searchParams?.user ?? "";

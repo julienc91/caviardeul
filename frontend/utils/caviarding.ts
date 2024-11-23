@@ -93,7 +93,7 @@ export const countOccurrences = (word: string, text: string): number => {
   text = standardizeText(text);
   const allowedSuffixes = `(${closeAlternativesSuffixes.join("|")})?`;
   const regex = new RegExp(
-    `\([${punctuationList}]|^)(${word})${allowedSuffixes}([${punctuationList}]|$)`,
+    `([${punctuationList}]|^)(${word})${allowedSuffixes}([${punctuationList}]|$)`,
     "gim",
   );
   const matches = Array.from(text.matchAll(regex));
@@ -104,7 +104,7 @@ export const countOccurrences = (word: string, text: string): number => {
   count -= relatedCommonWords
     .map((commonWord) => {
       const regex = new RegExp(
-        `\([${punctuationList}]|^)(${commonWord})([${punctuationList}]|$)`,
+        `([${punctuationList}]|^)(${commonWord})([${punctuationList}]|$)`,
         "gim",
       );
       return Array.from(text.matchAll(regex)).length;

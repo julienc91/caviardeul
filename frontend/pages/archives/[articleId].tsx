@@ -1,20 +1,20 @@
-import type { GetServerSideProps, NextPage } from "next";
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import React from "react";
 
 import Game from "@caviardeul/components/game/game";
+import CustomError from "@caviardeul/components/utils/error";
 import { getEncodedArticle } from "@caviardeul/lib/article";
+import { APIError, isAPIError } from "@caviardeul/lib/queries";
 import { EncodedArticle } from "@caviardeul/types";
 import { decodeArticle } from "@caviardeul/utils/encryption";
-import CustomError from "@caviardeul/components/utils/error";
-import {APIError, isAPIError} from "@caviardeul/lib/queries";
 
-const ArchiveGame: NextPage<{
+const ArchiveGame: React.FC<{
   encodedArticle: EncodedArticle | null;
-  error?: APIError,
+  error?: APIError;
 }> = ({ encodedArticle, error, ...props }) => {
   if (!encodedArticle) {
-    return <CustomError statusCode={error!.status} text={error!.details} />
+    return <CustomError statusCode={error!.status} text={error!.details} />;
   }
 
   const article = decodeArticle(encodedArticle);
@@ -39,17 +39,22 @@ export const getServerSideProps: GetServerSideProps = async ({
 }) => {
   const { userId } = req.cookies;
   const articleId = parseInt(params?.articleId as string);
-  let encodedArticle = null
+  let encodedArticle = null;
   try {
     encodedArticle = await getEncodedArticle(articleId, false, userId);
   } catch (error) {
-    let apiError
+    let apiError;
     if (isAPIError(error)) {
-      apiError = error
+      apiError = error;
     } else {
-      apiError = new APIError(500, "Une erreur est survenue")
+      apiError = new APIError(500, "Une erreur est survenue");
     }
-    return {props: {encodedArticle, error: {status: apiError.status, details: apiError.details}}}
+    return {
+      props: {
+        encodedArticle,
+        error: { status: apiError.status, details: apiError.details },
+      },
+    };
   }
 
   const { userScore } = encodedArticle;

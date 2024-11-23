@@ -10,7 +10,7 @@ make cheating too easy.
 export const checkEncryptionKey = (key: string): boolean => {
   try {
     new fernet.Secret(key);
-  } catch (e) {
+  } catch (_e) {
     return false;
   }
   return true;

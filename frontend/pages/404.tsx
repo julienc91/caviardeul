@@ -1,4 +1,5 @@
 import React from "react";
+
 import CustomError from "@caviardeul/components/utils/error";
 
 const NotFoundPage: React.FC = () => {
