@@ -34,6 +34,8 @@ const config = [
 
     rules: {
       "prettier/prettier": "error",
+      "react/display-name": "off",
+      "react/prop-types": "off",
       "no-unused-vars": [
         "error",
         {

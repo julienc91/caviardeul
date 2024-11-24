@@ -127,6 +127,9 @@ export const buildAlternatives = (standardizedWord: string): string[] =>
  * @param selection
  */
 export const isSelected = (word: string, selection: string): boolean => {
+  if (!word.startsWith(selection)) {
+    return false;
+  }
   if (word === selection) {
     return true;
   } else {

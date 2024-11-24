@@ -9,42 +9,9 @@ import { useContextSelector } from "use-context-selector";
 
 import CustomGameBanner from "@caviardeul/components/game/customGameBanner";
 import { GameContext } from "@caviardeul/components/game/gameManager";
+import WordContainer from "@caviardeul/components/game/word";
 import { SettingsContext } from "@caviardeul/components/settings/manager";
-import {
-  isCommonWord,
-  isSelected,
-  isWord,
-  splitWords,
-  standardizeText,
-} from "@caviardeul/utils/caviarding";
-
-const WordContainer_: React.FC<{ word: string }> = ({ word }) => {
-  const [isOver, revealedWords, selection] = useContextSelector(
-    GameContext,
-    (context) => [context.isOver, context.revealedWords, context.selection],
-  );
-  if (word === undefined) {
-    return null;
-  }
-
-  const standardizedWord = standardizeText(word);
-  const revealed = isOver || revealedWords.has(standardizedWord);
-  const selected = selection && isSelected(standardizedWord, selection[0]);
-
-  if (revealed) {
-    return (
-      <span className={`word` + (selected ? " selected" : "")}>{word}</span>
-    );
-  } else {
-    return (
-      <span className="word caviarded" data-word-length={word.length}>
-        {"█".repeat(word.length)}
-      </span>
-    );
-  }
-};
-
-const WordContainer = React.memo(WordContainer_);
+import { isCommonWord, isWord, splitWords } from "@caviardeul/utils/caviarding";
 
 const parseHTML = (content: string): ReactNode => {
   const doc = parse(content);
@@ -121,17 +88,12 @@ const parseText = (text: string): ReactNode => {
   });
 };
 
-const ArticleContainer = () => {
-  const [article, selection] = useContextSelector(GameContext, (context) => [
-    context.article,
-    context.selection,
-  ]);
+const AutoScrollerManager = () => {
   const { settings } = useContext(SettingsContext);
   const { autoScroll } = settings;
-
-  const inner = useMemo(
-    () => (article ? parseHTML(article.content) : null),
-    [article],
+  const selection = useContextSelector(
+    GameContext,
+    (context) => context.selection,
   );
 
   // Scroll to selection
@@ -141,7 +103,7 @@ const ArticleContainer = () => {
       const articleContainer =
         document.querySelector<HTMLElement>(".article-container");
       const elements =
-        articleContainer?.querySelectorAll<HTMLElement>(".word.selected");
+        articleContainer?.querySelectorAll<HTMLElement>(".word .selected");
       if (elements?.length) {
         const element = elements[index % elements.length];
         const y = element.offsetTop;
@@ -153,6 +115,16 @@ const ArticleContainer = () => {
     }
   }, [selection, autoScroll]);
 
+  return null;
+};
+
+const ArticleContainer = () => {
+  const article = useContextSelector(GameContext, (context) => context.article);
+  const inner = useMemo(
+    () => (article ? parseHTML(article.content) : null),
+    [article],
+  );
+
   if (!article) {
     return null;
   }
@@ -162,6 +134,7 @@ const ArticleContainer = () => {
   return (
     <div className="article-container">
       {custom && <CustomGameBanner safetyLevel={safety} />}
+      <AutoScrollerManager />
       {inner}
     </div>
   );
