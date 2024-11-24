@@ -1,11 +1,15 @@
-import React, { ChangeEvent, useCallback, useContext, useState } from "react";
+import React, { ChangeEvent, useCallback, useState } from "react";
 import { FaArrowUp } from "react-icons/fa";
+import { useContextSelector } from "use-context-selector";
 
 import { GameContext } from "@caviardeul/components/game/gameManager";
 import { isWord, splitWords } from "@caviardeul/utils/caviarding";
 
 const Input = () => {
-  const { canPlay, makeAttempt } = useContext(GameContext);
+  const [canPlay, makeAttempt] = useContextSelector(GameContext, (context) => [
+    context.canPlay,
+    context.makeAttempt,
+  ]);
   const [value, setValue] = useState<string>("");
   const [lastValue, setLastValue] = useState<string>("");
 

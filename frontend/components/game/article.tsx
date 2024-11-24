@@ -5,6 +5,7 @@ import {
   parse,
 } from "node-html-parser";
 import React, { Key, ReactNode, useContext, useEffect, useMemo } from "react";
+import { useContextSelector } from "use-context-selector";
 
 import CustomGameBanner from "@caviardeul/components/game/customGameBanner";
 import { GameContext } from "@caviardeul/components/game/gameManager";
@@ -18,7 +19,10 @@ import {
 } from "@caviardeul/utils/caviarding";
 
 const WordContainer_: React.FC<{ word: string }> = ({ word }) => {
-  const { revealedWords, isOver, selection } = useContext(GameContext);
+  const [isOver, revealedWords, selection] = useContextSelector(
+    GameContext,
+    (context) => [context.isOver, context.revealedWords, context.selection],
+  );
   if (word === undefined) {
     return null;
   }
@@ -118,7 +122,10 @@ const parseText = (text: string): ReactNode => {
 };
 
 const ArticleContainer = () => {
-  const { article, selection } = useContext(GameContext);
+  const [article, selection] = useContextSelector(GameContext, (context) => [
+    context.article,
+    context.selection,
+  ]);
   const { settings } = useContext(SettingsContext);
   const { autoScroll } = settings;
 

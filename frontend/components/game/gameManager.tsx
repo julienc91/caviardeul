@@ -1,10 +1,5 @@
-import React, {
-  createContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { createContext } from "use-context-selector";
 
 import { saveGameScore } from "@caviardeul/lib/queries";
 import { Article, GameHistory } from "@caviardeul/types";
