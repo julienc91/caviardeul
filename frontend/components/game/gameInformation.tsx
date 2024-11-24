@@ -1,12 +1,21 @@
 import Link from "next/link";
-import React, { useContext } from "react";
+import React from "react";
+import { useContextSelector } from "use-context-selector";
 
 import { GameContext } from "@caviardeul/components/game/gameManager";
 import ExternalLink from "@caviardeul/components/utils/externalLink";
 import ShareAction from "@caviardeul/components/utils/shareAction";
 
 const GameInformation = () => {
-  const { article, userScore, isOver, history } = useContext(GameContext);
+  const [article, userScore, isOver, history] = useContextSelector(
+    GameContext,
+    (context) => [
+      context.article,
+      context.userScore,
+      context.isOver,
+      context.history,
+    ],
+  );
   if (!isOver || !article) {
     return null;
   }

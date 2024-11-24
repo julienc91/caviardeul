@@ -1,10 +1,18 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
+import { useContextSelector } from "use-context-selector";
 
 import { GameContext } from "@caviardeul/components/game/gameManager";
 
 const AttemptHistory = () => {
-  const { isOver, history, selection, updateSelection } =
-    useContext(GameContext);
+  const [isOver, history, selection, updateSelection] = useContextSelector(
+    GameContext,
+    (context) => [
+      context.isOver,
+      context.history,
+      context.selection,
+      context.updateSelection,
+    ],
+  );
   const selectedRow = useRef<HTMLTableRowElement>(null);
   const selectedWord = selection ? selection[0] : null;
 
