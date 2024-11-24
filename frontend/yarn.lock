@@ -606,10 +606,10 @@
   dependencies:
     undici-types "~6.19.8"
 
-"@types/react-dom@npm:types-react-dom@19.0.0-rc.1":
-  version "19.0.0-rc.1"
-  resolved "https://registry.yarnpkg.com/types-react-dom/-/types-react-dom-19.0.0-rc.1.tgz#1d544d02c5df2a82d87c2eff979afa2e21a8317a"
-  integrity sha512-VSLZJl8VXCD0fAWp7DUTFUDCcZ8DVXOQmjhJMD03odgeFmu14ZQJHCXeETm3BEAhJqfgJaFkLnGkQv88sRx0fQ==
+"@types/react-dom@npm:types-react-dom@19.0.0":
+  version "19.0.0"
+  resolved "https://registry.yarnpkg.com/types-react-dom/-/types-react-dom-19.0.0.tgz#48286ba504ac48e9345cc860f76845344c5a633a"
+  integrity sha512-qtWBYduBCmrgf4wqnTrGttEJJSZ6cTGmzuvmWd/34TJNKz/Pp69Islc1+txHF3nRxSuRvmhxztFXvLyxhp8G2w==
   dependencies:
     "@types/react" "*"
 
