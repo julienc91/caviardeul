@@ -465,7 +465,7 @@ main {
       border: 1px solid transparent;
       white-space: nowrap;
 
-      &.selected {
+      .selected {
         color: $lightBlue;
       }
     }
