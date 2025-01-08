@@ -37,7 +37,7 @@ repos:
         args: [--config=backend/pyproject.toml]
 
   - repo: https://github.com/gitguardian/ggshield
-    rev: v1.34.0
+    rev: v1.35.0
     hooks:
       - id: ggshield
         language_version: python3
