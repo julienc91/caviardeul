@@ -31,6 +31,11 @@ async def _get_article_content_from_cache(page_id: str) -> str | None:
     return await cache.aget(f"wikipedia::{page_id}")
 
 
+async def burst_cache_for_article(page_ids: list[str]) -> None:
+    keys = [f"wikipedia::{page_id}" for page_id in page_ids]
+    await cache.adelete_many(keys)
+
+
 async def _set_article_to_cache(page_id: str, content: str) -> None:
     now = timezone.now()
     tomorrow = (now + timedelta(days=1)).replace(

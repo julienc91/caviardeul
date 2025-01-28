@@ -1,6 +1,7 @@
 from datetime import timedelta
 
-from django.contrib import admin
+from asgiref.sync import async_to_sync
+from django.contrib import admin, messages
 from django.core.exceptions import ValidationError
 from import_export.admin import ImportMixin
 from import_export.fields import Field
@@ -8,6 +9,7 @@ from import_export.resources import ModelResource
 from import_export.widgets import BooleanWidget
 
 from caviardeul.models import CustomArticle, DailyArticle
+from caviardeul.services.articles import burst_cache_for_article
 
 
 @admin.register(CustomArticle)
@@ -88,3 +90,10 @@ class DailyArticleAdmin(ImportMixin, admin.ModelAdmin):
     ordering = ("-id",)
 
     resource_class = DailyArticleResource
+    actions = ["burst_cache"]
+
+    @admin.action(description="Burst article cache")
+    def burst_cache(self, request, queryset) -> None:
+        page_ids = list(queryset.values_list("page_id", flat=True))
+        async_to_sync(burst_cache_for_article)(page_ids)
+        self.message_user(request, "Cache burst was successful", messages.SUCCESS)
