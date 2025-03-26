@@ -97,7 +97,7 @@ requires-dist = [
     { name = "django", specifier = "~=5.0" },
     { name = "django-cors-headers", specifier = "~=4.7.0" },
     { name = "django-import-export", specifier = ">=4.2.0" },
-    { name = "django-ninja", specifier = "~=1.3.0" },
+    { name = "django-ninja", specifier = "~=1.4.0" },
     { name = "factory-boy", marker = "extra == 'tests'", specifier = "~=3.3" },
     { name = "gunicorn", specifier = "~=23.0" },
     { name = "httpx", specifier = "~=0.28.0" },
@@ -326,15 +326,15 @@ wheels = [
 
 [[package]]
 name = "django-ninja"
-version = "1.3.0"
+version = "1.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9c/77/89ee4ebaa5151b7d85cebaf8d6ec0b9e5074326c3ad8259c763763306d51/django_ninja-1.3.0.tar.gz", hash = "sha256:5b320e2dc0f41a6032bfa7e1ebc33559ae1e911a426f0c6be6674a50b20819be", size = 3702324 }
+sdist = { url = "https://files.pythonhosted.org/packages/45/a6/f8c158358e5e892839929c342872456b42d5e06c325aef27b3e8569b8932/django_ninja-1.4.0.tar.gz", hash = "sha256:590bb1c8fc32f07bac1d5b5d404419205c41b4945b86d4237b0676174c1b6df7", size = 3707937 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/00/72/fd2589323b40893d3224e174eeec0c4ce5a42c7d2d384d11ba269ad4d050/django_ninja-1.3.0-py3-none-any.whl", hash = "sha256:f58096b6c767d1403dfd6c49743f82d780d7b9688d9302ecab316ac1fa6131bb", size = 2423381 },
+    { url = "https://files.pythonhosted.org/packages/85/d0/defc86eff755cdf32c717b2ed7872a2b19da151b34e0749a9567ce7810f8/django_ninja-1.4.0-py3-none-any.whl", hash = "sha256:b64bb7f269d0c0a890b429802dffbe3689298eb1ed7dc324224f3b325e8f8871", size = 2425903 },
 ]
 
 [[package]]
