@@ -17,7 +17,7 @@ dependencies = [
     "beautifulsoup4 ~=4.13.3",
     "django-cors-headers ~=4.7.0",
     "redis ~= 5.2.0",
-    "pydantic ~=2.10.1",
+    "pydantic ~=2.11.1",
     "sentry-sdk[django]",
     "django-import-export>=4.2.0",
 ]
