@@ -1806,9 +1806,9 @@ fdir@^6.4.3:
   integrity sha512-PMXmW2y1hDDfTSRc9gaXIuCCRpuoz3Kaz8cUelp3smouvfT632ozg2vrT6lJsHKKOF59YLbOGfAWGUcKEfRMQw==
 
 fernet@^0.3.2:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/fernet/-/fernet-0.3.2.tgz#4815e74b5438a930029b7ad13f5ba54b1f0d19e7"
-  integrity sha512-VPwO4hF9sp8YrCeiOjMb4HTg5WV5VC7Nk2EG3pfotqW9ZHa3aNnR+oGiOZu8k0Jp4VxJi0RTJwHmloyjWs+Mzg==
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/fernet/-/fernet-0.3.3.tgz#23f31a45aa55c08152bb40ea9102e5711cb6ecf9"
+  integrity sha512-DvvqouVhv3VCor83wkQbSycekYUKDRQ1IKqcInaF5n5BSKgWBVfYLbSf7RRxojwQO0DZySiz5MlM2vO4MG3SUg==
   dependencies:
     crypto-js "~4.2.0"
     urlsafe-base64 "1.0.0"
