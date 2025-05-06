@@ -58,7 +58,7 @@ services:
     restart: always
 
   redis:
-    image: redis:7-alpine
+    image: redis:8-alpine
     env_file:
       - redis/.env
     networks:
