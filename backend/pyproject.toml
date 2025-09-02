@@ -7,7 +7,7 @@ license = "MIT"
 requires-python = ">=3.11"
 
 dependencies = [
-    "django~=5.0",
+    "django~=5.1.11",
     "gunicorn~=23.0",
     "uvicorn~=0.35.0",
     "psycopg[binary]~=3.2.1",

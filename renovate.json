@@ -4,6 +4,11 @@
     "config:recommended",
     ":semanticCommits"
   ],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 4am on monday"],
+    "automerge": false
+  },
 
   "enabledManagers": [
     "pep621",
