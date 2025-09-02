@@ -2,7 +2,53 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended",
-    ":semanticCommits",
-    ":enablePreCommit"
-  ]
+    ":semanticCommits"
+  ],
+
+  "enabledManagers": [
+    "pep621",
+    "pre-commit",
+    "npm",
+    "dockerfile",
+    "docker-compose",
+    "github-actions"
+  ],
+
+  "pre-commit": {
+    "enabled": true
+  },
+
+  "packageRules": [
+    {
+      "matchManagers": ["pre-commit"],
+      "groupName": "pre-commit dependencies",
+      "groupSlug": "pre-commit-deps"
+    },
+    {
+      "matchManagers": ["pep621"],
+      "matchDepTypes": ["dev-dependencies", "dev", "test", "lint"],
+      "groupName": "backend dev dependencies",
+      "groupSlug": "backend-dev-deps"
+    },
+    {
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["devDependencies"],
+      "groupName": "frontend dev dependencies",
+      "groupSlug": "frontend-dev-deps"
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions dependencies",
+      "groupSlug": "gha-deps"
+    },
+    {
+      "matchManagers": ["dockerfile", "docker-compose"],
+      "groupName": "Docker dependencies",
+      "groupSlug": "docker-deps"
+    }
+  ],
+
+  "separateMajorMinor": true,
+  "prHourlyLimit": 5,
+  "prConcurrentLimit": 10
 }
