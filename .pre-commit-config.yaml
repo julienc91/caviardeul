@@ -1,4 +1,4 @@
-default_stages: [commit]
+default_stages: [pre-commit]
 
 repos:
   - repo: https://github.com/Woile/commitizen
@@ -26,7 +26,7 @@ repos:
         entry: yarn --cwd frontend/ run tsc --project tsconfig.json
         files: \.tsx?$
         pass_filenames: false
-        stages: [commit, push]
+        stages: [pre-commit, pre-push]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.12.10
@@ -41,4 +41,4 @@ repos:
     hooks:
       - id: ggshield
         language_version: python3
-        stages: [commit, push]
+        stages: [pre-commit, pre-push]
