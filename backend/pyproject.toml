@@ -22,8 +22,8 @@ dependencies = [
     "django-import-export>=4.2.0",
 ]
 
-[project.optional-dependencies]
-tests = [
+[dependency-groups]
+dev = [
     "pytest~=8.3",
     "pytest-asyncio~=1.1",
     "pytest-django~=4.8",

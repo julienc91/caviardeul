@@ -5,7 +5,7 @@ FROM base AS build_dev
 WORKDIR /build
 COPY pyproject.toml uv.lock ./
 RUN pip install uv \
-    && uv sync --extra tests
+    && uv sync
 
 FROM base AS dev
 

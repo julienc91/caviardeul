@@ -79,8 +79,8 @@ dependencies = [
     { name = "uvicorn" },
 ]
 
-[package.optional-dependencies]
-tests = [
+[package.dev-dependencies]
+dev = [
     { name = "factory-boy" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
@@ -98,22 +98,25 @@ requires-dist = [
     { name = "django-cors-headers", specifier = "~=4.7.0" },
     { name = "django-import-export", specifier = ">=4.2.0" },
     { name = "django-ninja", specifier = "~=1.4.0" },
-    { name = "factory-boy", marker = "extra == 'tests'", specifier = "~=3.3" },
     { name = "gunicorn", specifier = "~=23.0" },
     { name = "httpx", specifier = "~=0.28.0" },
     { name = "psycopg", extras = ["binary"], specifier = "~=3.2.1" },
     { name = "pydantic", specifier = "~=2.11.1" },
-    { name = "pytest", marker = "extra == 'tests'", specifier = "~=8.3" },
-    { name = "pytest-asyncio", marker = "extra == 'tests'", specifier = "~=1.1" },
-    { name = "pytest-cov", marker = "extra == 'tests'", specifier = "~=6.0" },
-    { name = "pytest-django", marker = "extra == 'tests'", specifier = "~=4.8" },
-    { name = "pytest-httpx", marker = "extra == 'tests'", specifier = "~=0.30" },
-    { name = "pytest-socket", marker = "extra == 'tests'", specifier = "~=0.7" },
     { name = "redis", specifier = "~=6.4.0" },
     { name = "sentry-sdk", extras = ["django"], specifier = "~=2.35.2" },
     { name = "uvicorn", specifier = "~=0.35.0" },
 ]
-provides-extras = ["tests"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "factory-boy", specifier = "~=3.3" },
+    { name = "pytest", specifier = "~=8.3" },
+    { name = "pytest-asyncio", specifier = "~=1.1" },
+    { name = "pytest-cov", specifier = "~=6.0" },
+    { name = "pytest-django", specifier = "~=4.8" },
+    { name = "pytest-httpx", specifier = "~=0.30" },
+    { name = "pytest-socket", specifier = "~=0.7" },
+]
 
 [[package]]
 name = "certifi"
