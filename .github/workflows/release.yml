@@ -48,6 +48,9 @@ jobs:
     name: Delete old images
     needs: release
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: snok/container-retention-policy@v3.0.0
         with:
