@@ -40,6 +40,13 @@ omit = ["caviardeul/tests/*"]
 [tool.pytest.ini_options]
 addopts = "--disable-socket --allow-hosts=redis,postgres,localhost"
 asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+filterwarnings = [
+    "error",
+    # https://github.com/vitalik/django-ninja/issues/1245
+    "ignore::pydantic.PydanticDeprecatedSince20",
+    "ignore::pydantic.PydanticDeprecatedSince211",
+]
 
 [tool.ruff.lint]
 extend-select = ["I"]

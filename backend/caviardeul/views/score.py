@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from asgiref.sync import async_to_sync
+from asgiref.sync import async_to_sync, sync_to_async
 from django.db import transaction
 from django.http import HttpRequest, HttpResponse
 from django.utils import timezone
@@ -16,6 +16,7 @@ from .api import api
 
 
 @api.post("/scores", auth=optional_api_authentication, response={204: None})
+@sync_to_async()
 @transaction.atomic()
 def post_article_score(
     request: HttpRequest, payload: ArticleScoreCreateSchema, response: HttpResponse
