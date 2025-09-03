@@ -235,6 +235,7 @@ const ArticleList: React.FC = () => {
 
   const params = useRef<any[]>([]);
   const observerTarget = useRef<HTMLDivElement>(null);
+  const initialFetchInProgress = useRef<boolean>(false);
 
   const handleSortByChanged = useCallback(
     (value: SortType) => {
@@ -256,7 +257,7 @@ const ArticleList: React.FC = () => {
   );
 
   const fetchNextPage = useCallback(async () => {
-    if (loading || !hasMore) {
+    if (loading || !hasMore || initialFetchInProgress.current) {
       return;
     }
 
@@ -303,6 +304,7 @@ const ArticleList: React.FC = () => {
     const newParams = [filterBy, sortBy, sortOrder];
     if (!arrayEqual(newParams, params.current)) {
       params.current = newParams;
+      initialFetchInProgress.current = true;
       setHasMore(true);
       setLoading(true);
       setArticleList([]);
@@ -312,9 +314,10 @@ const ArticleList: React.FC = () => {
           setArticleList(articles);
         }
         setLoading(false);
+        initialFetchInProgress.current = false;
       })();
     }
-  }, [articleList, filterBy, sortBy, sortOrder]);
+  }, [filterBy, sortBy, sortOrder]);
 
   const gamesContainer = articleList.map((articleInfo) => (
     <ArticleCard key={articleInfo.articleId} articleInfo={articleInfo} />
