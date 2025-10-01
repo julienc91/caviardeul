@@ -4,8 +4,8 @@ FROM base AS build_dev
 
 WORKDIR /build
 COPY pyproject.toml uv.lock ./
-RUN pip install uv \
-    && uv sync
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+RUN uv sync
 
 FROM base AS dev
 
@@ -30,8 +30,8 @@ ENV UV_LINK_MODE=copy \
 
 WORKDIR /build
 COPY pyproject.toml uv.lock ./
-RUN pip install uv \
-    && uv sync --no-dev
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+RUN uv sync --no-dev
 
 FROM base AS prod
 
