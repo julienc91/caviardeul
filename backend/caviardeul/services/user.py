@@ -24,7 +24,14 @@ async def create_user_for_request(request, response=None):
 
 
 def set_user_cookie(response: HttpResponse, user: User):
-    response.set_cookie("userId", str(user.id))
+    response.set_cookie(
+        "userId",
+        str(user.id),
+        max_age=3600 * 24 * 365 * 10,
+        secure=True,
+        samesite="Strict",
+        httponly=False,
+    )
 
 
 @sync_to_async()
