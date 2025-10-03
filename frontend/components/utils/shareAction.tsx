@@ -1,11 +1,11 @@
 import React, { useCallback, useMemo } from "react";
 import {
+  FaBluesky,
   FaFacebookF,
-  FaShareAlt,
-  FaTelegramPlane,
-  FaTwitter,
+  FaShareNodes,
+  FaTelegram,
   FaWhatsapp,
-} from "react-icons/fa";
+} from "react-icons/fa6";
 
 import { ArticleId } from "@caviardeul/types";
 import { BASE_URL } from "@caviardeul/utils/config";
@@ -39,11 +39,11 @@ const ShareAction: React.FC<{
     });
   }, [shareUrl, shareTitle]);
 
-  const handleTwitterShare = useCallback(() => {
+  const handleBlueskyShare = useCallback(() => {
     window.open(
-      `https://twitter.com/share?text=${encodeURIComponent(
-        shareTitle,
-      )}&url=${encodeURIComponent(shareUrl)}&hashtags=caviardeul`,
+      `https://bsky.app/intent/compose?text=${encodeURIComponent(
+        `${shareTitle} #caviardeul\n${shareUrl}`,
+      )}`,
       "_blank",
     );
   }, [shareUrl, shareTitle]);
@@ -80,21 +80,21 @@ const ShareAction: React.FC<{
       <span className="actions">
         {hasNativeShare ? (
           <button>
-            <FaShareAlt onClick={handleNativeShare} />
+            <FaShareNodes onClick={handleNativeShare} />
           </button>
         ) : (
           <>
-            <button>
-              <FaTwitter onClick={handleTwitterShare} />
+            <button title="Partager sur Bluesky" onClick={handleBlueskyShare}>
+              <FaBluesky />
             </button>
-            <button>
-              <FaFacebookF onClick={handleFacebookShare} />
+            <button title="Partager sur Facebook" onClick={handleFacebookShare}>
+              <FaFacebookF />
             </button>
-            <button>
-              <FaWhatsapp onClick={handleWhatsAppShare} />
+            <button title="Partager sur WhatsApp" onClick={handleWhatsAppShare}>
+              <FaWhatsapp />
             </button>
-            <button>
-              <FaTelegramPlane onClick={handleTelegramShare} />
+            <button title="Partager sur Telegram" onClick={handleTelegramShare}>
+              <FaTelegram />
             </button>
           </>
         )}

@@ -33,19 +33,13 @@ export const metadata: Metadata = {
   title: defaultTitle,
   description: defaultDescription,
   authors: [{ name: "Julien Chaumont", url: "https://julienc.io" }],
+  creator: "Julien Chaumont",
   icons: ["/favicon.ico"],
   openGraph: {
     title: defaultTitle,
     description: defaultDescription,
     siteName: "Caviardeul",
     type: "website",
-    images: [{ url: defaultImage, alt: defaultImageAlt }],
-  },
-  twitter: {
-    title: defaultTitle,
-    description: defaultDescription,
-    creator: "@julienc91",
-    card: "summary_large_image",
     images: [{ url: defaultImage, alt: defaultImageAlt }],
   },
 };

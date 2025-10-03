@@ -83,7 +83,6 @@ const NewCustomGame: React.FC = () => {
       <Head>
         <title>{title}</title>
         <meta key="og:title" property="og:title" content={title} />
-        <meta key="twitter:title" name="twitter:title" content={title} />
       </Head>
       <main id="new-custom-game">
         <div className="left-container">

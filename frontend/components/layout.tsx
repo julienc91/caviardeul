@@ -36,20 +36,6 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           property="og:description"
           content={description}
         />
-
-        <meta key="twitter:title" name="twitter:title" content={title} />
-        <meta
-          key="twitter:description"
-          name="twitter:description"
-          content={description}
-        />
-        <meta property="twitter:domain" content="caviardeul.fr" />
-        <meta property="twitter:url" content={url} />
-        <meta name="twitter:creator" content="@julienc91" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content={imageUrl} />
-        <meta name="twitter:image:alt" content={imageAlt} />
-
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
