@@ -28,7 +28,10 @@ const AboutPage: React.FC = () => {
             GitHub
           </ExternalLink>
           . Il est hébergé par{" "}
-          <ExternalLink href="https://vercel.com/">Vercel</ExternalLink>.
+          <ExternalLink href="https://hostinger.fr?REFERRALCODE=RR6JULIENRKC">
+            Hostinger
+          </ExternalLink>{" "}
+          (lien affilié).
         </p>
 
         <h2>Données personnelles</h2>
