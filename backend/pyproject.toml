@@ -18,7 +18,7 @@ dependencies = [
     "django-cors-headers~=4.9.0",
     "redis~=6.4.0",
     "pydantic~=2.11.1",
-    "sentry-sdk[django]~=2.35.2",
+    "sentry-sdk[django]~=2.39.0",
     "django-import-export>=4.2.0",
 ]
 
