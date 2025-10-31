@@ -57,6 +57,10 @@ async def get_article_html_from_wikipedia(page_id: str) -> tuple[str, str]:
                 "origin": "*",
                 "page": page_id,
             },
+            headers={
+                "User-Agent": "Caviardeul/1.0 (https://caviardeul.fr; contact@caviardeul.fr)",
+                "Accept-Encoding": "gzip",
+            },
         )
     if response.status_code != 200:
         raise ArticleFetchError(f"Unexected response from API: {response.status_code}")
