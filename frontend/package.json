@@ -30,7 +30,7 @@
     "@trivago/prettier-plugin-sort-imports": "^6.0.0",
     "@types/latinize": "^0.2.15",
     "@types/node": "^24.0.0",
-    "@types/react": "19.2.5",
+    "@types/react": "19.2.6",
     "@types/react-dom": "19.2.3",
     "eslint": "^9.9.1",
     "eslint-config-next": "16.0.3",
@@ -42,7 +42,7 @@
     "typescript": "^5.0.2"
   },
   "resolutions": {
-    "@types/react": "19.2.5",
+    "@types/react": "19.2.6",
     "@types/react-dom": "19.2.3"
   }
 }
