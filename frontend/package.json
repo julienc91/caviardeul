@@ -17,8 +17,8 @@
     "next": "16.0.9",
     "node-html-parser": "^6.1.8",
     "qrcode.react": "^4.0.1",
-    "react": "19.2.1",
-    "react-dom": "19.2.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
     "react-icons": "^5.0.1",
     "swr": "^2.2.4",
     "use-context-selector": "^2.0.0"
