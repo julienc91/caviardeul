@@ -2,7 +2,7 @@ default_stages: [pre-commit]
 
 repos:
   - repo: https://github.com/Woile/commitizen
-    rev: v4.10.1
+    rev: v4.11.6
     hooks:
       - id: commitizen
         stages: [commit-msg]
@@ -29,7 +29,7 @@ repos:
         stages: [pre-commit, pre-push]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.9
+    rev: v0.14.13
     hooks:
       - id: ruff-check
         args: [--fix, --config=backend/pyproject.toml]
@@ -37,7 +37,7 @@ repos:
         args: [--config=backend/pyproject.toml]
 
   - repo: https://github.com/gitguardian/ggshield
-    rev: v1.45.0
+    rev: v1.46.0
     hooks:
       - id: ggshield
         language_version: python3
