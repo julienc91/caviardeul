@@ -93,6 +93,9 @@ class TestGetCurrentArticle:
         res = client.get("/articles/current")
         assert res.status_code == 200, res.content
 
+        article.refresh_from_db()
+        assert article.last_checked_at is not None
+
         data = res.json()
         validate_serialization(data, article)
         assert data["archive"] is False
@@ -157,6 +160,9 @@ class TestGetAchivedArticle:
 
         res = client.get(f"/articles/{article.id}")
         assert res.status_code == 200, res.content
+
+        article.refresh_from_db()
+        assert article.last_checked_at is not None
 
         data = res.json()
         validate_serialization(data, article)

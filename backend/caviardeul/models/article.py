@@ -20,10 +20,12 @@ class Article(models.Model):
 class DailyArticle(Article):
     date = models.DateTimeField()
     nb_daily_winners = models.PositiveIntegerField()
+    last_checked_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         indexes = [
             models.Index("date", name="daily_article_date_idx"),
+            models.Index("last_checked_at", name="daily_article_last_check_idx"),
         ]
         constraints = [
             models.UniqueConstraint("date", name="daily_article_date_unq"),

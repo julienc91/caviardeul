@@ -5,6 +5,7 @@ from django.core.cache import cache
 from django.utils import timezone
 
 from caviardeul.exceptions import ArticleFetchError
+from caviardeul.models import DailyArticle
 from caviardeul.models.article import Article
 from caviardeul.services.encryption import encrypt_data, generate_encryption_key
 from caviardeul.services.logging import logger
@@ -18,6 +19,7 @@ async def get_article_content(article: Article) -> str:
         return content
 
     _, html_content = await get_article_html_from_wikipedia(article.page_id)
+    await set_article_last_checked_at(article)
     logger.info("retrieved article from wikipedia", extra={"page_id": article.page_id})
 
     article_content = _prepare_article_content_from_html(
@@ -25,6 +27,12 @@ async def get_article_content(article: Article) -> str:
     )
     await _set_article_to_cache(article.page_id, article_content)
     return article_content
+
+
+async def set_article_last_checked_at(article: Article) -> None:
+    if isinstance(article, DailyArticle):
+        article.last_checked_at = timezone.now()
+        await article.asave(update_fields=["last_checked_at"])
 
 
 async def _get_article_content_from_cache(page_id: str) -> str | None:
