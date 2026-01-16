@@ -45,7 +45,7 @@ services:
   scheduler:
     extends:
       service: worker
-    command: taskiq scheduler scheduler:broker
+    command: taskiq scheduler worker:scheduler
 
   nginx:
     image: nginx:stable-alpine
