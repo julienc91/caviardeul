@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.db.models import F, OrderBy
 from django.utils import timezone
 
@@ -11,7 +13,7 @@ from caviardeul.services.articles import (
 from caviardeul.services.logging import logger
 
 
-@broker.task(schedule=[{"cron": "* */8 * * *"}])
+@broker.task(schedule=[{"interval": timedelta(hours=8)}])
 async def check_upcoming_daily_article() -> None:
     now = timezone.now()
     next_article = (
@@ -31,7 +33,7 @@ async def check_upcoming_daily_article() -> None:
         logger.info("Upcoming article fetched successfully")
 
 
-@broker.task(schedule=[{"cron": "* */6 * * *"}])
+@broker.task(schedule=[{"interval": timedelta(hours=6)}])
 async def check_random_daily_article() -> None:
     article = await DailyArticle.objects.order_by(
         OrderBy(F("last_checked_at"), nulls_first=True)
