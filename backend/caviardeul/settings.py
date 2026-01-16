@@ -98,10 +98,12 @@ __redis_password = os.environ.get("REDIS_PASSWORD") or ""
 if __redis_password:
     __redis_password = f":{__redis_password}@"
 
+REDIS_URL = f"redis://{__redis_password}{os.environ['REDIS_HOST']}:{os.environ.get('REDIS_PORT', '6379')}"
+
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": f"redis://{__redis_password}{os.environ['REDIS_HOST']}:{os.environ.get('REDIS_PORT', '6379')}",
+        "LOCATION": f"{REDIS_URL}/0",
     }
 }
 

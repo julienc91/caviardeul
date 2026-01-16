@@ -33,6 +33,20 @@ services:
       - 5000
     restart: always
 
+  taskiq:
+    build:
+      context: backend
+      target: prod
+    env_file:
+      - backend/.env
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - db_network
+    restart: always
+    command: taskiq worker worker:broker
+
   nginx:
     extends:
       file: docker-compose.yml
