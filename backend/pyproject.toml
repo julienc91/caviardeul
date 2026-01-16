@@ -20,6 +20,8 @@ dependencies = [
     "pydantic~=2.12.4",
     "sentry-sdk[django]~=2.49.0",
     "django-import-export>=4.2.0",
+    "taskiq>=0.12.0",
+    "taskiq-redis>=1.2.1",
 ]
 
 [dependency-groups]
@@ -28,9 +30,10 @@ dev = [
     "pytest-asyncio~=1.1",
     "pytest-django~=4.8",
     "pytest-cov~=7.0",
-    "pytest-socket~=0.7",
+    "pytest-env>=1.2.0",
     "pytest-httpx~=0.30",
-    "factory-boy~=3.3"
+    "pytest-socket~=0.7",
+    "factory-boy~=3.3",
 ]
 
 [tool.coverage.run]
@@ -41,11 +44,14 @@ omit = ["caviardeul/tests/*"]
 addopts = "--disable-socket --allow-hosts=redis,postgres,localhost"
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
+env = ["ENVIRONMENT=pytest"]
 filterwarnings = [
     "error",
     # https://github.com/vitalik/django-ninja/pull/1558
     "ignore:.*asyncio.iscoroutinefunction.*:DeprecationWarning:ninja",
 ]
+log_format = "%(asctime)s %(levelname)s %(message)s"
+log_date_format = "%Y-%m-%d %H:%M:%S"
 
 [tool.ruff.lint]
 extend-select = ["I"]
