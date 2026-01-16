@@ -29,7 +29,7 @@ services:
       - 5000
     restart: always
 
-  taskiq:
+  worker:
     image: ghcr.io/julienc91/caviardeul-backend:latest
     pull_policy: always
     env_file:
@@ -41,6 +41,11 @@ services:
       - db_network
     restart: always
     command: taskiq worker worker:broker
+
+  scheduler:
+    extends:
+      service: worker
+    command: taskiq scheduler scheduler:broker
 
   nginx:
     image: nginx:stable-alpine

@@ -21,16 +21,25 @@ services:
       - ./backend/:/app/
     command: python manage.py runserver 0.0.0.0:5000
 
-  taskiq:
+  worker:
     extends:
       file: docker-compose.dev.yml
-      service: taskiq
+      service: worker
     build:
       context: backend
       target: dev
     volumes:
       - ./backend/:/app/
-    command: taskiq worker worker:broker
+
+  scheduler:
+    extends:
+      file: docker-compose.dev.yml
+      service: scheduler
+    build:
+      context: backend
+      target: dev
+    volumes:
+      - ./backend/:/app/
 
   nginx:
     extends:
