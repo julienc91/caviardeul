@@ -1,6 +1,6 @@
 import type { GetServerSideProps } from "next";
 import Head from "next/head";
-import React from "react";
+import React, { useMemo } from "react";
 
 import Game from "@caviardeul/components/game/game";
 import CustomError from "@caviardeul/components/utils/error";
@@ -8,6 +8,7 @@ import { getEncodedArticle } from "@caviardeul/lib/article";
 import { APIError, isAPIError } from "@caviardeul/lib/queries";
 import { EncodedArticle } from "@caviardeul/types";
 import { decodeArticle } from "@caviardeul/utils/encryption";
+import { SinglePlayerStrategy } from "@caviardeul/components/game/strategies/singlePlayerStrategy";
 
 const ArchiveGame: React.FC<{
   encodedArticle: EncodedArticle | null;
@@ -18,6 +19,7 @@ const ArchiveGame: React.FC<{
   }
 
   const article = decodeArticle(encodedArticle);
+  const strategy = useMemo(() => new SinglePlayerStrategy(), []);
   const title = `Caviardeul - Déchiffrez le Caviardeul n°${article.articleId}`;
   return (
     <>
@@ -25,7 +27,7 @@ const ArchiveGame: React.FC<{
         <title key="title">{title}</title>
         <meta key="og:title" property="og:title" content={title} />
       </Head>
-      <Game article={article} {...props} />
+      <Game article={article} strategy={strategy} {...props} />
     </>
   );
 };
