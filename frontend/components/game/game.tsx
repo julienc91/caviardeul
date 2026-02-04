@@ -6,14 +6,16 @@ import GameInformation from "@caviardeul/components/game/gameInformation";
 import Manager from "@caviardeul/components/game/gameManager";
 import Input from "@caviardeul/components/game/input";
 import { Article } from "@caviardeul/types";
+import { GameStrategy } from "@caviardeul/components/game/strategies/gameStrategy";
 
 const Game: React.FC<{
   article: Article;
+  strategy: GameStrategy;
   userScore?: { nbAttempts: number; nbCorrect: number };
-}> = ({ article, userScore }) => {
+}> = ({ article, strategy, userScore }) => {
   return (
     <main id="game">
-      <Manager article={article} userScore={userScore}>
+      <Manager article={article} strategy={strategy} userScore={userScore}>
         <div className="left-container">
           <ArticleContainer />
           <Input />

@@ -1,19 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { createContext } from "use-context-selector";
 
-import { saveGameScore } from "@caviardeul/lib/queries";
 import { Article, GameHistory } from "@caviardeul/types";
-import {
-  buildAlternatives,
-  countOccurrences,
-  isCommonWord,
-  isWord,
-  splitWords,
-  standardizeText,
-  stripHtmlTags,
-} from "@caviardeul/utils/caviarding";
-import { getSelectedWord } from "@caviardeul/utils/game";
-import SaveManagement from "@caviardeul/utils/save";
+import { GameStrategy, Player } from "@caviardeul/components/game/strategies/gameStrategy";
 
 type UserScore = {
   nbAttempts: number;
@@ -28,6 +17,7 @@ export const GameContext = createContext<{
   history: GameHistory;
   userScore?: UserScore;
   canPlay: boolean;
+  currentPlayer: Player | null;
   // callbacks
   updateSelection: (_word: string | null) => void;
   makeAttempt: (_word: string) => void;
@@ -38,161 +28,88 @@ export const GameContext = createContext<{
   revealedWords: new Set(),
   history: [],
   userScore: undefined,
+  currentPlayer: null,
   updateSelection: () => null,
   makeAttempt: () => null,
 });
 
 export const Manager: React.FC<{
   article: Article;
+  strategy: GameStrategy;
   userScore?: UserScore;
   children: React.ReactNode;
-}> = ({ article, userScore, children }) => {
-  const [saveLoaded, setSaveLoaded] = useState(false);
+}> = ({ article, strategy, userScore, children }) => {
   const [selection, setSelection] = useState<[string, number] | null>(null);
   const [revealedWords, setRevealedWords] = useState<Set<string>>(new Set());
   const [history, setHistory] = useState<GameHistory>([]);
   const [isOver, setIsOver] = useState(!!userScore);
   const [canPlay, setCanPlay] = useState(false);
-
-  const { pageName, content } = article;
-  const escapedContent = useMemo(() => stripHtmlTags(content), [content]);
-
-  const titleWords = useMemo(
-    () => splitWords(pageName).filter(isWord).map(standardizeText),
-    [pageName],
-  );
+  const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
+  const [initialized, setInitialized] = useState(false);
 
   /**
-   * Send the final score to the server.
+   * Initialize the game strategy and subscribe to state changes.
    */
   useEffect(() => {
-    if (!isOver || !!userScore) {
-      return;
-    }
-    const nbAttempts = history.length;
-    const nbCorrect = history.filter(
-      ([, nbOccurrences]) => nbOccurrences > 0,
-    ).length;
-    saveGameScore(article, nbAttempts, nbCorrect);
-  }, [isOver, userScore, article, history]);
+    let mounted = true;
+
+    const initializeGame = async () => {
+      await strategy.initialize(article);
+
+      if (!mounted) return;
+
+      // Get initial state
+      const state = strategy.getState();
+      setSelection(state.selection);
+      setRevealedWords(state.revealedWords);
+      setHistory(state.history);
+      setIsOver(state.isOver);
+      setCanPlay(strategy.canCurrentPlayerPlay());
+      setCurrentPlayer(strategy.getCurrentPlayer());
+      setInitialized(true);
+    };
+
+    initializeGame();
+
+    // Subscribe to state changes from the strategy
+    const unsubscribe = strategy.onStateChange((state) => {
+      if (!mounted) return;
+
+      setSelection(state.selection);
+      setRevealedWords(state.revealedWords);
+      setHistory(state.history);
+      setIsOver(state.isOver);
+      setCanPlay(strategy.canCurrentPlayerPlay());
+      setCurrentPlayer(strategy.getCurrentPlayer());
+    });
+
+    return () => {
+      mounted = false;
+      unsubscribe();
+    };
+  }, [strategy, article]);
 
   /**
-   * Check if the game is over.
-   */
-  useEffect(() => {
-    if (
-      !isOver &&
-      titleWords.length &&
-      titleWords.every(
-        (titleWord) => revealedWords.has(titleWord) || isCommonWord(titleWord),
-      )
-    ) {
-      setIsOver(true);
-      setSelection(null);
-      setCanPlay(false);
-    }
-  }, [isOver, revealedWords, titleWords]);
-
-  /**
-   * Update the current selection.
+   * Update the current selection by delegating to the strategy.
    */
   const updateSelection = useCallback(
     (word: string | null) => {
-      if (!word || !word.length) {
-        setSelection(null);
-      } else {
-        word = getSelectedWord(word, history);
-        if (!selection) {
-          setSelection([word, 0]);
-        } else {
-          const [selectedWord, index] = selection;
-          if (selectedWord !== word) {
-            setSelection([word, 0]);
-          } else {
-            setSelection([word, index + 1]);
-          }
-        }
-      }
+      if (!initialized) return;
+      strategy.updateSelection(word);
     },
-    [selection, history],
+    [strategy, initialized],
   );
 
   /**
-   * Update saved game
-   */
-  useEffect(() => {
-    if (saveLoaded) {
-      SaveManagement.saveProgress(article, history);
-    }
-  }, [saveLoaded, article, history]);
-
-  /**
-   * Add a new word to the attempt history.
+   * Make an attempt by delegating to the strategy.
    */
   const makeAttempt = useCallback(
     (word: string) => {
-      if (!canPlay || isCommonWord(word)) {
-        setSelection(null);
-        return;
-      } else if (!word.length) {
-        if (selection) {
-          const [selectedWord, index] = selection;
-          setSelection([selectedWord, index + 1]);
-        } else {
-          setSelection(null);
-        }
-        return;
-      }
-
-      word = standardizeText(word);
-      setSelection([
-        word,
-        selection && word === selection[0] ? selection[1] + 1 : 0,
-      ]);
-      if (revealedWords.has(word)) {
-        return;
-      }
-
-      const nbOccurrences = countOccurrences(word, escapedContent);
-      const newRevealedWords = new Set(revealedWords);
-      newRevealedWords.add(word);
-      buildAlternatives(word).forEach((alternative) =>
-        newRevealedWords.add(alternative),
-      );
-      setRevealedWords(newRevealedWords);
-      setHistory((prev) => [...prev, [word, nbOccurrences]]);
+      if (!initialized) return;
+      strategy.makeAttempt(word);
     },
-    [canPlay, escapedContent, revealedWords, selection],
+    [strategy, initialized],
   );
-
-  /**
-   * Initialize the game from the save file, if it exists
-   */
-  useEffect(() => {
-    if (saveLoaded) {
-      return;
-    }
-
-    const savedHistory = SaveManagement.loadProgress(article);
-    if (savedHistory) {
-      const newHistory: GameHistory = [];
-      const newRevealedWords = new Set<string>();
-      savedHistory.forEach(([word]) => {
-        word = standardizeText(word);
-        newRevealedWords.add(word);
-        buildAlternatives(word).forEach((alternative) =>
-          newRevealedWords.add(alternative),
-        );
-        newHistory.push([word, countOccurrences(word, escapedContent)]);
-      });
-
-      setHistory(newHistory);
-      setRevealedWords(newRevealedWords);
-    }
-
-    setSaveLoaded(true);
-    setCanPlay(!isOver);
-  }, [isOver, saveLoaded, article, escapedContent]);
 
   return (
     <GameContext.Provider
@@ -203,6 +120,7 @@ export const Manager: React.FC<{
         history,
         isOver,
         canPlay,
+        currentPlayer,
         userScore,
         updateSelection,
         makeAttempt,

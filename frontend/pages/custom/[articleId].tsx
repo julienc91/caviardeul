@@ -1,16 +1,18 @@
 import type { GetServerSideProps } from "next";
 import Head from "next/head";
-import React from "react";
+import React, { useMemo } from "react";
 
 import Game from "@caviardeul/components/game/game";
 import { getEncodedArticle } from "@caviardeul/lib/article";
 import { EncodedArticle } from "@caviardeul/types";
 import { decodeArticle } from "@caviardeul/utils/encryption";
+import { SinglePlayerStrategy } from "@caviardeul/components/game/strategies/singlePlayerStrategy";
 
 const CustomGame: React.FC<{
   encodedArticle: EncodedArticle;
 }> = ({ encodedArticle }) => {
   const article = decodeArticle(encodedArticle);
+  const strategy = useMemo(() => new SinglePlayerStrategy(), []);
   const title = "Caviardeul - Déchiffrez une partie personnalisée";
   return (
     <>
@@ -18,7 +20,7 @@ const CustomGame: React.FC<{
         <title key="title">{title}</title>
         <meta key="og:title" property="og:title" content={title} />
       </Head>
-      <Game article={article} />
+      <Game article={article} strategy={strategy} />
     </>
   );
 };
