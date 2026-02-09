@@ -60,7 +60,7 @@ class SaveManagement {
         return null;
       }
       return history;
-    } catch (_e) {
+    } catch {
       SaveManagement.clearProgress(!archive && !custom, archive, custom);
       return null;
     }

@@ -25,7 +25,7 @@ const GameInformation = () => {
   const accuracy = Math.round(
     (userScore
       ? userScore.nbCorrect / Math.max(userScore.nbAttempts, 1)
-      : history.filter(([_, count]) => count > 0).length / nbTrials) * 100,
+      : history.filter(([, count]) => count > 0).length / nbTrials) * 100,
   );
 
   return (

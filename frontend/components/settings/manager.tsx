@@ -13,7 +13,7 @@ const getInitialSettings = (): Settings => {
   let settings;
   try {
     settings = SaveManagement.getSettings();
-  } catch (_e) {
+  } catch {
     return defaultSettings;
   }
   return {

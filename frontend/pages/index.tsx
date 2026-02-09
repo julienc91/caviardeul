@@ -14,15 +14,16 @@ const Home: React.FC<{
   userScore?: { nbAttempts: number; nbCorrect: number };
   error?: APIError;
 }> = ({ encodedArticle, userScore, error }) => {
+  const strategy = useMemo(
+    () => new SinglePlayerStrategy(!!userScore),
+    [userScore],
+  );
+
   if (!encodedArticle) {
     return <CustomError statusCode={error!.status} text={error!.details} />;
   }
 
   const article = decodeArticle(encodedArticle);
-  const strategy = useMemo(
-    () => new SinglePlayerStrategy(!!userScore),
-    [userScore],
-  );
 
   return (
     <Game

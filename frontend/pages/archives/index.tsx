@@ -194,7 +194,10 @@ const ArticleCard: React.FC<{ articleInfo: ArticleInfo }> = ({
   return container;
 };
 
-const arrayEqual = (arr1: any[], arr2: any[]): boolean => {
+const arrayEqual = (
+  arr1: (string | boolean)[],
+  arr2: (string | boolean)[],
+): boolean => {
   if (arr1.length != arr2.length) {
     return false;
   }
@@ -233,7 +236,7 @@ const ArticleList: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  const params = useRef<any[]>([]);
+  const params = useRef<(string | boolean)[]>([]);
   const observerTarget = useRef<HTMLDivElement>(null);
   const initialFetchInProgress = useRef<boolean>(false);
 
@@ -254,6 +257,27 @@ const ArticleList: React.FC = () => {
   const handleFilterByChanged = useCallback(
     (filterBy: FilterType) => setFilterBy(filterBy),
     [],
+  );
+
+  const resetAndFetch = useCallback(
+    async (newParams: (string | boolean)[]) => {
+      params.current = newParams;
+      initialFetchInProgress.current = true;
+
+      // Reset state
+      setHasMore(true);
+      setLoading(true);
+      setArticleList([]);
+
+      // Fetch new data
+      const articles = await fetchArticles(sortBy, sortOrder, filterBy);
+      if (arrayEqual(newParams, params.current)) {
+        setArticleList(articles);
+      }
+      setLoading(false);
+      initialFetchInProgress.current = false;
+    },
+    [sortBy, sortOrder, filterBy],
   );
 
   const fetchNextPage = useCallback(async () => {
@@ -303,21 +327,11 @@ const ArticleList: React.FC = () => {
   useEffect(() => {
     const newParams = [filterBy, sortBy, sortOrder];
     if (!arrayEqual(newParams, params.current)) {
-      params.current = newParams;
-      initialFetchInProgress.current = true;
-      setHasMore(true);
-      setLoading(true);
-      setArticleList([]);
-      (async () => {
-        const articles = await fetchArticles(sortBy, sortOrder, filterBy);
-        if (arrayEqual(newParams, params.current)) {
-          setArticleList(articles);
-        }
-        setLoading(false);
-        initialFetchInProgress.current = false;
-      })();
+      queueMicrotask(() => {
+        resetAndFetch(newParams);
+      });
     }
-  }, [filterBy, sortBy, sortOrder]);
+  }, [filterBy, sortBy, sortOrder, resetAndFetch]);
 
   const gamesContainer = articleList.map((articleInfo) => (
     <ArticleCard key={articleInfo.articleId} articleInfo={articleInfo} />
@@ -365,7 +379,10 @@ const Archives: React.FC<{ userStats: DailyArticleStats }> = ({
   const [showSynchronizationModal, setShowSynchronizationModal] =
     useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>();
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return !!getCookie("userId");
+  });
   const router = useRouter();
 
   const title = "Caviardeul - Archives";
@@ -378,12 +395,6 @@ const Archives: React.FC<{ userStats: DailyArticleStats }> = ({
     (100 * userStats.averageNbCorrect) /
       Math.max(userStats.averageNbAttempts, 1),
   );
-
-  useEffect(() => {
-    if (getCookie("userId")) {
-      setIsLoggedIn(true);
-    }
-  }, []);
 
   const handleReset = useCallback(() => {
     SaveManagement.clearProgress(true, true, true);

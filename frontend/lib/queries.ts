@@ -65,7 +65,10 @@ export const getUserDailyArticleStats = async (
   return await response.json();
 };
 
-const sendRequest = async (endpoint: string, { body }: any) => {
+const sendRequest = async (
+  endpoint: string,
+  { body }: { body?: unknown },
+) => {
   const csrfToken = await getCsrfToken();
   const response = await fetch(`${API_URL}/${endpoint}`, {
     method: "POST",

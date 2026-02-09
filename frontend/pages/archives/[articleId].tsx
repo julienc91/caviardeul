@@ -14,12 +14,13 @@ const ArchiveGame: React.FC<{
   encodedArticle: EncodedArticle | null;
   error?: APIError;
 }> = ({ encodedArticle, error, ...props }) => {
+  const strategy = useMemo(() => new SinglePlayerStrategy(), []);
+
   if (!encodedArticle) {
     return <CustomError statusCode={error!.status} text={error!.details} />;
   }
 
   const article = decodeArticle(encodedArticle);
-  const strategy = useMemo(() => new SinglePlayerStrategy(), []);
   const title = `Caviardeul - Déchiffrez le Caviardeul n°${article.articleId}`;
   return (
     <>
