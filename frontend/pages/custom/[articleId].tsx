@@ -36,7 +36,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   try {
     const data = await getEncodedArticle(articleId, true, userId);
     return { props: { encodedArticle: data } };
-  } catch (_e) {
+  } catch {
     return { notFound: true };
   }
 };

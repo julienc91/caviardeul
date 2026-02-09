@@ -9,7 +9,7 @@ export const getSelectedWord = (word: string, history: GameHistory): string => {
     return word;
   }
 
-  for (let suffix of closeAlternativesSuffixes) {
+  for (const suffix of closeAlternativesSuffixes) {
     if (word.endsWith(suffix) && word !== suffix) {
       const alternative = word.slice(0, -suffix.length);
       if (historyWords.has(alternative)) {

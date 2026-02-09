@@ -34,6 +34,7 @@ const SelectedWrapper: React.FC<{
   }
   return <span className="selected">{children}</span>;
 });
+SelectedWrapper.displayName = "SelectedWrapper";
 
 const RevealedWord = React.memo<{ word: string }>(({ word }) => {
   return (
@@ -42,6 +43,7 @@ const RevealedWord = React.memo<{ word: string }>(({ word }) => {
     </span>
   );
 });
+RevealedWord.displayName = "RevealedWord";
 
 const CaviardedWord = React.memo<{ word: string }>(({ word }) => {
   return (
@@ -50,6 +52,7 @@ const CaviardedWord = React.memo<{ word: string }>(({ word }) => {
     </span>
   );
 });
+CaviardedWord.displayName = "CaviardedWord";
 
 const MaybeRevealedWord = React.memo<{ word: string }>(({ word }) => {
   const revealed = useIsRevealed(word);
@@ -58,6 +61,7 @@ const MaybeRevealedWord = React.memo<{ word: string }>(({ word }) => {
   }
   return <CaviardedWord word={word} />;
 });
+MaybeRevealedWord.displayName = "MaybeRevealedWord";
 
 const WordContainer = React.memo<{ word: string }>(({ word }) => {
   const isOver = useContextSelector(GameContext, (context) => context.isOver);
@@ -70,5 +74,6 @@ const WordContainer = React.memo<{ word: string }>(({ word }) => {
   }
   return <MaybeRevealedWord word={word} />;
 });
+WordContainer.displayName = "WordContainer";
 
 export default WordContainer;

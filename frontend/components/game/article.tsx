@@ -99,7 +99,7 @@ const AutoScrollerManager = () => {
   // Scroll to selection
   useEffect(() => {
     if (selection && autoScroll) {
-      const [_, index] = selection;
+      const [, index] = selection;
       const articleContainer =
         document.querySelector<HTMLElement>(".article-container");
       const elements =
