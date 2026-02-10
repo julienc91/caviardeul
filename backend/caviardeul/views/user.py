@@ -34,7 +34,7 @@ async def login(request: HttpRequest, payload: LoginSchema, response: HttpRespon
 
     try:
         target_user = await User.objects.aget(id=uuid.UUID(target_user_id))
-    except (ValueError, User.DoesNotExist):
+    except ValueError, User.DoesNotExist:
         return response
 
     current_user = request.auth

@@ -31,7 +31,7 @@ def post_article_score(
             article = DailyArticle.objects.select_for_update().get(
                 id=payload.article_id, date__lte=now
             )
-    except (CustomArticle.DoesNotExist, DailyArticle.DoesNotExist):
+    except CustomArticle.DoesNotExist, DailyArticle.DoesNotExist:
         raise HttpError(400, "L'article n'a pas été trouvé")
 
     if not request.auth.is_authenticated:

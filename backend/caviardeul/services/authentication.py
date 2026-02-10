@@ -21,7 +21,7 @@ async def api_authentication(request: HttpRequest) -> User | None:
 
     try:
         user = await User.objects.aget(id=UUID(key))
-    except (ValueError, User.DoesNotExist):
+    except ValueError, User.DoesNotExist:
         return None
 
     now = timezone.now()

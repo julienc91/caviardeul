@@ -51,9 +51,9 @@ class _ArticleFactory(AynscDjangoModelFactory):
     page_id = factory.LazyAttribute(lambda obj: slugify(obj.page_name))
     nb_winners = Faker("pyint")
     stats = factory.LazyAttribute(
-        lambda obj: {"distribution": {"10": obj.nb_winners}}
-        if obj.nb_winners > 0
-        else {}
+        lambda obj: (
+            {"distribution": {"10": obj.nb_winners}} if obj.nb_winners > 0 else {}
+        )
     )
     median = factory.LazyAttribute(
         lambda obj: compute_median_from_distribution(obj.stats.get("distribution", {}))
