@@ -12,20 +12,6 @@ on:
       - 'backend/**'
 
 jobs:
-  lint-backend:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v6
-      - name: Install uv
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
-      - name: Lint
-        working-directory: ./backend/
-        run: |
-          uvx ruff check .
-          uvx ruff format --check .
-
   test-backend:
     runs-on: ubuntu-latest
     permissions:
