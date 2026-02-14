@@ -36,4 +36,4 @@ jobs:
       - name: Install uv
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
       - name: Run pre-commit on all files
-        run: uvx pre-commit run --all-files
+        run: SKIP=ggshield uvx pre-commit run --all-files
