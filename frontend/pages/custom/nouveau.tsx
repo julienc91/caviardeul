@@ -115,7 +115,7 @@ const NewCustomGame: React.FC = () => {
             {mutation.isMutating && <Loader />}
             {mutation.error && (
               <p>
-                Impossibe de créer une partie personnalisée à partir de cet
+                Impossible de créer une partie personnalisée à partir de cet
                 article.
               </p>
             )}

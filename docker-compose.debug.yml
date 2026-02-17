@@ -57,6 +57,8 @@ services:
     extends:
       file: docker-compose.dev.yml
       service: redis
+    ports:
+      - "127.0.0.1:6379:6379"
 
 networks:
   db_network:

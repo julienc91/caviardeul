@@ -116,3 +116,6 @@ static/
 
 # Tests
 .coverage
+
+# E2E
+backend/test-results/
