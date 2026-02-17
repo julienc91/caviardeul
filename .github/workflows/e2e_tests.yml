@@ -1,19 +1,17 @@
-name: Backend tests
+name: E2E Tests
+
 on:
   push:
     branches:
       - main
-    paths:
-      - 'backend/**'
   pull_request:
     branches:
       - main
-    paths:
-      - 'backend/**'
 
 jobs:
-  test-backend:
+  e2e:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
     services:
@@ -22,7 +20,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: tests
-          POSTGRES_DB: tests
+          POSTGRES_DB: e2e
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
@@ -34,6 +32,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: yarn
+          cache-dependency-path: frontend/yarn.lock
+      - name: Install dependencies
+        working-directory: ./frontend/
+        run: yarn install --frozen-lockfile
+      - name: Build frontend
+        working-directory: frontend
+        run: yarn build
+        env:
+          NEXT_PUBLIC_BASE_URL: http://localhost:3000
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
@@ -43,10 +54,20 @@ jobs:
       - name: Install dependencies
         working-directory: backend
         run: uv sync
-      - name: Tests
-        working-directory: ./backend/
-        run: uv run pytest --create-db
+      - name: Install Playwright browsers
+        working-directory: backend
+        run: uv run playwright install --with-deps chromium
+      - name: Run e2e tests
+        working-directory: backend
+        run: uv run pytest --create-db -m e2e
         env:
           POSTGRES_DB: tests
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: tests
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-test-results
+          path: backend/test-results/
+          retention-days: 14

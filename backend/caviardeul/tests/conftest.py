@@ -9,6 +9,54 @@ from django.core.cache import cache
 from django.db import connections
 
 
+def pytest_configure(config):
+    if "e2e" not in (config.option.markexpr or ""):
+        return
+
+    # Disable socket restrictions from pyproject.toml addopts.
+    # pytest-socket caches these in its own pytest_configure, so we must
+    # override the cached attributes, not just config.option.
+    config.__socket_disabled = False
+    config.__socket_allow_hosts = None
+
+    # Session-scoped asyncio loop for e2e tests
+    config.inicfg["asyncio_default_fixture_loop_scope"] = "session"
+    config.inicfg["asyncio_default_test_loop_scope"] = "session"
+    # Also update the ini cache since pytest-asyncio reads these during its
+    # own pytest_configure, which runs before conftest hooks.
+    if hasattr(config, "_inicache"):
+        config._inicache["asyncio_default_fixture_loop_scope"] = "session"
+        config._inicache["asyncio_default_test_loop_scope"] = "session"
+
+    # Playwright defaults
+    if not getattr(config.option, "browser", None):
+        config.option.browser = ["chromium"]
+    if not getattr(config.option, "base_url", None):
+        config.option.base_url = "http://localhost:3000"
+    if getattr(config.option, "screenshot", None) in (None, "off"):
+        config.option.screenshot = "only-on-failure"
+    if getattr(config.option, "tracing", None) in (None, "off"):
+        config.option.tracing = "retain-on-failure"
+    if not getattr(config.option, "output", None):
+        config.option.output = "test-results"
+
+
+@pytest.hookimpl(trylast=True)
+def pytest_collection_modifyitems(config, items):
+    if "e2e" in (config.option.markexpr or ""):
+        return
+    remaining = []
+    deselected = []
+    for item in items:
+        if "e2e" in item.keywords:
+            deselected.append(item)
+        else:
+            remaining.append(item)
+    if deselected:
+        config.hook.pytest_deselected(items=deselected)
+        items[:] = remaining
+
+
 @pytest.fixture()
 def resources_path():
     return Path(os.path.dirname(__file__)) / "resources"

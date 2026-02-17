@@ -1,6 +1,7 @@
 import uuid
 
 from asgiref.sync import sync_to_async
+from django.conf import settings as django_settings
 from django.db import transaction
 from django.http import HttpResponse
 from django.utils import timezone
@@ -28,8 +29,8 @@ def set_user_cookie(response: HttpResponse, user: User):
         "userId",
         str(user.id),
         max_age=3600 * 24 * 365 * 10,
-        secure=True,
-        samesite="Strict",
+        secure=not django_settings.DEBUG,
+        samesite="Strict" if not django_settings.DEBUG else "Lax",
         httponly=False,
     )
 
