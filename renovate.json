@@ -4,10 +4,11 @@
     "config:recommended",
     ":semanticCommits"
   ],
+  "minimumReleaseAge": "7 days",
   "lockFileMaintenance": {
     "enabled": true,
     "schedule": ["before 4am on monday"],
-    "automerge": false
+    "automerge": true
   },
 
   "enabledManagers": [
@@ -50,6 +51,14 @@
       "matchManagers": ["dockerfile", "docker-compose"],
       "groupName": "Docker dependencies",
       "groupSlug": "docker-deps"
+    },
+    {
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true
+    },
+    {
+      "matchCategories": ["security"],
+      "minimumReleaseAge": "0 days"
     }
   ],
 
