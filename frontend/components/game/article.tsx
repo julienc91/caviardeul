@@ -4,23 +4,26 @@ import {
   NodeType,
   parse,
 } from "node-html-parser";
-import React, { Key, ReactNode, useContext, useEffect, useMemo } from "react";
+import React, { useContext, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { useContextSelector } from "use-context-selector";
 
 import CustomGameBanner from "@caviardeul/components/game/customGameBanner";
 import { GameContext } from "@caviardeul/components/game/gameManager";
-import WordContainer from "@caviardeul/components/game/word";
 import { SettingsContext } from "@caviardeul/components/settings/manager";
-import { isCommonWord, isWord, splitWords } from "@caviardeul/utils/caviarding";
+import {
+  isCommonWord,
+  isSelected,
+  isWord,
+  splitWords,
+  standardizeText,
+} from "@caviardeul/utils/caviarding";
 
-const parseHTML = (content: string): ReactNode => {
-  const doc = parse(content);
-  return parseNodes(doc.childNodes);
-};
-
-const parseNodes = (nodes: Node[]): ReactNode => {
-  const array = Array.from(nodes);
-  return <>{array.map((node, i) => parseNode(node, i))}</>;
+const escapeHTML = (text: string): string => {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 };
 
 const skippedTags = new Set([
@@ -33,59 +36,68 @@ const skippedTags = new Set([
   "VIDEO",
 ]);
 
-const parseNode = (node: Node, key: Key): ReactNode => {
+const validTags = new Set(["H1", "H2", "H3", "H4", "LI", "OL", "P", "UL"]);
+
+export type WordRegistry = Map<number, { std: string; word: string }>;
+
+export const buildArticleHTML = (
+  content: string,
+): { html: string; registry: WordRegistry } => {
+  const registry: WordRegistry = new Map();
+  const doc = parse(content);
+  return { html: buildNodes(doc.childNodes, registry), registry };
+};
+
+const buildNodes = (nodes: Node[], registry: WordRegistry): string => {
+  return Array.from(nodes)
+    .map((node) => buildNode(node, registry))
+    .join("");
+};
+
+const buildNode = (node: Node, registry: WordRegistry): string => {
   if (node.nodeType === NodeType.TEXT_NODE) {
-    return parseText(node.textContent ?? "");
+    return buildText(node.textContent ?? "", registry);
   } else if (node.nodeType === NodeType.COMMENT_NODE) {
-    return null;
+    return "";
   } else if (node.nodeType !== NodeType.ELEMENT_NODE) {
-    return null;
+    return "";
   }
 
   const element = node as HTMLParserElement;
   const tagName = element.tagName.toUpperCase();
 
   if (tagName === "BR") {
-    return <br key={key} />;
+    return "<br>";
   } else if (skippedTags.has(tagName)) {
-    return null;
+    return "";
   }
 
-  const children = parseNodes(node.childNodes);
-  switch (tagName) {
-    case "H1":
-      return <h1 key={key}>{children}</h1>;
-    case "H2":
-      return <h2 key={key}>{children}</h2>;
-    case "H3":
-      return <h3 key={key}>{children}</h3>;
-    case "H4":
-      return <h4 key={key}>{children}</h4>;
-    case "LI":
-      return <li key={key}>{children}</li>;
-    case "OL":
-      return <ol key={key}>{children}</ol>;
-    case "P":
-      return <p key={key}>{children}</p>;
-    case "UL":
-      return <ul key={key}>{children}</ul>;
-    default:
-      if (children === null || children === "") {
-        return null;
-      }
-      return <span key={key}>{children}</span>;
+  const children = buildNodes(node.childNodes, registry);
+
+  if (validTags.has(tagName)) {
+    const tag = tagName.toLowerCase();
+    return `<${tag}>${children}</${tag}>`;
   }
+
+  if (!children) {
+    return "";
+  }
+  return `<span>${children}</span>`;
 };
 
-const parseText = (text: string): ReactNode => {
+const buildText = (text: string, registry: WordRegistry): string => {
   const tokens = splitWords(text);
-  return tokens.map((token, i) => {
-    if (isWord(token) && !isCommonWord(token)) {
-      return <WordContainer key={i} word={token} />;
-    } else {
-      return token;
-    }
-  });
+  return tokens
+    .map((token) => {
+      if (isWord(token) && !isCommonWord(token)) {
+        const std = standardizeText(token);
+        const index = registry.size;
+        registry.set(index, { std, word: token });
+        return `<span class="word caviarded" data-i="${index}" data-word-length="${token.length}">${"\u2588".repeat(token.length)}</span>`;
+      }
+      return escapeHTML(token);
+    })
+    .join("");
 };
 
 const AutoScrollerManager = () => {
@@ -120,10 +132,76 @@ const AutoScrollerManager = () => {
 
 const ArticleContainer = () => {
   const article = useContextSelector(GameContext, (context) => context.article);
-  const inner = useMemo(
-    () => (article ? parseHTML(article.content) : null),
+  const revealedWords = useContextSelector(
+    GameContext,
+    (context) => context.revealedWords,
+  );
+  const selection = useContextSelector(
+    GameContext,
+    (context) => context.selection,
+  );
+  const isOver = useContextSelector(GameContext, (context) => context.isOver);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const { articleHTML, wordRegistry } = useMemo(
+    () =>
+      article
+        ? (() => {
+            const { html, registry } = buildArticleHTML(article.content);
+            return { articleHTML: html, wordRegistry: registry };
+          })()
+        : { articleHTML: null, wordRegistry: null },
     [article],
   );
+
+  useLayoutEffect(() => {
+    if (contentRef.current && articleHTML) {
+      contentRef.current.innerHTML = articleHTML;
+    }
+  }, [articleHTML]);
+
+  // Reveal effect
+  useLayoutEffect(() => {
+    if (!contentRef.current || !wordRegistry) return;
+    const caviardedWords =
+      contentRef.current.querySelectorAll<HTMLElement>(".word.caviarded");
+    caviardedWords.forEach((el) => {
+      const entry = wordRegistry.get(Number(el.dataset.i));
+      if (entry && (isOver || revealedWords.has(entry.std))) {
+        el.textContent = entry.word;
+        el.classList.remove("caviarded");
+      }
+    });
+  }, [revealedWords, isOver, articleHTML, wordRegistry]);
+
+  // Selection effect
+  useLayoutEffect(() => {
+    if (!contentRef.current || !wordRegistry) return;
+
+    // Clear existing selections
+    contentRef.current
+      .querySelectorAll<HTMLElement>(".word .selected")
+      .forEach((selectedEl) => {
+        const parent = selectedEl.parentElement;
+        if (parent) {
+          const entry = wordRegistry.get(Number(parent.dataset.i));
+          parent.textContent = entry?.word ?? parent.textContent ?? "";
+        }
+      });
+
+    if (!selection) return;
+    const [selectedWord] = selection;
+
+    contentRef.current
+      .querySelectorAll<HTMLElement>(".word:not(.caviarded)")
+      .forEach((el) => {
+        const entry = wordRegistry.get(Number(el.dataset.i));
+        if (entry && isSelected(entry.std, selectedWord)) {
+          const text = el.textContent ?? "";
+          el.innerHTML = `<span class="selected">${escapeHTML(text)}</span>`;
+        }
+      });
+  }, [selection, revealedWords, isOver, articleHTML, wordRegistry]);
 
   if (!article) {
     return null;
@@ -135,7 +213,7 @@ const ArticleContainer = () => {
     <div className="article-container">
       {custom && <CustomGameBanner safetyLevel={safety} />}
       <AutoScrollerManager />
-      {inner}
+      <div ref={contentRef} />
     </div>
   );
 };
