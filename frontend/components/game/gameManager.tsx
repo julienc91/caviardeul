@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { createContext } from "use-context-selector";
 
-import { Article, GameHistory } from "@caviardeul/types";
 import { GameStrategy, Player } from "@caviardeul/components/game/strategies/gameStrategy";
+import { Article, GameHistory } from "@caviardeul/types";
 
 type UserScore = {
   nbAttempts: number;

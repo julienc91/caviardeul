@@ -1,7 +1,1 @@
-{
-  "plugins": ["@trivago/prettier-plugin-sort-imports"],
-
-  "importOrder": ["(^@caviardeul)", "^@caviardeul/", "^[./]"],
-  "importOrderSeparation": true,
-  "importOrderSortSpecifiers": true
-}
+{}

@@ -3,12 +3,12 @@ import Head from "next/head";
 import React, { useMemo } from "react";
 
 import Game from "@caviardeul/components/game/game";
+import { SinglePlayerStrategy } from "@caviardeul/components/game/strategies/singlePlayerStrategy";
 import CustomError from "@caviardeul/components/utils/error";
 import { getEncodedArticle } from "@caviardeul/lib/article";
 import { APIError, isAPIError } from "@caviardeul/lib/queries";
 import { EncodedArticle } from "@caviardeul/types";
 import { decodeArticle } from "@caviardeul/utils/encryption";
-import { SinglePlayerStrategy } from "@caviardeul/components/game/strategies/singlePlayerStrategy";
 
 const ArchiveGame: React.FC<{
   encodedArticle: EncodedArticle | null;

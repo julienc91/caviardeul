@@ -1,13 +1,15 @@
-import { render, screen, act } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import React from "react";
 import { useContextSelector } from "use-context-selector";
 import { describe, expect, it, vi } from "vitest";
 
+import { GameContext, Manager } from "@caviardeul/components/game/gameManager";
 import {
-  GameContext,
-  Manager,
-} from "@caviardeul/components/game/gameManager";
-import { GameState, GameStrategy, Player, StateChangeListener } from "@caviardeul/components/game/strategies/gameStrategy";
+  GameState,
+  GameStrategy,
+  Player,
+  StateChangeListener,
+} from "@caviardeul/components/game/strategies/gameStrategy";
 
 import { createArticle } from "../../helpers/fixtures";
 

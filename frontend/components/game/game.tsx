@@ -5,8 +5,8 @@ import AttemptHistory from "@caviardeul/components/game/attemptHistory";
 import GameInformation from "@caviardeul/components/game/gameInformation";
 import Manager from "@caviardeul/components/game/gameManager";
 import Input from "@caviardeul/components/game/input";
-import { Article } from "@caviardeul/types";
 import { GameStrategy } from "@caviardeul/components/game/strategies/gameStrategy";
+import { Article } from "@caviardeul/types";
 
 const Game: React.FC<{
   article: Article;

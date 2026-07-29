@@ -3,10 +3,10 @@ import Head from "next/head";
 import React, { useMemo } from "react";
 
 import Game from "@caviardeul/components/game/game";
+import { SinglePlayerStrategy } from "@caviardeul/components/game/strategies/singlePlayerStrategy";
 import { getEncodedArticle } from "@caviardeul/lib/article";
 import { EncodedArticle } from "@caviardeul/types";
 import { decodeArticle } from "@caviardeul/utils/encryption";
-import { SinglePlayerStrategy } from "@caviardeul/components/game/strategies/singlePlayerStrategy";
 
 const CustomGame: React.FC<{
   encodedArticle: EncodedArticle;

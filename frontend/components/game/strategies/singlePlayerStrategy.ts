@@ -1,3 +1,4 @@
+import { saveGameScore } from "@caviardeul/lib/queries";
 import { Article, GameHistory } from "@caviardeul/types";
 import {
   buildAlternatives,
@@ -10,7 +11,7 @@ import {
 } from "@caviardeul/utils/caviarding";
 import { getSelectedWord } from "@caviardeul/utils/game";
 import SaveManagement from "@caviardeul/utils/save";
-import { saveGameScore } from "@caviardeul/lib/queries";
+
 import {
   GameState,
   GameStrategy,

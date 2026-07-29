@@ -1,3 +1,5 @@
+import "../styles/style.scss";
+
 import { Metadata } from "next";
 import React from "react";
 
@@ -5,8 +7,6 @@ import Navbar from "@caviardeul/components/navbar";
 import ColorMode from "@caviardeul/components/settings/colorMode";
 import SettingsManager from "@caviardeul/components/settings/manager";
 import { BASE_URL } from "@caviardeul/utils/config";
-
-import "../styles/style.scss";
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
