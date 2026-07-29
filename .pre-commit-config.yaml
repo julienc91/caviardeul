@@ -12,7 +12,7 @@ repos:
       - id: eslint
         name: eslint
         verbose: true
-        language: node
+        language: system
         entry: yarn --cwd frontend run eslint
         pass_filenames: false
         files: .*\.tsx?$
@@ -22,7 +22,7 @@ repos:
       - id: tsc
         name: tsc
         verbose: true
-        language: node
+        language: system
         entry: yarn --cwd frontend/ run tsc --project tsconfig.json
         files: \.tsx?$
         pass_filenames: false

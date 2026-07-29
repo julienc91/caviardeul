@@ -19,14 +19,11 @@ def pytest_configure(config):
     config.__socket_disabled = False
     config.__socket_allow_hosts = None
 
-    # Session-scoped asyncio loop for e2e tests
-    config.inicfg["asyncio_default_fixture_loop_scope"] = "session"
-    config.inicfg["asyncio_default_test_loop_scope"] = "session"
-    # Also update the ini cache since pytest-asyncio reads these during its
-    # own pytest_configure, which runs before conftest hooks.
-    if hasattr(config, "_inicache"):
-        config._inicache["asyncio_default_fixture_loop_scope"] = "session"
-        config._inicache["asyncio_default_test_loop_scope"] = "session"
+    # Session-scoped asyncio loop for e2e tests. We seed the ini cache that
+    # config.getini() reads from, since pytest-asyncio resolves these during
+    # its own pytest_configure, which runs before conftest hooks.
+    config._inicache["asyncio_default_fixture_loop_scope"] = "session"
+    config._inicache["asyncio_default_test_loop_scope"] = "session"
 
     # Playwright defaults
     if not getattr(config.option, "browser", None):
