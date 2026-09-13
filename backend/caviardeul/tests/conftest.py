@@ -1,23 +1,26 @@
 import contextlib
 import os
+from dataclasses import replace
 from pathlib import Path
 from unittest.mock import Mock, patch
 
 import httpx
 import pytest
+import pytest_socket
 from django.core.cache import cache
 from django.db import connections
 
 
+@pytest.hookimpl(trylast=True)
 def pytest_configure(config):
     if "e2e" not in (config.option.markexpr or ""):
         return
 
     # Disable socket restrictions from pyproject.toml addopts.
-    # pytest-socket caches these in its own pytest_configure, so we must
-    # override the cached attributes, not just config.option.
-    config.__socket_disabled = False
-    config.__socket_allow_hosts = None
+    socket_config = config.stash[pytest_socket._STASH_KEY]
+    config.stash[pytest_socket._STASH_KEY] = replace(
+        socket_config, socket_disabled=False, allow_hosts=None
+    )
 
     # Session-scoped asyncio loop for e2e tests. We seed the ini cache that
     # config.getini() reads from, since pytest-asyncio resolves these during
