@@ -4,7 +4,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.db.models import Avg, Count, FilteredRelation, Q, QuerySet
 from django.http import HttpRequest
 from django.utils import timezone
-from ninja import Query
+from ninja import Query, Status
 from ninja.pagination import paginate
 
 from caviardeul.exceptions import ArticleFetchError
@@ -80,7 +80,7 @@ async def _get_daily_article_response(queryset: QuerySet[DailyArticle]):
     try:
         article = await queryset.aget()
     except DailyArticle.DoesNotExist:
-        return 404, {"detail": "L'article n'a pas été trouvé"}
+        return Status(404, {"detail": "L'article n'a pas été trouvé"})
 
     try:
         article.content = await get_article_content(article)
@@ -88,7 +88,7 @@ async def _get_daily_article_response(queryset: QuerySet[DailyArticle]):
         logger.exception(
             "Error encountered with daily article", extra={"article_id": article.id}
         )
-        return 500, {"detail": "Un problème a été rencontré avec cet article"}
+        return Status(500, {"detail": "Un problème a été rencontré avec cet article"})
     return article
 
 
