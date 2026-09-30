@@ -6,6 +6,7 @@ from .daily_article import (
     get_daily_article_stats,
     list_archived_articles,
 )
+from .health import health
 from .score import post_article_score
 from .user import delete_current_user, get_current_user, login
 
@@ -17,6 +18,7 @@ __all__ = [
     "get_current_user",
     "get_custom_article",
     "get_daily_article_stats",
+    "health",
     "list_archived_articles",
     "login",
     "post_article_score",

@@ -10,6 +10,14 @@ services:
       - nginx_network
     expose:
       - 3000
+    healthcheck:
+      # The standalone Next.js server listens on $$HOSTNAME, not on localhost
+      test: wget -q --spider http://$$(hostname):3000/robots.txt
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 2m
+      start_interval: 2s
     restart: always
 
   backend:
@@ -20,13 +28,26 @@ services:
     volumes:
       - staticdata:/app/static
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - db_network
       - nginx_network
     expose:
       - 5000
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import os, urllib.request; urllib.request.urlopen(urllib.request.Request('http://localhost:5000/health', headers={'Host': os.environ['HOST_NAME']}), timeout=5)"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 2m
+      start_interval: 2s
     restart: always
 
   worker:
@@ -35,8 +56,10 @@ services:
     env_file:
       - backend/.env
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - db_network
     restart: always
@@ -59,8 +82,10 @@ services:
     networks:
       - nginx_network
     depends_on:
-      - backend
-      - frontend
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
     restart: always
 
   postgres:
@@ -73,6 +98,13 @@ services:
       - 5432
     volumes:
       - "dbdata:/var/lib/postgresql/data"
+    healthcheck:
+      test: pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 1m
+      start_interval: 2s
     restart: always
 
   redis:
@@ -84,6 +116,13 @@ services:
     expose:
       - 6379
     command: /bin/sh -c "redis-server --requirepass $$REDIS_PASSWORD"
+    healthcheck:
+      test: REDISCLI_AUTH="$$REDIS_PASSWORD" redis-cli ping | grep -q PONG
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 2s
     restart: always
 
 networks:

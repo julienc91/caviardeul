@@ -1,19 +1,18 @@
-upstream backend {
-    server backend:5000;
-}
-
-upstream frontend {
-    server frontend:3000;
-}
+# Resolve container names at request time through Docker's embedded DNS, so
+# that nginx follows backend/frontend containers when they get recreated.
+resolver 127.0.0.11 valid=10s ipv6=off;
 
 server {
     listen 3000;
     listen [::]:3000;
     server_name ${SERVER_NAME};
 
+    set $backend http://backend:5000;
+    set $frontend http://frontend:3000;
+
     location /api {
         rewrite /api/(.*) /$1  break;
-        proxy_pass http://backend;
+        proxy_pass $backend;
         proxy_set_header Host ${SERVER_NAME};
         proxy_set_header Cookie $http_cookie;
         proxy_set_header X-Forwarded-Proto https;
@@ -21,7 +20,7 @@ server {
     }
 
     location /admin {
-        proxy_pass http://backend;
+        proxy_pass $backend;
         proxy_set_header Host ${SERVER_NAME};
         proxy_set_header Cookie $http_cookie;
         proxy_set_header X-Forwarded-Proto https;
@@ -33,7 +32,7 @@ server {
     }
 
     location / {
-        proxy_pass http://frontend;
+        proxy_pass $frontend;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
