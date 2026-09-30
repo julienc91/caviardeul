@@ -15,9 +15,7 @@ describe("IntroductionModal", () => {
   it("renders intro text when tutorial not skipped", () => {
     render(<IntroductionModal />);
     expect(screen.getByText("Caviardeul")).toBeInTheDocument();
-    expect(
-      screen.getByText(/est un jeu de réflexion/),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/est un jeu de réflexion/)).toBeInTheDocument();
   });
 
   it("renders 'Commencer' button", () => {
@@ -28,23 +26,17 @@ describe("IntroductionModal", () => {
   });
 
   it("calls setSkipTutorial and closes on button click", async () => {
-    const { default: SaveManagement } = await import(
-      "@caviardeul/utils/save"
-    );
+    const { default: SaveManagement } = await import("@caviardeul/utils/save");
 
     render(<IntroductionModal />);
-    await userEvent.click(
-      screen.getByRole("button", { name: "Commencer" }),
-    );
+    await userEvent.click(screen.getByRole("button", { name: "Commencer" }));
 
     expect(SaveManagement.setSkipTutorial).toHaveBeenCalled();
     expect(screen.queryByText("Caviardeul")).not.toBeInTheDocument();
   });
 
   it("does not render when tutorial is already skipped", async () => {
-    const { default: SaveManagement } = await import(
-      "@caviardeul/utils/save"
-    );
+    const { default: SaveManagement } = await import("@caviardeul/utils/save");
     vi.mocked(SaveManagement.getIsTutorialSkipped).mockReturnValue(true);
 
     const { container } = render(<IntroductionModal />);

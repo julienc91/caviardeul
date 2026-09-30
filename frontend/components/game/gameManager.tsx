@@ -1,7 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { createContext } from "use-context-selector";
 
-import { GameStrategy, Player } from "@caviardeul/components/game/strategies/gameStrategy";
+import {
+  GameStrategy,
+  Player,
+} from "@caviardeul/components/game/strategies/gameStrategy";
 import { Article, GameHistory } from "@caviardeul/types";
 
 type UserScore = {

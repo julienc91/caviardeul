@@ -4,7 +4,13 @@ import {
   NodeType,
   parse,
 } from "node-html-parser";
-import React, { useContext, useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+} from "react";
 import { useContextSelector } from "use-context-selector";
 
 import CustomGameBanner from "@caviardeul/components/game/customGameBanner";

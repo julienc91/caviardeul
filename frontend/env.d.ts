@@ -1,4 +1,3 @@
- 
 namespace NodeJS {
   interface ProcessEnv {
     INTERNAL_BASE_URL?: string;

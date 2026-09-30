@@ -63,9 +63,7 @@ describe("SettingsModal", () => {
     });
 
     await userEvent.click(
-      screen.getByLabelText(
-        "Défilement automatique vers le mot sélectionné",
-      ),
+      screen.getByLabelText("Défilement automatique vers le mot sélectionné"),
     );
     expect(onChangeSettings).toHaveBeenCalledWith({ autoScroll: false });
   });
