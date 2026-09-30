@@ -7,7 +7,6 @@ import SettingsManager, {
   SettingsContext,
 } from "@caviardeul/components/settings/manager";
 
-
 vi.mock("@caviardeul/utils/save", () => ({
   default: {
     getSettings: vi.fn().mockReturnValue(null),
@@ -53,9 +52,7 @@ describe("SettingsManager", () => {
   });
 
   it("loads settings from localStorage via SaveManagement", async () => {
-    const { default: SaveManagement } = await import(
-      "@caviardeul/utils/save"
-    );
+    const { default: SaveManagement } = await import("@caviardeul/utils/save");
     vi.mocked(SaveManagement.getSettings).mockReturnValue({
       lightMode: true,
       autoScroll: false,

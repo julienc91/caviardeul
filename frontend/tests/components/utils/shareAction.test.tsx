@@ -12,7 +12,12 @@ describe("ShareAction", () => {
     });
 
     render(
-      <ShareAction articleId={42} custom={false} archive={false} nbTrials={5} />,
+      <ShareAction
+        articleId={42}
+        custom={false}
+        archive={false}
+        nbTrials={5}
+      />,
     );
 
     expect(screen.getByTitle("Partager sur Bluesky")).toBeInTheDocument();
@@ -28,7 +33,12 @@ describe("ShareAction", () => {
     });
 
     render(
-      <ShareAction articleId={42} custom={false} archive={false} nbTrials={5} />,
+      <ShareAction
+        articleId={42}
+        custom={false}
+        archive={false}
+        nbTrials={5}
+      />,
     );
 
     expect(screen.getByText(/Partagez votre score/)).toBeInTheDocument();
@@ -41,7 +51,12 @@ describe("ShareAction", () => {
     });
 
     render(
-      <ShareAction articleId={42} custom={false} archive={false} nbTrials={5} />,
+      <ShareAction
+        articleId={42}
+        custom={false}
+        archive={false}
+        nbTrials={5}
+      />,
     );
 
     await userEvent.click(screen.getByTitle("Partager sur Bluesky"));
@@ -91,7 +106,12 @@ describe("ShareAction", () => {
 
     // With 1 trial, should use "coup" (singular). We verify by checking native share behavior.
     render(
-      <ShareAction articleId={42} custom={false} archive={false} nbTrials={1} />,
+      <ShareAction
+        articleId={42}
+        custom={false}
+        archive={false}
+        nbTrials={1}
+      />,
     );
 
     expect(screen.getByText(/Partagez votre score/)).toBeInTheDocument();

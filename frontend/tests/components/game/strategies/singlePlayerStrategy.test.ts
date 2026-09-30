@@ -201,9 +201,8 @@ describe("SinglePlayerStrategy", () => {
 
   describe("loadProgress", () => {
     it("restores history from saved progress", async () => {
-      const { default: SaveManagement } = await import(
-        "@caviardeul/utils/save"
-      );
+      const { default: SaveManagement } =
+        await import("@caviardeul/utils/save");
       vi.mocked(SaveManagement.loadProgress).mockReturnValue([
         ["hello", 1],
         ["world", 2],

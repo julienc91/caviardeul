@@ -12,9 +12,7 @@ describe("Input", () => {
       gameContext: { canPlay: true },
     });
     expect(screen.getByPlaceholderText("Un mot ?")).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "Valider" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Valider" })).toBeInTheDocument();
   });
 
   it("disables input when canPlay is false", () => {

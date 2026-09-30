@@ -39,9 +39,7 @@ describe("Navbar", () => {
     await userEvent.click(screen.getByText("Options"));
 
     // Settings modal should now be visible
-    expect(
-      screen.getByText("Activer le mode sombre"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Activer le mode sombre")).toBeInTheDocument();
   });
 
   it("toggles hamburger menu", async () => {

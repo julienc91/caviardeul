@@ -122,8 +122,7 @@ describe("ArticleContainer", () => {
 
   it("renders various HTML elements", () => {
     const article = createArticle({
-      content:
-        "<h1>Title</h1><h2>Sub</h2><ul><li>Item</li></ul><p>Text</p>",
+      content: "<h1>Title</h1><h2>Sub</h2><ul><li>Item</li></ul><p>Text</p>",
     });
     const { container } = renderWithProviders(<ArticleContainer />, {
       gameContext: { article, isOver: true, revealedWords: new Set() },
