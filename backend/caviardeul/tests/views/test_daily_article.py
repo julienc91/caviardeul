@@ -1,10 +1,9 @@
 import logging
 from collections import defaultdict
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Literal
 
 import pytest
-from django.utils.timezone import make_aware
 from pydantic import BaseModel
 
 from caviardeul.constants import Safety
@@ -270,11 +269,11 @@ class TestListArchivedArticles:
     @pytest.mark.parametrize("asc", [True, False])
     def test_order_archived_articles(self, client, authenticated, order, asc):
         articles = [
-            DailyArticleFactory(date=make_aware(datetime(2024, 1, 1)), median=10),
-            DailyArticleFactory(date=make_aware(datetime(2024, 1, 2)), median=5),
-            DailyArticleFactory(date=make_aware(datetime(2024, 1, 3)), median=15),
-            DailyArticleFactory(date=make_aware(datetime(2024, 1, 4)), median=10),
-            DailyArticleFactory(date=make_aware(datetime(2024, 1, 5)), median=5),
+            DailyArticleFactory(date=datetime(2024, 1, 1, tzinfo=UTC), median=10),
+            DailyArticleFactory(date=datetime(2024, 1, 2, tzinfo=UTC), median=5),
+            DailyArticleFactory(date=datetime(2024, 1, 3, tzinfo=UTC), median=15),
+            DailyArticleFactory(date=datetime(2024, 1, 4, tzinfo=UTC), median=10),
+            DailyArticleFactory(date=datetime(2024, 1, 5, tzinfo=UTC), median=5),
         ]
 
         user, other_user = UserFactory.create_batch(2)

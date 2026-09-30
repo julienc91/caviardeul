@@ -1,6 +1,5 @@
 import random
-from datetime import datetime, time, timedelta
-from datetime import timezone as tz
+from datetime import UTC, datetime, time, timedelta
 from typing import Literal
 
 import factory
@@ -39,10 +38,10 @@ class UserFactory(AynscDjangoModelFactory):
 
     username = Faker("user_name", unique=True)
     date_joined = Faker(
-        "date_time_between", start_date="-1y", end_date="-30d", tzinfo=tz.utc
+        "date_time_between", start_date="-1y", end_date="-30d", tzinfo=UTC
     )
     last_login = Faker(
-        "date_time_between", start_date="-30d", end_date="now", tzinfo=tz.utc
+        "date_time_between", start_date="-30d", end_date="now", tzinfo=UTC
     )
 
 
@@ -66,7 +65,7 @@ def _create_date(mode: Literal["past", "current", "future"]):
         date = date - timedelta(days=random.randint(1, 5000))
     elif mode == "future":
         date = date + timedelta(days=random.randint(1, 5000))
-    return datetime.combine(date, time(), tzinfo=tz.utc)
+    return datetime.combine(date, time(), tzinfo=UTC)
 
 
 class DailyArticleFactory(_ArticleFactory):
@@ -99,7 +98,7 @@ class CustomArticleFactory(_ArticleFactory):
 
     public_id = factory.LazyFunction(generate_public_id)
     safety = Faker("random_element", elements=Safety.values)
-    created_at = Faker("date_time_between", start_date="-1y", tzinfo=tz.utc)
+    created_at = Faker("date_time_between", start_date="-1y", tzinfo=UTC)
     created_by = factory.SubFactory(UserFactory)
 
 

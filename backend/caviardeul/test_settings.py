@@ -1,4 +1,4 @@
-from caviardeul.settings import *  # noqa: F403, F401
+from caviardeul.settings import *
 
 DEBUG = True
 CSRF_COOKIE_SECURE = False

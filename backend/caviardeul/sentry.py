@@ -11,8 +11,10 @@ else:
     else:
         sentry_environment = os.environ.get("SENTRY_ENVIRONMENT", "dev")
         sentry_release = os.environ.get("SENTRY_RELEASE", None)
-        traces_sample_rate = float(os.environ.get("SENTRY_TRACES_SAMPLE_RATE", 1.0))
-        profiles_sample_rate = float(os.environ.get("SENTRY_PROFILES_SAMPLE_RATE", 1.0))
+        traces_sample_rate = float(os.environ.get("SENTRY_TRACES_SAMPLE_RATE", "1.0"))
+        profiles_sample_rate = float(
+            os.environ.get("SENTRY_PROFILES_SAMPLE_RATE", "1.0")
+        )
         sentry_sdk.init(
             dsn=sentry_dsn,
             environment=sentry_environment,

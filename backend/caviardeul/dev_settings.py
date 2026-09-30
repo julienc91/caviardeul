@@ -1,3 +1,3 @@
-from caviardeul.settings import *  # noqa F403
+from caviardeul.settings import *
 
 DEBUG = True

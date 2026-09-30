@@ -13,7 +13,7 @@ class CustomArticleSchema(BaseEncryptedArticleSchema):
     custom: Literal[True] = True
     pageName: str = Field(alias="page_name")
     content: str
-    userScore: Literal[None] = None
+    userScore: None = None
 
 
 class CustomArticleCreateSchema(Schema):
