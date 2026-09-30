@@ -53,14 +53,14 @@ async def create_custom_article(
     article, _ = await CustomArticle.objects.aget_or_create(
         page_id=payload.page_id,
         created_by=request.auth,
-        defaults=dict(
-            public_id=public_id,
-            page_name=page_title,
-            nb_winners=0,
-            median=0,
-            stats={},
-            safety=Safety.UNKNOWN,
-        ),
+        defaults={
+            "public_id": public_id,
+            "page_name": page_title,
+            "nb_winners": 0,
+            "median": 0,
+            "stats": {},
+            "safety": Safety.UNKNOWN,
+        },
     )
 
     article.content = await get_article_content(article)

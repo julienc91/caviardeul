@@ -2,7 +2,7 @@
 name = "caviardeul"
 version = "2.0.0"
 description = ""
-authors = ["julien <git@julienc.io>"]
+authors = [{ name = "julien", email = "git@julienc.io" }]
 license = "MIT"
 requires-python = ">=3.14"
 
@@ -72,6 +72,9 @@ SMTP_PORT = 465
 EMAIL_FROM = "test@example.com"
 
 [tool.ruff.lint]
-# ruff 0.16 greatly expanded its default rule set: keep the pre-0.16 defaults
-# (plus isort) until the codebase is migrated to the new ones
-select = ["E4", "E7", "E9", "F", "I"]
+# Django's declarative class attributes (Meta, admin options, migrations) are
+# lists by convention, not shared mutable state
+ignore = ["RUF012"]
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["ninja.Query"]

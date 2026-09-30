@@ -20,7 +20,7 @@ class CustomArticleSchema(BaseModel):
     safety: Literal[*Safety.values]
     archive: Literal[False]
     custom: Literal[True]
-    userScore: Literal[None]
+    userScore: None
 
 
 def validate_serialization(data: dict, custom_article: CustomArticle) -> bool:

@@ -182,9 +182,16 @@ ADMINS = [
     if item
 ]
 EMAIL_HOST = os.environ["SMTP_HOSTNAME"]
-EMAIL_PORT = int(os.environ.get("SMTP_PORT", 465))
-EMAIL_USE_SSL = os.environ.get("SMTP_USE_SSL", EMAIL_PORT == 465)
-EMAIL_USE_TLS = os.environ.get("SMTP_USE_TLS", EMAIL_PORT == 587)
+EMAIL_PORT = int(os.environ.get("SMTP_PORT", "465"))
+
+
+# env vars are strings: "false" would otherwise be truthy
+def _env_flag(name: str, default: bool) -> bool:
+    return os.environ.get(name, str(default)).lower() in ("1", "true", "yes")
+
+
+EMAIL_USE_SSL = _env_flag("SMTP_USE_SSL", default=EMAIL_PORT == 465)
+EMAIL_USE_TLS = _env_flag("SMTP_USE_TLS", default=EMAIL_PORT == 587)
 EMAIL_HOST_PASSWORD = os.environ["SMTP_PASSWORD"]
 EMAIL_HOST_USER = os.environ["SMTP_LOGIN"]
 DEFAULT_FROM_EMAIL = os.environ["EMAIL_FROM"]

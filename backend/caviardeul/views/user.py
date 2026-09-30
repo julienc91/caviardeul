@@ -21,7 +21,6 @@ async def get_current_user(request: HttpRequest):
 @api.delete("/users/me", auth=api_authentication, response={204: None})
 async def delete_current_user(request: HttpRequest):
     await request.auth.adelete()
-    return None
 
 
 @api.post("/login", auth=optional_api_authentication, response={204: None})

@@ -26,11 +26,13 @@ class Command(BaseCommand):
             key = page_id.lower()
             if key in current_page_ids or page_name.lower() in current_page_names:
                 duplicates.append(page_id)
-            elif " " in page_id or "_" in page_name:
-                invalid.append(page_id)
             elif (
-                page_id.replace("_", " ") != page_name
-                and page_id not in name_mismatches
+                " " in page_id
+                or "_" in page_name
+                or (
+                    page_id.replace("_", " ") != page_name
+                    and page_id not in name_mismatches
+                )
             ):
                 invalid.append(page_id)
             else:
