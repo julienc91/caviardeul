@@ -12,6 +12,7 @@ repos:
     hooks:
       - id: check-toml
       - id: check-yaml
+        args: [--unsafe] # allow custom tags such as compose's !reset
       - id: check-json
         exclude: ^frontend/tsconfig\.json$
       - id: end-of-file-fixer
