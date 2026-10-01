@@ -71,7 +71,7 @@ services:
     command: taskiq scheduler worker:scheduler
 
   nginx:
-    image: nginx:stable-alpine
+    image: nginx:stable-alpine-slim
     env_file:
       - nginx/.env
     volumes:
