@@ -41,11 +41,11 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: 24
-          cache: yarn
-          cache-dependency-path: frontend/yarn.lock
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
       - name: Install dependencies
         working-directory: ./frontend/
-        run: yarn install --frozen-lockfile
+        run: npm ci
       - name: Tests
         working-directory: ./frontend/
-        run: yarn test
+        run: npm test

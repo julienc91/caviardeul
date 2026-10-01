@@ -31,7 +31,7 @@ def frontend_server(live_server):
     env = os.environ.copy()
     env["BACKEND_URL"] = live_server.url
     proc = subprocess.Popen(
-        ["yarn", "start"],
+        ["npm", "start"],
         cwd=Path(settings.BASE_DIR) / ".." / "frontend",
         env=env,
         stdout=subprocess.PIPE,

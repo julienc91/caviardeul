@@ -93,7 +93,7 @@ updates:
           - "patch"
 
   # ---------------------------------------------------------------------------
-  # Frontend npm packages (frontend/package.json + frontend/yarn.lock)
+  # Frontend npm packages (frontend/package.json + frontend/package-lock.json)
   # ---------------------------------------------------------------------------
   - package-ecosystem: "npm"
     directory: "/frontend"
