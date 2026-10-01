@@ -31,7 +31,7 @@ repos:
         name: eslint
         verbose: true
         language: system
-        entry: yarn --cwd frontend run eslint
+        entry: npm --prefix frontend run eslint
         pass_filenames: false
         files: .*\.tsx?$
 
@@ -41,7 +41,7 @@ repos:
         name: tsc
         verbose: true
         language: system
-        entry: yarn --cwd frontend/ run tsc --project tsconfig.json
+        entry: npm --prefix frontend run typecheck
         files: \.tsx?$
         pass_filenames: false
         stages: [pre-commit, pre-push]

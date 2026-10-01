@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "eslint": "eslint . --fix",
+    "typecheck": "tsc --project tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
@@ -37,7 +38,7 @@
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "^5.1.4",
-    "@vitest/coverage-v8": "4.1.2",
+    "@vitest/coverage-v8": "^4.1.11",
     "eslint": "^9.9.1",
     "eslint-config-next": "16.3.6",
     "eslint-config-prettier": "^10.0.0",
