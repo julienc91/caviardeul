@@ -90,6 +90,8 @@ services:
 
   postgres:
     image: postgres:18-alpine
+    pull_policy: always
+    user: postgres
     env_file:
       - postgres/.env
     networks:
@@ -109,6 +111,7 @@ services:
 
   redis:
     image: redis:8-alpine
+    pull_policy: always
     env_file:
       - redis/.env
     networks:
