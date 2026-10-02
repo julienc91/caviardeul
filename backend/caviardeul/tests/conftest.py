@@ -2,6 +2,7 @@ import contextlib
 import os
 from dataclasses import replace
 from pathlib import Path
+from typing import Literal, NamedTuple
 from unittest.mock import Mock, patch
 
 import httpx
@@ -9,6 +10,8 @@ import pytest
 import pytest_socket
 from django.core.cache import cache
 from django.db import connections
+
+from caviardeul.services import metrics
 
 
 @pytest.hookimpl(trylast=True)
@@ -173,3 +176,34 @@ def fix_async_db(request):
             yield
     finally:
         object.__setattr__(main_thread_local, "_lock_storage", main_thread_storage)
+
+
+class Metric(NamedTuple):
+    type: Literal["count", "distribution"]
+    name: str
+    value: float
+    unit: str | None
+    attributes: dict[str, str] | None
+
+
+class CapturedMetrics(list[Metric]):
+    def named(self, name: str) -> list[Metric]:
+        return [m for m in self if m.name == name]
+
+    def without_requests(self) -> list[Metric]:
+        return [m for m in self if m.name != "http.request.duration"]
+
+
+@pytest.fixture()
+def captured_metrics(monkeypatch):
+    captured = CapturedMetrics()
+
+    def count(name, value=1, *, attributes=None):
+        captured.append(Metric("count", name, value, None, attributes))
+
+    def distribution(name, value, *, unit=None, attributes=None):
+        captured.append(Metric("distribution", name, value, unit, attributes))
+
+    monkeypatch.setattr(metrics, "count", count)
+    monkeypatch.setattr(metrics, "distribution", distribution)
+    return captured

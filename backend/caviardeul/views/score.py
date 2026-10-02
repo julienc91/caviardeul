@@ -1,4 +1,5 @@
 from datetime import timedelta
+from typing import Literal
 
 from asgiref.sync import async_to_sync, sync_to_async
 from django.db import transaction
@@ -8,6 +9,7 @@ from ninja.errors import HttpError
 
 from caviardeul.models import CustomArticle, DailyArticle, DailyArticleScore
 from caviardeul.serializers.score import ArticleScoreCreateSchema
+from caviardeul.services import metrics
 from caviardeul.services.authentication import optional_api_authentication
 from caviardeul.services.user import create_user_for_request
 
@@ -34,8 +36,9 @@ def post_article_score(
     except CustomArticle.DoesNotExist, DailyArticle.DoesNotExist:
         raise HttpError(400, "L'article n'a pas été trouvé")
 
-    if not request.auth.is_authenticated:
-        async_to_sync(create_user_for_request)(request, response)
+    is_new_user = not request.auth.is_authenticated
+    if is_new_user:
+        async_to_sync(create_user_for_request)(request, "score", response)
 
     nb_attempts = payload.nb_attempts
     nb_correct = payload.nb_correct
@@ -49,8 +52,10 @@ def post_article_score(
 
     if payload.custom:
         article.save(update_fields=["stats", "median", "nb_winners"])
+        _record_score_metrics("custom", is_new_user, nb_attempts)
     else:
-        if now - article.date < timedelta(days=1):
+        is_daily = now - article.date < timedelta(days=1)
+        if is_daily:
             article.nb_daily_winners += 1
 
         _, created = DailyArticleScore.objects.get_or_create(
@@ -62,3 +67,27 @@ def post_article_score(
             article.save(
                 update_fields=["stats", "median", "nb_winners", "nb_daily_winners"]
             )
+            _record_score_metrics(
+                "daily" if is_daily else "archive", is_new_user, nb_attempts
+            )
+
+
+def _record_score_metrics(
+    article_type: Literal["daily", "archive", "custom"],
+    is_new_user: bool,
+    nb_attempts: int,
+):
+    def record():
+        metrics.count(
+            "score.submitted",
+            attributes={
+                "type": article_type,
+                "user": "new" if is_new_user else "existing",
+            },
+        )
+        metrics.distribution(
+            "score.attempts", nb_attempts, attributes={"type": article_type}
+        )
+
+    # Don't count scores whose transaction ends up rolled back
+    transaction.on_commit(record)

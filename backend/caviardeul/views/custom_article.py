@@ -9,6 +9,7 @@ from caviardeul.serializers.custom_article import (
     CustomArticleCreateSchema,
     CustomArticleSchema,
 )
+from caviardeul.services import metrics
 from caviardeul.services.articles import (
     get_article_content,
     get_article_html_from_wikipedia,
@@ -46,11 +47,12 @@ async def create_custom_article(
     except ArticleFetchError:
         raise HttpError(400, "L'article n'a pas été trouvé")
 
-    if not request.auth.is_authenticated:
-        await create_user_for_request(request, response)
+    is_new_user = not request.auth.is_authenticated
+    if is_new_user:
+        await create_user_for_request(request, "custom_article", response)
 
     public_id = generate_public_id()
-    article, _ = await CustomArticle.objects.aget_or_create(
+    article, created = await CustomArticle.objects.aget_or_create(
         page_id=payload.page_id,
         created_by=request.auth,
         defaults={
@@ -62,6 +64,11 @@ async def create_custom_article(
             "safety": Safety.UNKNOWN,
         },
     )
+    if created:
+        metrics.count(
+            "custom_article.created",
+            attributes={"user": "new" if is_new_user else "existing"},
+        )
 
     article.content = await get_article_content(article)
     return article

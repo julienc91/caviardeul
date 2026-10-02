@@ -21,4 +21,5 @@ else:
             release=sentry_release,
             traces_sample_rate=traces_sample_rate,
             profiles_sample_rate=profiles_sample_rate,
+            enable_logs=True,
         )
