@@ -8,7 +8,7 @@ requires-python = ">=3.14"
 
 dependencies = [
     "django~=6.0.1",
-    "gunicorn~=25.0",
+    "gunicorn>=25,<27",
     "uvicorn>=0.42,<0.54",
     "psycopg[binary]~=3.3.2",
     "django-ninja>=1.7,<1.8",
