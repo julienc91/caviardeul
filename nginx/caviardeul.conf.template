@@ -1,11 +1,13 @@
-# Resolve container names at request time through Docker's embedded DNS, so
-# that nginx follows backend/frontend containers when they get recreated.
-resolver 127.0.0.11 valid=10s ipv6=off;
+resolver 127.0.0.11 valid=1s ipv6=off;
 
 server {
     listen 3000;
     listen [::]:3000;
     server_name ${SERVER_NAME};
+
+    proxy_connect_timeout 2s;
+    proxy_next_upstream error timeout;
+    proxy_next_upstream_tries 2;
 
     set $backend http://backend:5000;
     set $frontend http://frontend:3000;
