@@ -56,10 +56,10 @@ async def check_upcoming_daily_article() -> None:
     try:
         _ = await get_article_html_from_wikipedia(next_article.page_id)
     except ArticleFetchError:
-        logger.exception("Error when retrieving upcoming article", exc_info=True)
+        logger.exception("Error when retrieving upcoming article %s", next_article.id)
     else:
         await set_article_last_checked_at(next_article)
-        logger.info("Upcoming article fetched successfully")
+        logger.info("Upcoming article %s fetched successfully", next_article.id)
 
 
 @_scheduled_task("check-random-daily-article", timedelta(hours=6))
@@ -74,7 +74,7 @@ async def check_random_daily_article() -> None:
     try:
         _ = await get_article_html_from_wikipedia(article.page_id)
     except ArticleFetchError:
-        logger.exception(f"Error when retrieving article {article.id}", exc_info=True)
+        logger.exception("Error when retrieving article %s", article.id)
     else:
         await set_article_last_checked_at(article)
-        logger.info(f"Article {article.id} fetched successfully")
+        logger.info("Article %s fetched successfully", article.id)
