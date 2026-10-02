@@ -182,8 +182,7 @@ ADMINS = [
     for item in os.environ.get("EMAIL_ADMIN_TO", "").split(";")
     if item
 ]
-EMAIL_HOST = os.environ["SMTP_HOSTNAME"]
-EMAIL_PORT = int(os.environ.get("SMTP_PORT", "465"))
+_smtp_port = int(os.environ.get("SMTP_PORT", "465"))
 
 
 # env vars are strings: "false" would otherwise be truthy
@@ -191,9 +190,18 @@ def _env_flag(name: str, default: bool) -> bool:
     return os.environ.get(name, str(default)).lower() in ("1", "true", "yes")
 
 
-EMAIL_USE_SSL = _env_flag("SMTP_USE_SSL", default=EMAIL_PORT == 465)
-EMAIL_USE_TLS = _env_flag("SMTP_USE_TLS", default=EMAIL_PORT == 587)
-EMAIL_HOST_PASSWORD = os.environ["SMTP_PASSWORD"]
-EMAIL_HOST_USER = os.environ["SMTP_LOGIN"]
+MAILERS = {
+    "default": {
+        "BACKEND": "django.core.mail.backends.smtp.EmailBackend",
+        "OPTIONS": {
+            "host": os.environ["SMTP_HOSTNAME"],
+            "port": _smtp_port,
+            "username": os.environ["SMTP_LOGIN"],
+            "password": os.environ["SMTP_PASSWORD"],
+            "use_ssl": _env_flag("SMTP_USE_SSL", default=_smtp_port == 465),
+            "use_tls": _env_flag("SMTP_USE_TLS", default=_smtp_port == 587),
+        },
+    },
+}
 DEFAULT_FROM_EMAIL = os.environ["EMAIL_FROM"]
 SERVER_EMAIL = os.environ["EMAIL_FROM"]
