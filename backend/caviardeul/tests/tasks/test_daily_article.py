@@ -28,7 +28,10 @@ class TestCheckUpcomingDailyArticle:
         )
 
         await check_upcoming_daily_article.kiq()
-        assert "INFO Upcoming article fetched successfully" in caplog.text, caplog.text
+        assert (
+            f"INFO Upcoming article {expected_article.id} fetched successfully"
+            in caplog.text
+        ), caplog.text
 
     async def test_check_upcoming_article_error(self, mock_wiki_api_error, caplog):
         await DailyArticleFactory.acreate(trait_past=True)
@@ -38,9 +41,10 @@ class TestCheckUpcomingDailyArticle:
         mock_wiki_api_error(expected_article.page_id)
 
         await check_upcoming_daily_article.kiq()
-        assert "ERROR Error when retrieving upcoming article" in caplog.text, (
-            caplog.text
-        )
+        assert (
+            f"ERROR Error when retrieving upcoming article {expected_article.id}"
+            in caplog.text
+        ), caplog.text
 
     async def test_check_upcoming_article_redirect(
         self, mock_wiki_api_redirect, caplog
@@ -52,9 +56,10 @@ class TestCheckUpcomingDailyArticle:
         mock_wiki_api_redirect(expected_article.page_id, expected_article.page_name)
 
         await check_upcoming_daily_article.kiq()
-        assert "ERROR Error when retrieving upcoming article" in caplog.text, (
-            caplog.text
-        )
+        assert (
+            f"ERROR Error when retrieving upcoming article {expected_article.id}"
+            in caplog.text
+        ), caplog.text
 
 
 class TestCheckRandomDailyArticle:
