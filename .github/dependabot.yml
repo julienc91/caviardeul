@@ -112,6 +112,10 @@ updates:
       include: "scope"
     versioning-strategy: "increase"
     groups:
+      vitest:
+        patterns:
+          - "vitest"
+          - "@vitest/*"
       runtime-deps:
         dependency-type: "production"
         update-types:
