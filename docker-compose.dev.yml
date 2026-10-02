@@ -21,6 +21,16 @@ services:
       context: backend
       target: prod
 
+  pre_deploy:
+    extends:
+      file: docker-compose.yml
+      service: pre_deploy
+    image: !reset null
+    pull_policy: !reset null
+    build:
+      context: backend
+      target: prod
+
   worker:
     extends:
       file: docker-compose.yml

@@ -28,6 +28,8 @@ services:
     volumes:
       - staticdata:/app/static
     depends_on:
+      pre_deploy:
+        condition: service_completed_successfully
       postgres:
         condition: service_healthy
       redis:
@@ -49,6 +51,22 @@ services:
       start_period: 2m
       start_interval: 2s
     restart: always
+    stop_grace_period: 25s
+
+  pre_deploy:
+    image: ghcr.io/julienc91/caviardeul-backend:latest
+    pull_policy: always
+    env_file:
+      - backend/.env
+    volumes:
+      - staticdata:/app/static
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - db_network
+    restart: "no"
+    command: ./pre_deploy.sh
 
   worker:
     image: ghcr.io/julienc91/caviardeul-backend:latest

@@ -21,6 +21,16 @@ services:
       - ./backend/:/app/
     command: python manage.py runserver 0.0.0.0:5000
 
+  pre_deploy:
+    extends:
+      file: docker-compose.dev.yml
+      service: pre_deploy
+    build:
+      context: backend
+      target: dev
+    volumes:
+      - ./backend/:/app/
+
   worker:
     extends:
       file: docker-compose.dev.yml
