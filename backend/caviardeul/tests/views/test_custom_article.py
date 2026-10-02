@@ -66,18 +66,26 @@ class TestGetCustomArticle:
 @pytest.mark.httpx_mock(can_send_already_matched_responses=True)
 class TestCreateCustomArticle:
     @pytest.mark.parametrize("authenticated", [True, False])
-    def test_create_custom_article(self, mock_wiki_api, client, authenticated):
+    def test_create_custom_article(
+        self,
+        mock_wiki_api,
+        client,
+        authenticated,
+        captured_metrics,
+        django_capture_on_commit_callbacks,
+    ):
         mock_wiki_api("my_article", "My article", "article content")
 
         user = UserFactory()
         if authenticated:
             client.cookies.load({"userId": str(user.id)})
 
-        res = client.post(
-            "/articles/custom",
-            json.dumps({"pageId": "my_article"}),
-            content_type="application/json",
-        )
+        with django_capture_on_commit_callbacks(execute=True):
+            res = client.post(
+                "/articles/custom",
+                json.dumps({"pageId": "my_article"}),
+                content_type="application/json",
+            )
         assert res.status_code == 201, res.content
 
         article = CustomArticle.objects.get()
@@ -94,6 +102,19 @@ class TestCreateCustomArticle:
         data = res.json()
         validate_serialization(data, article)
 
+        user_type = "existing" if authenticated else "new"
+        assert (
+            "count",
+            "custom_article.created",
+            1,
+            None,
+            {"user": user_type},
+        ) in captured_metrics
+        assert (
+            ("count", "user.created", 1, None, {"source": "custom_article"})
+            in captured_metrics
+        ) == (not authenticated)
+
     def test_create_invalid_article(self, mock_wiki_api_error, client):
         mock_wiki_api_error("my_article")
 
@@ -105,7 +126,9 @@ class TestCreateCustomArticle:
         assert res.status_code == 400, res.content
 
     @pytest.mark.parametrize("same_user", [True, False])
-    def test_create_existing_custom_article(self, mock_wiki_api, client, same_user):
+    def test_create_existing_custom_article(
+        self, mock_wiki_api, client, same_user, captured_metrics
+    ):
         user, other_user = UserFactory.create_batch(2)
         client.cookies.load({"userId": str(user.id)})
         custom_article = CustomArticleFactory(
@@ -132,3 +155,6 @@ class TestCreateCustomArticle:
                 data["articleId"]
                 == CustomArticle.objects.get(created_by=user).public_id
             )
+
+        created_metrics = captured_metrics.named("custom_article.created")
+        assert len(created_metrics) == (0 if same_user else 1)

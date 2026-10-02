@@ -16,7 +16,7 @@ pytestmark = pytest.mark.django_db
 
 async def test_create_user_for_request():
     request = RequestFactory().get("/")
-    user = await create_user_for_request(request)
+    user = await create_user_for_request(request, "score")
 
     assert str(user.id) == user.username
     assert user.date_joined is not None

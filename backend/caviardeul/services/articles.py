@@ -1,4 +1,6 @@
+import time
 from datetime import timedelta
+from typing import Literal
 
 import httpx
 from django.core.cache import cache
@@ -7,6 +9,7 @@ from django.utils import timezone
 from caviardeul.exceptions import ArticleFetchError
 from caviardeul.models import DailyArticle
 from caviardeul.models.article import Article
+from caviardeul.services import metrics
 from caviardeul.services.encryption import encrypt_data, generate_encryption_key
 from caviardeul.services.logging import logger
 from caviardeul.services.parsing import strip_html_article
@@ -14,6 +17,9 @@ from caviardeul.services.parsing import strip_html_article
 
 async def get_article_content(article: Article) -> str:
     content = await _get_article_content_from_cache(article.page_id)
+    metrics.count(
+        "article.cache", attributes={"result": "miss" if content is None else "hit"}
+    )
     if content is not None:
         logger.debug("retrieved article from cache", extra={"page_id": article.page_id})
         return content
@@ -54,6 +60,24 @@ async def _set_article_to_cache(page_id: str, content: str) -> None:
 
 
 async def get_article_html_from_wikipedia(page_id: str) -> tuple[str, str]:
+    start = time.monotonic()
+    status: Literal["success", "error"] = "error"
+    try:
+        result = await _fetch_article_html_from_wikipedia(page_id)
+        status = "success"
+        return result
+    finally:
+        attributes = {"status": status}
+        metrics.count("wikipedia.fetch", attributes=attributes)
+        metrics.distribution(
+            "wikipedia.fetch.duration",
+            (time.monotonic() - start) * 1000,
+            unit="millisecond",
+            attributes=attributes,
+        )
+
+
+async def _fetch_article_html_from_wikipedia(page_id: str) -> tuple[str, str]:
     async with httpx.AsyncClient() as client:
         response = await client.get(
             "https://fr.wikipedia.org/w/api.php",

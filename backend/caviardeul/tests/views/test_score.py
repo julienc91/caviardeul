@@ -15,7 +15,9 @@ pytestmark = pytest.mark.django_db
 
 class TestPostArticleScore:
     @pytest.mark.parametrize("is_first_win", [True, False])
-    def test_post_custom_article_score(self, client, is_first_win):
+    def test_post_custom_article_score(
+        self, client, is_first_win, captured_metrics, django_capture_on_commit_callbacks
+    ):
         article = CustomArticleFactory(
             nb_winners=0 if is_first_win else 10,
             stats={} if is_first_win else {"distribution": {"1": 3, "5": 7}},
@@ -29,9 +31,10 @@ class TestPostArticleScore:
             "articleId": article.public_id,
             "custom": True,
         }
-        res = client.post(
-            "/scores", json.dumps(payload), content_type="application/json"
-        )
+        with django_capture_on_commit_callbacks(execute=True):
+            res = client.post(
+                "/scores", json.dumps(payload), content_type="application/json"
+            )
         assert res.status_code == 204, res.content
 
         article.refresh_from_db()
@@ -45,11 +48,23 @@ class TestPostArticleScore:
             expected_stats["distribution"]["7"] = 1
         assert article.stats == expected_stats
 
+        assert captured_metrics.without_requests() == [
+            ("count", "user.created", 1, None, {"source": "score"}),
+            ("count", "score.submitted", 1, None, {"type": "custom", "user": "new"}),
+            ("distribution", "score.attempts", 72, None, {"type": "custom"}),
+        ]
+
     @pytest.mark.parametrize("authenticated", [True, False])
     @pytest.mark.parametrize("is_first_win", [True, False])
     @pytest.mark.parametrize("is_current", [True, False])
     def test_post_daily_article_score(
-        self, client, authenticated, is_first_win, is_current
+        self,
+        client,
+        authenticated,
+        is_first_win,
+        is_current,
+        captured_metrics,
+        django_capture_on_commit_callbacks,
     ):
         user = UserFactory()
         if authenticated:
@@ -71,9 +86,10 @@ class TestPostArticleScore:
             "articleId": article.id,
             "custom": False,
         }
-        res = client.post(
-            "/scores", json.dumps(payload), content_type="application/json"
-        )
+        with django_capture_on_commit_callbacks(execute=True):
+            res = client.post(
+                "/scores", json.dumps(payload), content_type="application/json"
+            )
         assert res.status_code == 204, res.content
 
         score = DailyArticleScore.objects.get()
@@ -101,7 +117,27 @@ class TestPostArticleScore:
             expected_stats["distribution"]["7"] = 1
         assert article.stats == expected_stats
 
-    def test_post_already_saved_score(self, client):
+        article_type = "daily" if is_current else "archive"
+        user_type = "existing" if authenticated else "new"
+        expected_metrics = [
+            (
+                "count",
+                "score.submitted",
+                1,
+                None,
+                {"type": article_type, "user": user_type},
+            ),
+            ("distribution", "score.attempts", 72, None, {"type": article_type}),
+        ]
+        if not authenticated:
+            expected_metrics.insert(
+                0, ("count", "user.created", 1, None, {"source": "score"})
+            )
+        assert captured_metrics.without_requests() == expected_metrics
+
+    def test_post_already_saved_score(
+        self, client, captured_metrics, django_capture_on_commit_callbacks
+    ):
         user = UserFactory()
         client.cookies.load({"userId": str(user.id)})
 
@@ -118,9 +154,10 @@ class TestPostArticleScore:
             "articleId": article.id,
             "custom": False,
         }
-        res = client.post(
-            "/scores", json.dumps(payload), content_type="application/json"
-        )
+        with django_capture_on_commit_callbacks(execute=True):
+            res = client.post(
+                "/scores", json.dumps(payload), content_type="application/json"
+            )
         assert res.status_code == 204, res.content
 
         article.refresh_from_db()
@@ -132,6 +169,8 @@ class TestPostArticleScore:
         score_ = DailyArticleScore.objects.get()
         assert score_.id == score.id
         assert score_.created_at == score.created_at
+
+        assert captured_metrics.without_requests() == []
 
     def test_post_score_on_future_article(self, client):
         article = DailyArticleFactory(trait_future=True)

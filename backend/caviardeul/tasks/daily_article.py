@@ -1,5 +1,7 @@
+import functools
 from datetime import timedelta
 
+import sentry_sdk
 from django.db.models import F, OrderBy
 from django.utils import timezone
 
@@ -13,7 +15,34 @@ from caviardeul.services.articles import (
 from caviardeul.services.logging import logger
 
 
-@broker.task(schedule=[{"interval": timedelta(hours=8)}])
+def _scheduled_task(monitor_slug: str, interval: timedelta):
+    # Also upserts a Sentry cron monitor, alerting when the task stops running
+    monitor_config = {
+        "schedule": {
+            "type": "interval",
+            "value": int(interval.total_seconds() // 60),
+            "unit": "minute",
+        },
+        "checkin_margin": 30,
+        "max_runtime": 10,
+    }
+
+    def decorator(func):
+        @functools.wraps(func)
+        async def wrapper(*args, **kwargs):
+            # A new monitor per run: it stores the check-in id on itself, so
+            # sharing one between overlapping runs would mix up their check-ins
+            with sentry_sdk.monitor(
+                monitor_slug=monitor_slug, monitor_config=monitor_config
+            ):
+                return await func(*args, **kwargs)
+
+        return broker.task(schedule=[{"interval": interval}])(wrapper)
+
+    return decorator
+
+
+@_scheduled_task("check-upcoming-daily-article", timedelta(hours=8))
 async def check_upcoming_daily_article() -> None:
     now = timezone.now()
     next_article = (
@@ -33,7 +62,7 @@ async def check_upcoming_daily_article() -> None:
         logger.info("Upcoming article fetched successfully")
 
 
-@broker.task(schedule=[{"interval": timedelta(hours=6)}])
+@_scheduled_task("check-random-daily-article", timedelta(hours=6))
 async def check_random_daily_article() -> None:
     article = await DailyArticle.objects.order_by(
         OrderBy(F("last_checked_at"), nulls_first=True)

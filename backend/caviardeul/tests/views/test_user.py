@@ -28,7 +28,7 @@ class TestGetCurrentUser:
 
 class TestDeleteCurrentUser:
     @pytest.mark.parametrize("authenticated", [True, False])
-    def test_delete_current_user(self, client, authenticated):
+    def test_delete_current_user(self, client, authenticated, captured_metrics):
         user = UserFactory()
         if authenticated:
             client.cookies.load({"userId": str(user.id)})
@@ -40,12 +40,15 @@ class TestDeleteCurrentUser:
             assert res.status_code == 204, res.content
 
         assert User.objects.filter(id=user.id).exists() == (not authenticated)
+        assert captured_metrics.without_requests() == (
+            [("count", "user.deleted", 1, None, None)] if authenticated else []
+        )
 
 
 class TestLogin:
     @pytest.mark.parametrize("authenticated", [True, False])
     @pytest.mark.parametrize("target", [None, "user", "other_user"])
-    def test_login(self, monkeypatch, client, authenticated, target):
+    def test_login(self, monkeypatch, client, authenticated, target, captured_metrics):
         monkeypatch.setattr(
             "caviardeul.views.user.merge_users", mock_merge_users := AsyncMock()
         )
@@ -67,6 +70,18 @@ class TestLogin:
             mock_merge_users.assert_called_once_with(user, other_user)
         else:
             mock_merge_users.assert_not_called()
+
+        if target == "other_user" and authenticated:
+            expected_result = "merged"
+        elif target and not authenticated:
+            expected_result = "switched"
+        else:
+            expected_result = None
+        assert captured_metrics.without_requests() == (
+            [("count", "user.login", 1, None, {"result": expected_result})]
+            if expected_result
+            else []
+        )
 
         if target == "other_user":
             assert client.cookies["userId"].value == str(other_user.id)

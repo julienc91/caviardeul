@@ -1,4 +1,5 @@
 import uuid
+from typing import Literal
 
 from asgiref.sync import sync_to_async
 from django.conf import settings as django_settings
@@ -7,9 +8,12 @@ from django.http import HttpResponse
 from django.utils import timezone
 
 from caviardeul.models import CustomArticle, DailyArticleScore, User
+from caviardeul.services import metrics
 
 
-async def create_user_for_request(request, response=None):
+async def create_user_for_request(
+    request, source: Literal["score", "custom_article"], response=None
+):
     now = timezone.now()
     user_id = uuid.uuid4()
     user = await User.objects.acreate(
@@ -17,6 +21,11 @@ async def create_user_for_request(request, response=None):
         username=str(user_id),
         date_joined=now,
         last_login=now,
+    )
+    # May run inside a transaction (e.g. when posting a score): only count
+    # the user once it is actually persisted
+    await sync_to_async(transaction.on_commit)(
+        lambda: metrics.count("user.created", attributes={"source": source})
     )
     request.auth = user
     if response:
