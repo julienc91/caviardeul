@@ -181,7 +181,7 @@ requires-dist = [
     { name = "psycopg", extras = ["binary"], specifier = "~=3.3.2" },
     { name = "pydantic", specifier = ">=2.12.4,<2.14.0" },
     { name = "redis", specifier = ">=7.4,<8.2" },
-    { name = "sentry-sdk", extras = ["django"], specifier = "~=2.57.0" },
+    { name = "sentry-sdk", extras = ["django"], specifier = ">=2.57,<2.71" },
     { name = "taskiq", specifier = ">=0.12.0" },
     { name = "taskiq-redis", specifier = ">=1.2.1" },
     { name = "uvicorn", specifier = ">=0.42,<0.54" },
@@ -1075,15 +1075,15 @@ wheels = [
 
 [[package]]
 name = "sentry-sdk"
-version = "2.57.0"
+version = "2.70.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "certifi" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/4f/87/46c0406d8b5ddd026f73adaf5ab75ce144219c41a4830b52df4b9ab55f7f/sentry_sdk-2.57.0.tar.gz", hash = "sha256:4be8d1e71c32fb27f79c577a337ac8912137bba4bcbc64a4ec1da4d6d8dc5199", size = 435288, upload-time = "2026-03-31T09:39:29.264Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/52/0a/e37553f3106d0f7f0d4b8ad2c7b92410d131929786ffd116833d3b8164df/sentry_sdk-2.70.0.tar.gz", hash = "sha256:27e4b512f47be93136645dbe8f02d430473ee73a389ce430b2b7104baa66cf75", size = 1047234, upload-time = "2026-09-22T09:40:11.721Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c9/64/982e07b93219cb52e1cca5d272cb579e2f3eb001956c9e7a9a6d106c9473/sentry_sdk-2.57.0-py2.py3-none-any.whl", hash = "sha256:812c8bf5ff3d2f0e89c82f5ce80ab3a6423e102729c4706af7413fd1eb480585", size = 456489, upload-time = "2026-03-31T09:39:27.524Z" },
+    { url = "https://files.pythonhosted.org/packages/eb/ff/b1e56f009bfb9b8023910b533d5ebf4ec5650da49891f2b8c7f3d4815401/sentry_sdk-2.70.0-py3-none-any.whl", hash = "sha256:89600e8bb5fc5239cad5c4434217f453204f2207ad29399ea58947460b37a62e", size = 531752, upload-time = "2026-09-22T09:40:10.063Z" },
 ]
 
 [package.optional-dependencies]
