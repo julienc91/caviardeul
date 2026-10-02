@@ -10,7 +10,7 @@ else:
         print("Sentry integration is disabled")
     else:
         sentry_environment = os.environ.get("SENTRY_ENVIRONMENT", "dev")
-        sentry_release = os.environ.get("SENTRY_RELEASE", None)
+        sentry_release = os.environ.get("VERSION") or None
         traces_sample_rate = float(os.environ.get("SENTRY_TRACES_SAMPLE_RATE", "1.0"))
         profiles_sample_rate = float(
             os.environ.get("SENTRY_PROFILES_SAMPLE_RATE", "1.0")
