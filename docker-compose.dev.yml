@@ -45,6 +45,7 @@ services:
     extends:
       file: docker-compose.yml
       service: postgres
+    pull_policy: !reset null
     ports:
       - "127.0.0.1:5432:5432"
 
@@ -52,6 +53,7 @@ services:
     extends:
       file: docker-compose.yml
       service: redis
+    pull_policy: !reset null
     ports:
       - "127.0.0.1:6379:6379"
 
