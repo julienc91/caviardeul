@@ -9,6 +9,7 @@ from pydantic import Field, computed_field, field_validator, model_validator
 from caviardeul.constants import Safety
 from caviardeul.models import DailyArticle
 from caviardeul.serializers.article import BaseEncryptedArticleSchema
+from caviardeul.services.encryption import encrypt_data, generate_encryption_key
 
 
 class DailyArticleScoreSchema(Schema):
@@ -91,6 +92,8 @@ class DailyArticleListSchema(Schema):
     archive: bool = Field(alias="date")
     custom: Literal[False] = False
     pageName: str | None = Field(alias="page_name")
+    encryptedPageName: str | None = None
+    key: str | None = None
     userScore: DailyArticleScoreSchema | None = Field(alias="user_score", default=None)
     stats: DailyArticleStatsSchema = Field(alias="_self")
 
@@ -103,6 +106,8 @@ class DailyArticleListSchema(Schema):
     @model_validator(mode="after")
     def set_page_name(self):
         if not self.userScore:
+            self.key = generate_encryption_key()
+            self.encryptedPageName = encrypt_data(self.pageName, self.key)
             self.pageName = None
         return self
 

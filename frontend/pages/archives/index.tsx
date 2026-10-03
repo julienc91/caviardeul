@@ -4,6 +4,7 @@ import Link from "next/link";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { FaSortAmountDown, FaSortAmountUp } from "react-icons/fa";
 
+import CaviardedTitle from "@caviardeul/components/archives/caviardedTitle";
 import Loader from "@caviardeul/components/utils/loader";
 import { PageHeader } from "@caviardeul/components/utils/page";
 import { getUserDailyArticleStats } from "@caviardeul/lib/queries";
@@ -129,18 +130,11 @@ const FilterSelection: React.FC<{
   );
 };
 
-const caviardedRadiuses = [
-  "255px 15px 225px 15px/15px 225px 15px 255px",
-  "225px 30px 255px 30px/30px 255px 30px 225px",
-  "200px 30px 255px 20px/20px 215px 30px 250px",
-  "220px 50px 215px 30px/40px 240px 20px 210px",
-  "30px 255px 30px 225px/30px 225px 30px 250px",
-];
-
 const ArticleCard: React.FC<{ articleInfo: ArticleInfo }> = ({
   articleInfo,
 }) => {
-  const { articleId, pageName, userScore, stats } = articleInfo;
+  const { articleId, pageName, encryptedPageName, key, userScore, stats } =
+    articleInfo;
   const isOver = !!userScore;
   const median = stats.median >= 10 ? `${stats.median}` : "Moins de 10";
 
@@ -153,15 +147,14 @@ const ArticleCard: React.FC<{ articleInfo: ArticleInfo }> = ({
       <h3>
         {isOver ? (
           pageName
+        ) : encryptedPageName && key ? (
+          <CaviardedTitle
+            encryptedPageName={encryptedPageName}
+            encryptionKey={key}
+          />
         ) : (
-          <span
-            className="caviarded-title"
-            style={{
-              borderRadius:
-                caviardedRadiuses[articleId % caviardedRadiuses.length],
-            }}
-          >
-            ?
+          <span className="caviarded-title">
+            <span className="caviarded">?</span>
           </span>
         )}
       </h3>

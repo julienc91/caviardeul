@@ -70,7 +70,7 @@ class TestDeviceSync:
             has=page.locator("h3", has_text=completed_article.page_name)
         )
         await expect(completed).to_have_count(1)
-        non_completed = items.filter(has=page.locator("h3", has_text="?"))
+        non_completed = items.filter(has=page.locator("h3 .caviarded-title"))
         await expect(non_completed).to_have_count(len(past_articles) - 1)
 
     async def test_login_as_different_user_merges_and_shows_stats(
@@ -99,5 +99,5 @@ class TestDeviceSync:
             has=page.locator("h3", has_text=completed_article.page_name)
         )
         await expect(completed).to_have_count(1)
-        non_completed = items.filter(has=page.locator("h3", has_text="?"))
+        non_completed = items.filter(has=page.locator("h3 .caviarded-title"))
         await expect(non_completed).to_have_count(len(past_articles) - 1)

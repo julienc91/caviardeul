@@ -74,6 +74,15 @@ $selection: var(--color-selection);
 $danger: var(--color-danger);
 $overlay: var(--color-overlay);
 
+// hand-drawn shapes of the caviarded words
+$caviardedRadiuses: (
+  0: 255px 15px 225px 15px/15px 225px 15px 255px,
+  1: 225px 30px 255px 30px/30px 255px 30px 225px,
+  2: 200px 30px 255px 20px/20px 215px 30px 250px,
+  3: 220px 50px 215px 30px/40px 240px 20px 210px,
+  4: 30px 255px 30px 225px/30px 225px 30px 250px,
+);
+
 $navbarHeight: 60px;
 $guessInputHeight: 65px;
 $historyWidth: 30%;
@@ -611,20 +620,10 @@ main {
       border: solid 1px $text;
       position: relative;
 
-      &:nth-of-type(5n) {
-        border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
-      }
-      &:nth-of-type(5n + 1) {
-        border-radius: 225px 30px 255px 30px/30px 255px 30px 225px;
-      }
-      &:nth-of-type(5n + 2) {
-        border-radius: 200px 30px 255px 20px/20px 215px 30px 250px;
-      }
-      &:nth-of-type(5n + 3) {
-        border-radius: 220px 50px 215px 30px/40px 240px 20px 210px;
-      }
-      &:nth-of-type(5n + 4) {
-        border-radius: 30px 255px 30px 225px/30px 225px 30px 250px;
+      @each $i, $radius in $caviardedRadiuses {
+        &:nth-of-type(5n + #{$i}) {
+          border-radius: $radius;
+        }
       }
 
       // word length indicator
@@ -1141,14 +1140,23 @@ main.page {
     }
 
     .caviarded-title {
-      background-color: $text;
-      border: 1px solid $text;
-      color: transparent;
-      display: inline-block;
       font-family: monospace;
+      font-weight: normal;
       line-height: 1.7rem;
-      min-width: 9ch;
       user-select: none;
+      word-break: break-word;
+
+      .caviarded {
+        background-color: $text;
+        border: 1px solid $text;
+        color: transparent;
+
+        @each $i, $radius in $caviardedRadiuses {
+          &:nth-of-type(5n + #{$i}) {
+            border-radius: $radius;
+          }
+        }
+      }
     }
 
     .archive-item-median {
