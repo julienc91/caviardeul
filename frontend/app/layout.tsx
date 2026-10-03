@@ -7,10 +7,14 @@ import Navbar from "@caviardeul/components/navbar";
 import ColorMode from "@caviardeul/components/settings/colorMode";
 import SettingsManager from "@caviardeul/components/settings/manager";
 import { BASE_URL } from "@caviardeul/utils/config";
+import { themeScript } from "@caviardeul/utils/theme";
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <html lang="fr">
+    <html lang="fr" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body>
         <SettingsManager>
           <ColorMode />

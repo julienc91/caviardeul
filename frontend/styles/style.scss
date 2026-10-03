@@ -1,4 +1,5 @@
 @use "sass:list";
+@use "sass:map";
 
 html,
 body {
@@ -18,15 +19,60 @@ a {
 }
 
 // variables
-$dark1: #202020;
-$dark2: #101010;
-$grey1: #303040;
 $red1: #d03030;
-$lightBlue: #0090ff;
-$light1: #a0a0a0;
-$light2: #ccc;
-$light3: #ddd;
-$light4: #eee;
+$action: #0090ff;
+
+// theme colors, exposed as CSS custom properties so that they follow the
+// light/dark mode setting
+$themes: (
+  dark: (
+    background: #101010,
+    panel: #202020,
+    line: #303040,
+    line-2: #3a3a48,
+    muted: #a0a0a0,
+    text-body: #ccc,
+    text: #ddd,
+    strong: #eee,
+    max: #fff,
+    accent: #0090ff,
+    field: #eee,
+    selection: #a0a0a0,
+    danger: #ff6b6b,
+    overlay: rgba(16, 16, 16, 0.85),
+  ),
+  light: (
+    background: #f6f4ef,
+    panel: #ebe8e1,
+    line: #d8d3c9,
+    line-2: #cdc8bd,
+    muted: #67655f,
+    text-body: #2e2d2a,
+    text: #1c1b19,
+    strong: #111,
+    max: #000,
+    accent: #0068c9,
+    field: #fff,
+    selection: #cdc8bd,
+    danger: #b42020,
+    overlay: rgba(235, 232, 225, 0.88),
+  ),
+);
+
+$background: var(--color-background);
+$panel: var(--color-panel);
+$line: var(--color-line);
+$line-2: var(--color-line-2);
+$muted: var(--color-muted);
+$text-body: var(--color-text-body);
+$text: var(--color-text);
+$strong: var(--color-strong);
+$max: var(--color-max);
+$accent: var(--color-accent);
+$field: var(--color-field);
+$selection: var(--color-selection);
+$danger: var(--color-danger);
+$overlay: var(--color-overlay);
 
 $navbarHeight: 60px;
 $guessInputHeight: 65px;
@@ -35,9 +81,18 @@ $historyWidth: 30%;
 $breakpoint: 800px;
 
 // dark/light mode
+@mixin theme($name) {
+  @each $key, $value in map.get($themes, $name) {
+    --color-#{$key}: #{$value};
+  }
+}
+
 :root {
-  --color-background: #{$dark2};
-  --color-text: #{$light3};
+  @include theme(dark);
+}
+
+:root[data-theme="light"] {
+  @include theme(light);
 }
 
 // mixins
@@ -67,19 +122,19 @@ $breakpoint: 800px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: $light2;
+  background-color: $text-body;
   border-radius: 20px;
   transition: background-color 0.2s ease-in-out;
 
   &:hover {
-    background-color: $light1;
+    background-color: $muted;
   }
 }
 
 // main
 body {
-  background-color: var(--color-background);
-  color: $light2;
+  background-color: $background;
+  color: $text-body;
   height: 100vh;
   overflow: auto;
   transition:
@@ -92,8 +147,8 @@ $sketchRadius: 225px 30px 255px 30px/30px 255px 30px 225px;
 
 nav {
   align-items: center;
-  background-color: $dark1;
-  color: $light4;
+  background-color: $panel;
+  color: $strong;
   display: flex;
   flex-flow: row nowrap;
   gap: 0 40px;
@@ -110,10 +165,10 @@ nav {
 
     @include media-max($breakpoint) {
       align-items: center;
-      background-color: $dark2;
-      border: 2px solid $light1;
+      background-color: $background;
+      border: 2px solid $muted;
       border-radius: 5px;
-      color: $light4;
+      color: $strong;
       display: flex;
       flex-flow: column;
       font-weight: normal;
@@ -125,7 +180,7 @@ nav {
       width: 2.5rem;
 
       .line {
-        border: 2px solid $light4;
+        border: 2px solid $strong;
         border-radius: 5px;
         height: 0;
         transition:
@@ -158,7 +213,7 @@ nav {
     padding: 0;
 
     li {
-      color: $light2;
+      color: $text-body;
       cursor: pointer;
       position: relative;
       white-space: nowrap;
@@ -171,7 +226,7 @@ nav {
 
       // hand-drawn underline marking the current page
       &::after {
-        background-color: $light3;
+        background-color: $text;
         border-radius: $sketchRadius;
         bottom: 12px;
         content: "";
@@ -186,7 +241,7 @@ nav {
 
       &:hover,
       &.active {
-        color: #fff;
+        color: $max;
       }
       &.active::after {
         opacity: 1;
@@ -209,8 +264,8 @@ nav {
 
       ul {
         align-items: stretch;
-        background-color: $dark1;
-        border-right: 2px solid $light1;
+        background-color: $panel;
+        border-right: 2px solid $muted;
         flex-flow: column;
         gap: 4px;
         height: 100%;
@@ -239,7 +294,7 @@ nav {
       }
 
       .nav-link-background {
-        background-color: $dark1;
+        background-color: $panel;
         height: 100%;
         left: 0;
         opacity: 0;
@@ -262,7 +317,7 @@ nav {
   .settings-link {
     align-items: center;
     border-radius: 5px;
-    color: $light2;
+    color: $text-body;
     display: flex;
     flex-shrink: 0;
     font-size: 1.3rem;
@@ -276,8 +331,8 @@ nav {
 
     &:hover,
     &.active {
-      background-color: $grey1;
-      color: #fff;
+      background-color: $line;
+      color: $max;
     }
   }
 }
@@ -294,7 +349,7 @@ nav {
   z-index: 100;
 
   .modal-background {
-    background-color: rgba(16, 16, 16, 0.85);
+    background-color: $overlay;
     inset: 0;
     position: absolute;
   }
@@ -309,9 +364,9 @@ nav {
   }
 
   .modal {
-    background-color: $dark1;
-    border: 1px solid $grey1;
-    color: $light2;
+    background-color: $panel;
+    border: 1px solid $line;
+    color: $text-body;
     display: flex;
     flex-flow: column;
     gap: 16px;
@@ -324,7 +379,7 @@ nav {
     width: 100%;
 
     h1 {
-      color: $light4;
+      color: $strong;
       font-size: 1.3rem;
       margin: 0;
     }
@@ -334,7 +389,7 @@ nav {
     }
 
     a {
-      color: $lightBlue;
+      color: $accent;
     }
 
     .modal-buttons {
@@ -365,8 +420,8 @@ nav {
 // generics
 button {
   margin-top: 20px;
-  background-color: $dark1;
-  color: $light4;
+  background-color: $panel;
+  color: $strong;
   font-weight: 600;
   border: 0;
   padding: 10px 20px;
@@ -378,23 +433,23 @@ button {
     color: #fff;
   }
   &.action {
-    background-color: $lightBlue;
+    background-color: $action;
     color: #fff;
   }
   &.secondary {
     background-color: transparent;
-    border: 1px solid $light1;
-    color: $light4;
+    border: 1px solid $muted;
+    color: $strong;
 
     &:hover {
-      background-color: $grey1;
+      background-color: $line;
       box-shadow: none;
     }
   }
   &.danger-outline {
     background-color: transparent;
     border: 1px solid $red1;
-    color: #ff6b6b;
+    color: $danger;
     transition:
       background-color 0.2s ease-in-out,
       color 0.2s ease-in-out;
@@ -421,7 +476,7 @@ button {
     width: 40px;
     height: 40px;
     margin: 100px auto;
-    background-color: var(--color-text);
+    background-color: $text;
 
     border-radius: 100%;
     animation: animation 1s infinite ease-in-out;
@@ -483,12 +538,12 @@ main {
     }
 
     h1 {
-      color: var(--color-text);
+      color: $text;
     }
   }
 
   .right-container {
-    background-color: $dark1;
+    background-color: $panel;
     height: calc(100vh - #{$navbarHeight});
     overflow-y: auto;
     padding: 0 20px;
@@ -504,8 +559,8 @@ main {
 // game
 #game {
   .banner {
-    background-color: $dark1;
-    color: $light4;
+    background-color: $panel;
+    color: $strong;
     font-family: "Liberation Sans", sans-serif;
     font-size: 1rem;
     margin: 20px;
@@ -521,7 +576,7 @@ main {
   }
 
   .article-container {
-    color: var(--color-text);
+    color: $text;
     font-family: monospace;
     font-size: 1.3rem;
     line-height: 2rem;
@@ -547,13 +602,13 @@ main {
       white-space: nowrap;
 
       .selected {
-        color: $lightBlue;
+        color: $accent;
       }
     }
 
     .caviarded {
-      background-color: var(--color-text);
-      border: solid 1px var(--color-text);
+      background-color: $text;
+      border: solid 1px $text;
       position: relative;
 
       &:nth-of-type(5n) {
@@ -578,7 +633,7 @@ main {
       &::after {
         align-items: center;
         content: attr(data-word-length);
-        color: var(--color-background);
+        color: $background;
         display: flex;
         height: 100%;
         left: 0;
@@ -604,7 +659,7 @@ main {
 
   .guess-history,
   .game-information {
-    color: $light3;
+    color: $text;
     max-height: 100%;
     width: 100%;
 
@@ -622,18 +677,18 @@ main {
 
       thead {
         font-weight: bold;
-        border-bottom: 3px solid $light3;
+        border-bottom: 3px solid $text;
       }
 
       tbody tr {
-        border-bottom: 1px solid $grey1;
+        border-bottom: 1px solid $line;
 
         &:hover,
         &.selected {
-          background-color: $grey1;
+          background-color: $line;
           &.clickable {
             cursor: pointer;
-            background-color: $light1;
+            background-color: $selection;
           }
         }
       }
@@ -646,11 +701,11 @@ main {
   }
 
   .game-information {
-    border-bottom: 2px solid $light1;
+    border-bottom: 2px solid $muted;
     margin-bottom: 50px;
     padding: 0 20px;
     a {
-      color: $lightBlue;
+      color: $accent;
     }
   }
 
@@ -659,14 +714,14 @@ main {
     display: flex;
     flex-flow: row;
     justify-content: center;
-    background-color: $dark1;
+    background-color: $panel;
     height: $guessInputHeight;
     width: 100%;
 
     .article-navigation {
       align-items: center;
-      background-color: $dark2;
-      border: 1px solid $light3;
+      background-color: $background;
+      border: 1px solid $text;
       border-right: 0;
       cursor: pointer;
       display: flex;
@@ -682,19 +737,19 @@ main {
       &[type="text"] {
         border: 0;
         border-radius: 0;
-        background-color: $light4;
+        background-color: $field;
       }
       &[type="submit"] {
-        background-color: $dark2;
-        border: 1px solid $light3;
+        background-color: $background;
+        border: 1px solid $text;
         border-left: 0;
-        color: $light4;
+        color: $strong;
         cursor: pointer;
         padding: 0 20px;
         transition: background-color 0.2s ease-in-out;
 
         &:hover {
-          background-color: $grey1;
+          background-color: $line;
         }
       }
     }
@@ -724,21 +779,22 @@ main.page {
   }
 
   a {
-    color: $lightBlue;
+    color: $accent;
     &:hover {
-      color: #4fb0ff;
+      color: $accent;
+      text-decoration: underline;
     }
   }
 
   .eyebrow {
-    color: $light1;
+    color: $muted;
     font-family: monospace;
     font-size: 0.95rem;
     letter-spacing: 0.04em;
   }
 
   .page-header h1 {
-    color: var(--color-text);
+    color: $strong;
     font-family: monospace;
     font-size: 2.6rem;
     line-height: 1.15;
@@ -751,7 +807,7 @@ main.page {
   }
 
   .lede {
-    color: var(--color-text);
+    color: $text-body;
     font-size: 1.05rem;
     line-height: 1.6;
     margin: 0;
@@ -759,7 +815,7 @@ main.page {
   }
 
   .note {
-    color: $light1;
+    color: $muted;
     font-size: 0.92rem;
     line-height: 1.5;
   }
@@ -771,19 +827,19 @@ main.page {
   }
 
   .page-section {
-    border-top: 1px solid $grey1;
+    border-top: 1px solid $line;
     display: flex;
     flex-flow: row wrap;
     gap: 12px 40px;
     padding: 32px 0;
 
     &:last-child {
-      border-bottom: 1px solid $grey1;
+      border-bottom: 1px solid $line;
     }
 
     h2 {
       align-items: baseline;
-      color: var(--color-text);
+      color: $strong;
       display: flex;
       flex: 0 0 200px;
       font-size: 1.15rem;
@@ -791,14 +847,14 @@ main.page {
       margin: 0;
 
       .index {
-        color: $light1;
+        color: $muted;
         font-family: monospace;
         font-size: 0.9rem;
       }
     }
 
     .page-section-body {
-      color: var(--color-text);
+      color: $text-body;
       display: flex;
       flex: 1 1 380px;
       flex-flow: column;
@@ -824,7 +880,7 @@ main.page {
           position: relative;
 
           &::before {
-            color: $light1;
+            color: $muted;
             content: "—";
             font-family: monospace;
             left: 0;
@@ -845,7 +901,7 @@ main.page {
 
 // caviarded word that can be revealed on click
 .caviarded-toggle {
-  background-color: $light3;
+  background-color: $text;
   border: 0;
   border-radius: 220px 50px 215px 30px/40px 240px 20px 210px;
   color: transparent;
@@ -870,19 +926,19 @@ main.page {
 
   &.revealed {
     background-color: transparent;
-    color: $lightBlue;
+    color: $accent;
   }
 }
 
 // segmented buttons
 .segmented-control {
-  border: 1px solid $grey1;
+  border: 1px solid $line;
   display: flex;
 
   button {
-    background-color: $dark2;
+    background-color: $background;
     border-radius: 0;
-    color: $light3;
+    color: $text;
     font: inherit;
     font-size: 0.95rem;
     margin: 0;
@@ -890,12 +946,12 @@ main.page {
 
     &:hover {
       box-shadow: none;
-      background-color: $grey1;
+      background-color: $line;
     }
 
     &.active {
-      background-color: $light3;
-      color: $dark2;
+      background-color: $text;
+      color: $background;
     }
   }
 }
@@ -903,15 +959,15 @@ main.page {
 // archives
 #archives {
   .user-stats {
-    background-color: $grey1;
-    border: 1px solid $grey1;
+    background-color: $line;
+    border: 1px solid $line;
     display: flex;
     flex-wrap: wrap;
     gap: 1px;
     margin-top: 40px;
 
     .stat {
-      background-color: $dark1;
+      background-color: $panel;
       display: flex;
       flex: 1 1 140px;
       flex-flow: column;
@@ -924,7 +980,7 @@ main.page {
     }
 
     .stat-label {
-      color: $light1;
+      color: $muted;
       font-size: 0.9rem;
     }
 
@@ -936,7 +992,7 @@ main.page {
     }
 
     .stat-value {
-      color: $light4;
+      color: $strong;
       font-family: monospace;
       font-size: 2.4rem;
       line-height: 1;
@@ -944,7 +1000,7 @@ main.page {
 
     .stat-total,
     .stat-unit {
-      color: $light1;
+      color: $muted;
       font-size: 1.1rem;
     }
     .stat-unit {
@@ -952,19 +1008,19 @@ main.page {
     }
 
     .stat-percent {
-      color: $light3;
+      color: $text;
       font-size: 1.1rem;
       margin-left: auto;
     }
 
     .progress {
-      background-color: $grey1;
+      background-color: $line;
       border-radius: 20px;
       height: 8px;
       overflow: hidden;
 
       div {
-        background-color: $light3;
+        background-color: $text;
         border-radius: $sketchRadius;
         height: 100%;
       }
@@ -986,7 +1042,7 @@ main.page {
     gap: 10px;
 
     .label {
-      color: $light1;
+      color: $muted;
       font-size: 0.95rem;
       white-space: nowrap;
 
@@ -1001,10 +1057,10 @@ main.page {
 
     .sort-order {
       align-items: center;
-      background-color: $dark2;
-      border: 1px solid $grey1;
+      background-color: $background;
+      border: 1px solid $line;
       border-radius: 0;
-      color: $light4;
+      color: $strong;
       display: flex;
       height: 38px;
       justify-content: center;
@@ -1013,15 +1069,15 @@ main.page {
       width: 38px;
 
       &:hover {
-        background-color: $grey1;
+        background-color: $line;
         box-shadow: none;
       }
     }
   }
 
   .empty-state {
-    border: 1px dashed $grey1;
-    color: var(--color-text);
+    border: 1px dashed $line;
+    color: $text;
     font-size: 1.05rem;
     padding: 48px 24px;
     text-align: center;
@@ -1034,13 +1090,18 @@ main.page {
 
     > a {
       display: flex;
+
+      &,
+      &:hover {
+        text-decoration: none;
+      }
     }
   }
 
   .archive-item {
-    background-color: $dark1;
-    border: 1px solid $grey1;
-    color: $light2;
+    background-color: $panel;
+    border: 1px solid $line;
+    color: $text-body;
     display: flex;
     flex-flow: column;
     gap: 14px;
@@ -1052,8 +1113,8 @@ main.page {
     width: 100%;
 
     &:not(.completed):hover {
-      background-color: $grey1;
-      border-color: $light1;
+      background-color: $line;
+      border-color: $muted;
       cursor: pointer;
     }
 
@@ -1065,13 +1126,13 @@ main.page {
     }
 
     .article-id {
-      color: $light1;
+      color: $muted;
       font-family: monospace;
       font-size: 0.95rem;
     }
 
     h3 {
-      color: $light4;
+      color: $strong;
       flex: 1;
       font-size: 1.15rem;
       line-height: 1.3;
@@ -1080,8 +1141,8 @@ main.page {
     }
 
     .caviarded-title {
-      background-color: $light3;
-      border: 1px solid $light3;
+      background-color: $text;
+      border: 1px solid $text;
       color: transparent;
       display: inline-block;
       font-family: monospace;
@@ -1091,12 +1152,12 @@ main.page {
     }
 
     .archive-item-median {
-      color: $light1;
+      color: $muted;
       font-size: 0.92rem;
     }
 
     .value {
-      color: $light3;
+      color: $text;
       font-family: monospace;
     }
     .archive-item-median .value {
@@ -1104,7 +1165,7 @@ main.page {
     }
 
     .archive-item-footer {
-      border-top: 1px solid $grey1;
+      border-top: 1px solid $line;
       display: flex;
       flex-wrap: wrap;
 
@@ -1117,7 +1178,7 @@ main.page {
       padding-top: 12px;
 
       .play {
-        color: $lightBlue;
+        color: $accent;
         font-size: 0.95rem;
         font-weight: 600;
       }
@@ -1129,7 +1190,7 @@ main.page {
     gap: 3px;
 
     .difficulty {
-      background-color: #3a3a48;
+      background-color: $line-2;
       border-radius: 2px;
       height: 6px;
       width: 10px;
@@ -1157,7 +1218,7 @@ main.page {
     margin-top: 40px;
 
     label {
-      color: var(--color-text);
+      color: $text;
       font-size: 0.95rem;
     }
   }
@@ -1167,10 +1228,10 @@ main.page {
     flex-wrap: wrap;
 
     button {
-      background-color: $dark2;
-      border: 1px solid $light3;
+      background-color: $background;
+      border: 1px solid $text;
       border-radius: 0;
-      color: $light4;
+      color: $strong;
       font: inherit;
       font-weight: 600;
       height: 52px;
@@ -1178,7 +1239,7 @@ main.page {
       padding: 0 28px;
 
       &:hover {
-        background-color: $grey1;
+        background-color: $line;
         box-shadow: none;
       }
       &:disabled {
@@ -1194,7 +1255,7 @@ main.page {
 
   .url-input {
     align-items: center;
-    background-color: $light4;
+    background-color: $field;
     display: flex;
     flex: 1 1 360px;
     font-family: monospace;
@@ -1215,7 +1276,7 @@ main.page {
     input {
       background: transparent;
       border: 0;
-      color: $dark2;
+      color: #101010;
       flex: 1;
       font: inherit;
       height: 100%;
@@ -1227,16 +1288,16 @@ main.page {
 
   .error-message {
     align-items: center;
-    color: #ff6b6b;
+    color: $danger;
     display: flex;
     font-size: 0.95rem;
     gap: 10px;
   }
 
   .created-game {
-    background-color: $dark1;
-    border: 1px solid $grey1;
-    color: $light2;
+    background-color: $panel;
+    border: 1px solid $line;
+    color: $text-body;
     display: flex;
     flex-flow: column;
     gap: 18px;
@@ -1251,7 +1312,7 @@ main.page {
 
   .created-game-title {
     align-items: center;
-    color: $light4;
+    color: $strong;
     display: flex;
     font-size: 1.25rem;
     font-weight: 700;
@@ -1276,9 +1337,9 @@ main.page {
     }
 
     input {
-      background-color: $dark2;
-      border: 1px solid $grey1;
-      color: $light3;
+      background-color: $background;
+      border: 1px solid $line;
+      color: $text;
       font-family: monospace;
       font-size: 1rem;
       height: 48px;
@@ -1290,7 +1351,7 @@ main.page {
     .copy,
     .open {
       align-items: center;
-      border: 1px solid $light3;
+      border: 1px solid $text;
       border-radius: 0;
       display: flex;
       font: inherit;
@@ -1303,22 +1364,22 @@ main.page {
     }
 
     .copy {
-      background-color: $dark2;
-      color: $light4;
+      background-color: $background;
+      color: $strong;
 
       &:hover {
-        background-color: $grey1;
+        background-color: $line;
         box-shadow: none;
       }
     }
 
     .open {
-      background-color: $light4;
-      color: $dark2;
+      background-color: $strong;
+      color: $background;
 
       &:hover {
-        background-color: #fff;
-        color: $dark2;
+        background-color: $max;
+        color: $background;
       }
 
       @include media-min($breakpoint) {
@@ -1337,7 +1398,7 @@ main.page {
     }
 
     .hint {
-      color: $light1;
+      color: $muted;
       font-size: 0.88rem;
     }
   }
@@ -1349,7 +1410,7 @@ main.page {
   .link-button {
     align-items: center;
     background: none;
-    color: $lightBlue;
+    color: $accent;
     display: flex;
     font: inherit;
     font-weight: 600;
@@ -1359,7 +1420,8 @@ main.page {
 
     &:hover {
       box-shadow: none;
-      color: #4fb0ff;
+      color: $accent;
+      text-decoration: underline;
     }
   }
 }
@@ -1388,9 +1450,9 @@ main.page {
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 
     a {
-      background-color: $dark1;
-      border: 1px solid $grey1;
-      color: $light2;
+      background-color: $panel;
+      border: 1px solid $line;
+      color: $text-body;
       display: flex;
       flex-flow: column;
       gap: 8px;
@@ -1398,25 +1460,26 @@ main.page {
       transition: border-color 0.2s ease-in-out;
 
       &:hover {
-        border-color: $light3;
+        border-color: $text;
+        text-decoration: none;
       }
     }
 
     .contact-label {
-      color: $light1;
+      color: $muted;
       font-size: 0.95rem;
     }
 
     .contact-value {
       align-items: center;
-      color: $light4;
+      color: $strong;
       display: flex;
       font-size: 1.05rem;
       font-weight: 600;
       gap: 10px;
 
       .external {
-        color: $light1;
+        color: $muted;
         font-size: 0.75rem;
       }
     }
@@ -1432,7 +1495,7 @@ main.page {
 
   .toggle {
     align-items: center;
-    border-bottom: 1px solid $grey1;
+    border-bottom: 1px solid $line;
     cursor: pointer;
     display: flex;
     gap: 20px;
@@ -1452,7 +1515,7 @@ main.page {
     }
 
     .track {
-      background-color: $grey1;
+      background-color: $line;
       border-radius: 20px;
       flex-shrink: 0;
       height: 24px;
@@ -1461,7 +1524,7 @@ main.page {
       width: 44px;
 
       &::after {
-        background-color: $light4;
+        background-color: #eee;
         border-radius: 50%;
         content: "";
         height: 18px;
@@ -1474,7 +1537,7 @@ main.page {
     }
 
     input:checked + .track {
-      background-color: $lightBlue;
+      background-color: $accent;
 
       &::after {
         left: 23px;
@@ -1482,7 +1545,7 @@ main.page {
     }
 
     input:focus-visible + .track {
-      outline: 2px solid $lightBlue;
+      outline: 2px solid $accent;
       outline-offset: 2px;
     }
   }
@@ -1500,7 +1563,7 @@ main.page {
   }
 
   .qr-code {
-    border: 1px solid $light1;
+    border: 1px solid $muted;
     flex-shrink: 0;
     height: 128px;
     width: 128px;
@@ -1513,9 +1576,9 @@ main.page {
 
     .mask {
       align-items: center;
-      background-color: $light3;
+      background-color: $text;
       border-radius: 0;
-      color: $dark2;
+      color: $background;
       display: flex;
       flex-flow: column;
       font-family: monospace;
@@ -1544,8 +1607,8 @@ main.page {
 
     button {
       align-items: center;
-      background-color: $dark2;
-      border: 1px solid $light3;
+      background-color: $background;
+      border: 1px solid $text;
       border-radius: 0;
       border-right: 0;
       display: flex;
@@ -1557,9 +1620,9 @@ main.page {
     }
 
     input {
-      background-color: $light4;
+      background-color: $field;
       border: 0;
-      color: $dark2;
+      color: #101010;
       flex: 1;
       font-family: monospace;
       height: 44px;
