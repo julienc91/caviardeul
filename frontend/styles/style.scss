@@ -1,3 +1,5 @@
+@use "sass:list";
+
 html,
 body {
   padding: 0;
@@ -27,7 +29,6 @@ $light3: #ddd;
 $light4: #eee;
 
 $navbarHeight: 60px;
-$footerHeight: 0;
 $guessInputHeight: 65px;
 $historyWidth: 30%;
 
@@ -42,6 +43,14 @@ $breakpoint: 800px;
 // mixins
 @mixin media-max($_max-width) {
   @media screen and (max-width: $_max-width) {
+    & {
+      @content;
+    }
+  }
+}
+
+@mixin media-min($_min-width) {
+  @media screen and (min-width: $_min-width + 1px) {
     & {
       @content;
     }
@@ -76,25 +85,25 @@ body {
   transition:
     color 0.5s ease-in,
     background-color 0.5s ease-out;
-
-  @include media-max($breakpoint) {
-    .medium-up {
-      display: none;
-    }
-  }
 }
 
 // navbar
+$sketchRadius: 225px 30px 255px 30px/30px 255px 30px 225px;
+
 nav {
   align-items: center;
   background-color: $dark1;
   color: $light4;
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
+  gap: 0 40px;
   height: $navbarHeight;
-  justify-content: left;
   padding: 0 20px;
   min-width: 100%;
+
+  @include media-max($breakpoint) {
+    gap: 0 15px;
+  }
 
   .hamburger {
     display: none;
@@ -110,7 +119,7 @@ nav {
       font-weight: normal;
       height: 2.3rem;
       justify-content: space-evenly;
-      margin: 0 10px 0 0;
+      margin: 0;
       padding: 5px;
       transition: transform 0.2s ease-in-out;
       width: 2.5rem;
@@ -134,33 +143,60 @@ nav {
   h1 {
     font-size: 1.1rem;
     font-weight: 600;
+    margin: 0;
+    white-space: nowrap;
   }
 
   ul {
     align-items: center;
     display: flex;
     flex-flow: row;
-    justify-content: space-between;
+    gap: 0 40px;
+    height: 100%;
     list-style: none;
-    flex: 1;
+    margin: 0;
+    padding: 0;
 
     li {
+      color: $light2;
       cursor: pointer;
+      position: relative;
       white-space: nowrap;
-      &.divider {
-        flex: 1;
+      transition: color 0.2s ease-in-out;
+
+      a {
+        display: block;
+        padding: 20px 0;
       }
-      &.left {
-        padding-right: 40px;
-        @include media-max($breakpoint) {
-          padding-right: 15px;
-        }
+
+      // hand-drawn underline marking the current page
+      &::after {
+        background-color: $light3;
+        border-radius: $sketchRadius;
+        bottom: 12px;
+        content: "";
+        height: 5px;
+        left: -2px;
+        opacity: 0;
+        pointer-events: none;
+        position: absolute;
+        right: -2px;
+        transition: opacity 0.2s ease-in-out;
+      }
+
+      &:hover,
+      &.active {
+        color: #fff;
+      }
+      &.active::after {
+        opacity: 1;
       }
     }
   }
 
   .nav-links {
     flex: 1;
+    height: 100%;
 
     @include media-max($breakpoint) {
       height: calc(100vh - #{$navbarHeight});
@@ -169,23 +205,37 @@ nav {
       top: $navbarHeight;
       transition: left 0.2s ease-in-out;
       width: 100vw;
-      z-index: 10;
+      z-index: 50;
 
       ul {
-        align-items: flex-start;
-        display: flex;
+        align-items: stretch;
         background-color: $dark1;
         border-right: 2px solid $light1;
         flex-flow: column;
-        margin: 0;
+        gap: 4px;
         height: 100%;
+        max-width: 85vw;
+        padding: 16px 24px;
         position: relative;
         width: 300px;
       }
 
       li {
         font-size: 1.5rem;
-        padding: 10px 10px 10px 0;
+        padding-left: 17px;
+
+        a {
+          padding: 10px 0;
+        }
+
+        &::after {
+          bottom: auto;
+          height: 1.4rem;
+          left: 0;
+          right: auto;
+          top: calc(50% - 0.7rem);
+          width: 5px;
+        }
       }
 
       .nav-link-background {
@@ -207,33 +257,46 @@ nav {
         }
       }
     }
+  }
 
-    svg {
-      height: 32px;
-      width: 32px;
+  .settings-link {
+    align-items: center;
+    border-radius: 5px;
+    color: $light2;
+    display: flex;
+    flex-shrink: 0;
+    font-size: 1.3rem;
+    height: 40px;
+    justify-content: center;
+    margin-left: auto;
+    transition:
+      background-color 0.2s ease-in-out,
+      color 0.2s ease-in-out;
+    width: 40px;
+
+    &:hover,
+    &.active {
+      background-color: $grey1;
+      color: #fff;
     }
   }
 }
 
-// info modal
+// modals
 .modal-container {
+  align-items: center;
   animation: 0.2s modal-animation;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transition: opacity 0.2s ease-in-out;
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 20px;
+  position: fixed;
   z-index: 100;
 
   .modal-background {
-    top: 0;
-    left: 0;
+    background-color: rgba(16, 16, 16, 0.85);
+    inset: 0;
     position: absolute;
-    background-color: $dark1;
-    opacity: 0.8;
-    width: 100%;
-    height: 100%;
   }
 
   @keyframes modal-animation {
@@ -246,19 +309,29 @@ nav {
   }
 
   .modal {
-    color: $dark1;
-    position: absolute;
-    top: 30%;
-    left: 50%;
-    line-height: 1.5rem;
-    transform: translate(-50%, -30%);
-    background-color: $light4;
-    padding: 20px;
-    border-radius: 5px;
+    background-color: $dark1;
+    border: 1px solid $grey1;
+    color: $light2;
+    display: flex;
+    flex-flow: column;
+    gap: 16px;
+    line-height: 1.6;
     max-height: 90vh;
-    max-width: min(700px, 90vw);
-    min-width: 350px;
+    max-width: 480px;
     overflow: auto;
+    padding: 28px;
+    position: relative;
+    width: 100%;
+
+    h1 {
+      color: $light4;
+      font-size: 1.3rem;
+      margin: 0;
+    }
+
+    p {
+      margin: 0;
+    }
 
     a {
       color: $lightBlue;
@@ -266,22 +339,26 @@ nav {
 
     .modal-buttons {
       display: flex;
-      flex-flow: row-reverse wrap;
-      justify-content: space-between;
+      flex-flow: row wrap;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 4px;
+
+      button {
+        margin: 0;
+      }
     }
   }
-}
 
-// settings modal
-.modal.settings-modal {
-  .beta,
-  .new {
-    color: $light4;
-    background-color: $lightBlue;
-    border-radius: 4px;
-    display: inline-block;
-    font-size: 0.8rem;
-    padding: 0 6px;
+  .introduction-modal {
+    h1 {
+      font-family: monospace;
+      font-size: 1.6rem;
+    }
+
+    .caviarded-toggle {
+      font-family: monospace;
+    }
   }
 }
 
@@ -298,42 +375,46 @@ button {
 
   &.danger {
     background-color: $red1;
-    color: $light3;
+    color: #fff;
   }
   &.action {
     background-color: $lightBlue;
-    color: $light3;
+    color: #fff;
+  }
+  &.secondary {
+    background-color: transparent;
+    border: 1px solid $light1;
+    color: $light4;
+
+    &:hover {
+      background-color: $grey1;
+      box-shadow: none;
+    }
+  }
+  &.danger-outline {
+    background-color: transparent;
+    border: 1px solid $red1;
+    color: #ff6b6b;
+    transition:
+      background-color 0.2s ease-in-out,
+      color 0.2s ease-in-out;
+
+    &:hover {
+      background-color: $red1;
+      box-shadow: none;
+      color: #fff;
+    }
   }
 
   &:hover {
-    box-shadow: inset 0 0 0 20px rgba(255, 255, 255, 0.2);
-  }
-}
-
-.button-input {
-  display: flex;
-  flex-flow: row;
-  justify-content: center;
-  align-items: center;
-  margin: 20px auto;
-
-  button,
-  input {
-    height: 30px;
-    margin: 0;
-  }
-  button {
-    border-radius: 5px 0 0 5px;
-    align-items: center;
-    display: flex;
-    padding: 0 15px;
+    box-shadow: inset 0 0 0 20px rgba(255, 255, 255, 0.15);
   }
 }
 
 .loader {
   align-items: center;
   display: flex;
-  height: calc(100vh - #{$navbarHeight + $footerHeight + $guessInputHeight});
+  height: calc(100vh - #{$navbarHeight + $guessInputHeight});
   justify-content: center;
 
   .spinner {
@@ -376,14 +457,14 @@ main {
   flex-flow: row wrap;
   align-items: center;
   justify-content: center;
-  height: calc(100vh - #{$navbarHeight + $footerHeight});
+  height: calc(100vh - #{$navbarHeight});
 
   .error {
     align-items: center;
     display: flex;
     flex-flow: row;
     justify-content: center;
-    height: calc(100vh - #{$navbarHeight + $footerHeight});
+    height: calc(100vh - #{$navbarHeight});
 
     > div {
       height: auto !important;
@@ -391,7 +472,7 @@ main {
   }
 
   .left-container {
-    height: calc(100vh - #{$navbarHeight + $footerHeight});
+    height: calc(100vh - #{$navbarHeight});
     overflow-y: auto;
     padding: 0 20px;
     width: #{100% - $historyWidth};
@@ -408,7 +489,7 @@ main {
 
   .right-container {
     background-color: $dark1;
-    height: calc(100vh - #{$navbarHeight + $footerHeight});
+    height: calc(100vh - #{$navbarHeight});
     overflow-y: auto;
     padding: 0 20px;
     width: $historyWidth;
@@ -444,7 +525,7 @@ main {
     font-family: monospace;
     font-size: 1.3rem;
     line-height: 2rem;
-    height: calc(100vh - #{$navbarHeight + $footerHeight + $guessInputHeight});
+    height: calc(100vh - #{$navbarHeight + $guessInputHeight});
     overflow: auto;
     padding: 0 20px;
     -webkit-overflow-scrolling: touch;
@@ -620,163 +701,444 @@ main {
   }
 }
 
-// new custom game
-#new-custom-game {
-  .left-container {
-    color: var(--color-text);
-  }
+// secondary pages (archives, custom game, about, settings)
+main.page {
+  display: block;
+  overflow-y: auto;
 
-  form {
-    margin-bottom: 50px;
-  }
+  .page-content {
+    margin: 0 auto;
+    max-width: 960px;
+    padding: 56px 32px 72px;
 
-  .url-input {
-    border: 1px solid $light4;
-    padding: 10px 0 10px 10px;
+    &.wide {
+      max-width: 1120px;
+    }
+    &.narrow {
+      max-width: 820px;
+    }
 
-    input {
-      border: 0;
-      height: 40px;
-      margin: 0 0 0 5px;
+    @include media-max($breakpoint) {
+      padding: 32px 20px 56px;
     }
   }
 
-  .url-copy {
-    align-items: center;
+  a {
+    color: $lightBlue;
+    &:hover {
+      color: #4fb0ff;
+    }
+  }
+
+  .eyebrow {
+    color: $light1;
+    font-family: monospace;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+  }
+
+  .page-header h1 {
+    color: var(--color-text);
+    font-family: monospace;
+    font-size: 2.6rem;
+    line-height: 1.15;
+    margin: 10px 0 14px;
+    text-wrap: pretty;
+
+    @include media-max($breakpoint) {
+      font-size: 2rem;
+    }
+  }
+
+  .lede {
+    color: var(--color-text);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin: 0;
+    max-width: 60ch;
+  }
+
+  .note {
+    color: $light1;
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  .page-sections {
+    display: flex;
+    flex-flow: column;
+    margin-top: 48px;
+  }
+
+  .page-section {
+    border-top: 1px solid $grey1;
     display: flex;
     flex-flow: row wrap;
+    gap: 12px 40px;
+    padding: 32px 0;
 
-    input[type="text"] {
-      background-color: #fff;
-      border: 1px solid $light3;
-      color: $dark1;
-      height: 41px;
-      padding: 10px;
+    &:last-child {
+      border-bottom: 1px solid $grey1;
+    }
+
+    h2 {
+      align-items: baseline;
+      color: var(--color-text);
+      display: flex;
+      flex: 0 0 200px;
+      font-size: 1.15rem;
+      gap: 12px;
+      margin: 0;
+
+      .index {
+        color: $light1;
+        font-family: monospace;
+        font-size: 0.9rem;
+      }
+    }
+
+    .page-section-body {
+      color: var(--color-text);
+      display: flex;
+      flex: 1 1 380px;
+      flex-flow: column;
+      font-size: 1.05rem;
+      gap: 14px;
+      line-height: 1.7;
+      min-width: 0;
+
+      p {
+        margin: 0;
+      }
+
+      ul {
+        display: flex;
+        flex-flow: column;
+        gap: 10px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        li {
+          padding-left: 2.2ch;
+          position: relative;
+
+          &::before {
+            color: $light1;
+            content: "—";
+            font-family: monospace;
+            left: 0;
+            position: absolute;
+          }
+        }
+      }
+
+      .note {
+        align-items: baseline;
+        display: flex;
+        font-size: 0.98rem;
+        gap: 12px;
+      }
     }
   }
+}
 
-  input[type="submit"],
-  input[type="button"] {
+// caviarded word that can be revealed on click
+.caviarded-toggle {
+  background-color: $light3;
+  border: 0;
+  border-radius: 220px 50px 215px 30px/40px 240px 20px 210px;
+  color: transparent;
+  cursor: pointer;
+  font: inherit;
+  margin: 0;
+  padding: 0 2px;
+  transition:
+    background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out;
+
+  &:hover {
+    box-shadow: none;
+  }
+
+  &.variant-1 {
+    border-radius: $sketchRadius;
+  }
+  &.variant-4 {
+    border-radius: 30px 255px 30px 225px/30px 225px 30px 250px;
+  }
+
+  &.revealed {
+    background-color: transparent;
+    color: $lightBlue;
+  }
+}
+
+// segmented buttons
+.segmented-control {
+  border: 1px solid $grey1;
+  display: flex;
+
+  button {
     background-color: $dark2;
-    border: 1px solid $light3;
-    color: $light4;
-    cursor: pointer;
-    height: 41px;
+    border-radius: 0;
+    color: $light3;
+    font: inherit;
+    font-size: 0.95rem;
     margin: 0;
-    padding: 0 20px;
-    transition: background-color 0.2s ease-in-out;
+    padding: 9px 14px;
 
-    &:disabled {
-      background-color: $grey1;
-      cursor: not-allowed;
-    }
     &:hover {
+      box-shadow: none;
       background-color: $grey1;
     }
-  }
 
-  .loader {
-    height: auto;
+    &.active {
+      background-color: $light3;
+      color: $dark2;
+    }
   }
 }
 
 // archives
 #archives {
+  .user-stats {
+    background-color: $grey1;
+    border: 1px solid $grey1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1px;
+    margin-top: 40px;
+
+    .stat {
+      background-color: $dark1;
+      display: flex;
+      flex: 1 1 140px;
+      flex-flow: column;
+      gap: 12px;
+      padding: 22px 24px;
+
+      &.finished {
+        flex: 2 1 280px;
+      }
+    }
+
+    .stat-label {
+      color: $light1;
+      font-size: 0.9rem;
+    }
+
+    .stat-values {
+      align-items: baseline;
+      display: flex;
+      font-family: monospace;
+      gap: 10px;
+    }
+
+    .stat-value {
+      color: $light4;
+      font-family: monospace;
+      font-size: 2.4rem;
+      line-height: 1;
+    }
+
+    .stat-total,
+    .stat-unit {
+      color: $light1;
+      font-size: 1.1rem;
+    }
+    .stat-unit {
+      font-size: 1.4rem;
+    }
+
+    .stat-percent {
+      color: $light3;
+      font-size: 1.1rem;
+      margin-left: auto;
+    }
+
+    .progress {
+      background-color: $grey1;
+      border-radius: 20px;
+      height: 8px;
+      overflow: hidden;
+
+      div {
+        background-color: $light3;
+        border-radius: $sketchRadius;
+        height: 100%;
+      }
+    }
+  }
+
   .list-filters {
     align-items: center;
     display: flex;
-    flex-flow: row wrap;
-    justify-content: flex-end;
-    margin-bottom: 40px;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: space-between;
+    margin: 48px 0 20px;
+  }
 
-    label {
-      color: var(--color-text);
-      margin-left: 15px;
-    }
+  .sort-selection {
+    align-items: center;
+    display: flex;
+    gap: 10px;
 
-    select {
-      background-color: $dark1;
-      border: 1px solid $light3;
-      border-radius: 5px;
-      color: $light3;
-      height: 30px;
-      padding: 0.3rem 1rem;
-      margin: 0 0 0 5px;
+    .label {
+      color: $light1;
+      font-size: 0.95rem;
+      white-space: nowrap;
+
+      @include media-max($breakpoint) {
+        display: none;
+      }
     }
 
     button {
-      border: 1px solid $light3;
-      height: 30px;
-      padding: 5px 8px;
-      margin: 0 0 0 5px;
+      white-space: nowrap;
     }
+
+    .sort-order {
+      align-items: center;
+      background-color: $dark2;
+      border: 1px solid $grey1;
+      border-radius: 0;
+      color: $light4;
+      display: flex;
+      height: 38px;
+      justify-content: center;
+      margin: 0;
+      padding: 0;
+      width: 38px;
+
+      &:hover {
+        background-color: $grey1;
+        box-shadow: none;
+      }
+    }
+  }
+
+  .empty-state {
+    border: 1px dashed $grey1;
+    color: var(--color-text);
+    font-size: 1.05rem;
+    padding: 48px 24px;
+    text-align: center;
   }
 
   .archive-grid {
     display: grid;
-    grid-auto-rows: 1fr;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    grid-gap: 50px;
-    margin-bottom: 50px;
-    padding: 0 30px;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+
+    > a {
+      display: flex;
+    }
+  }
+
+  .archive-item {
+    background-color: $dark1;
+    border: 1px solid $grey1;
+    color: $light2;
+    display: flex;
+    flex-flow: column;
+    gap: 14px;
+    min-height: 150px;
+    padding: 16px 18px;
+    transition:
+      background-color 0.2s ease-in-out,
+      border-color 0.2s ease-in-out;
     width: 100%;
 
-    .archive-item {
-      background-color: $dark1;
-      border: 1px solid $light3;
+    &:not(.completed):hover {
+      background-color: $grey1;
+      border-color: $light1;
+      cursor: pointer;
+    }
+
+    .archive-item-header {
+      align-items: center;
       display: flex;
-      flex-flow: row;
+      gap: 10px;
       justify-content: space-between;
-      max-width: 400px;
-      min-height: 150px;
-      transition: background-color 0.2s ease-in-out;
-      width: 100%;
+    }
 
-      &:not(.completed):hover {
-        background-color: $grey1;
-        cursor: pointer;
+    .article-id {
+      color: $light1;
+      font-family: monospace;
+      font-size: 0.95rem;
+    }
+
+    h3 {
+      color: $light4;
+      flex: 1;
+      font-size: 1.15rem;
+      line-height: 1.3;
+      margin: 0;
+      text-wrap: pretty;
+    }
+
+    .caviarded-title {
+      background-color: $light3;
+      border: 1px solid $light3;
+      color: transparent;
+      display: inline-block;
+      font-family: monospace;
+      line-height: 1.7rem;
+      min-width: 9ch;
+      user-select: none;
+    }
+
+    .archive-item-median {
+      color: $light1;
+      font-size: 0.92rem;
+    }
+
+    .value {
+      color: $light3;
+      font-family: monospace;
+    }
+    .archive-item-median .value {
+      font-size: 1.05rem;
+    }
+
+    .archive-item-footer {
+      border-top: 1px solid $grey1;
+      display: flex;
+      flex-wrap: wrap;
+
+      > span {
+        white-space: nowrap;
       }
+      font-size: 0.92rem;
+      gap: 10px;
+      justify-content: space-between;
+      padding-top: 12px;
 
-      .archive-info {
-        align-items: flex-start;
-        display: flex;
-        flex-flow: column;
-        justify-content: flex-start;
-        padding: 10px;
-
-        h3 {
-          margin: 0 0 15px 0;
-        }
+      .play {
+        color: $lightBlue;
+        font-size: 0.95rem;
+        font-weight: 600;
       }
+    }
+  }
 
-      .article-difficulty {
-        width: 10px;
-        display: flex;
-        flex-flow: column;
+  .article-difficulty {
+    display: flex;
+    gap: 3px;
 
-        .difficulty {
-          display: flex;
-          flex: 1;
+    .difficulty {
+      background-color: #3a3a48;
+      border-radius: 2px;
+      height: 6px;
+      width: 10px;
+    }
 
-          &.active {
-            border: 1px solid $light3;
-            &.level-0 {
-              background-color: greenyellow;
-            }
-            &.level-1 {
-              background-color: gold;
-            }
-            &.level-2 {
-              background-color: orange;
-            }
-            &.level-3 {
-              background-color: tomato;
-            }
-            &.level-4 {
-              background-color: crimson;
-            }
-          }
-        }
+    $difficultyColors: greenyellow, gold, orange, tomato, crimson;
+    @for $level from 0 through 4 {
+      &.level-#{$level} .difficulty.active {
+        background-color: list.nth($difficultyColors, $level + 1);
       }
     }
   }
@@ -784,67 +1146,454 @@ main {
   .loader {
     height: auto;
   }
-
-  .empty-state {
-    color: var(--color-text);
-    text-align: center;
-  }
-
-  .right-container {
-    display: flex;
-    flex-flow: column;
-
-    h3 {
-      margin-top: 50px;
-    }
-
-    .separator {
-      flex: 1;
-    }
-
-    .reset-account {
-      margin: 20px 0 20px auto;
-    }
-  }
 }
 
-.modal.sync-modal {
-  input {
-    font-family: monospace;
-    width: 90%;
-  }
-  .qr-code {
-    margin-bottom: 20px;
-    text-align: center;
+// new custom game
+#new-custom-game {
+  form {
+    display: flex;
+    flex-flow: column;
+    gap: 12px;
+    margin-top: 40px;
 
-    .mask {
+    label {
+      color: var(--color-text);
+      font-size: 0.95rem;
+    }
+  }
+
+  .url-form {
+    display: flex;
+    flex-wrap: wrap;
+
+    button {
+      background-color: $dark2;
+      border: 1px solid $light3;
+      border-radius: 0;
+      color: $light4;
+      font: inherit;
+      font-weight: 600;
+      height: 52px;
+      margin: 0;
+      padding: 0 28px;
+
+      &:hover {
+        background-color: $grey1;
+        box-shadow: none;
+      }
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+
+      @include media-max($breakpoint) {
+        width: 100%;
+      }
+    }
+  }
+
+  .url-input {
+    align-items: center;
+    background-color: $light4;
+    display: flex;
+    flex: 1 1 360px;
+    font-family: monospace;
+    font-size: 1.05rem;
+    height: 52px;
+    min-width: 0;
+    padding: 0 0 0 14px;
+
+    @include media-max($breakpoint) {
+      font-size: 0.9rem;
+    }
+
+    span {
+      color: #606060;
+      white-space: nowrap;
+    }
+
+    input {
+      background: transparent;
+      border: 0;
+      color: $dark2;
+      flex: 1;
+      font: inherit;
+      height: 100%;
+      min-width: 60px;
+      outline: 0;
+      padding: 0 12px 0 2px;
+    }
+  }
+
+  .error-message {
+    align-items: center;
+    color: #ff6b6b;
+    display: flex;
+    font-size: 0.95rem;
+    gap: 10px;
+  }
+
+  .created-game {
+    background-color: $dark1;
+    border: 1px solid $grey1;
+    color: $light2;
+    display: flex;
+    flex-flow: column;
+    gap: 18px;
+    margin-top: 40px;
+    padding: 28px;
+
+    @include media-max($breakpoint) {
+      margin-top: 28px;
+      padding: 20px;
+    }
+  }
+
+  .created-game-title {
+    align-items: center;
+    color: $light4;
+    display: flex;
+    font-size: 1.25rem;
+    font-weight: 700;
+    gap: 12px;
+
+    .success {
+      color: greenyellow;
+    }
+  }
+
+  .url-copy {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+
+    @include media-max($breakpoint) {
+      gap: 8px;
+      grid-template-columns: 1fr 1fr;
+
+      input {
+        grid-column: 1 / -1;
+      }
+    }
+
+    input {
+      background-color: $dark2;
+      border: 1px solid $grey1;
+      color: $light3;
+      font-family: monospace;
+      font-size: 1rem;
+      height: 48px;
+      min-width: 0;
+      padding: 0 14px;
+      width: 100%;
+    }
+
+    .copy,
+    .open {
       align-items: center;
-      border: 1px solid $light1;
-      color: black;
-      cursor: pointer;
+      border: 1px solid $light3;
+      border-radius: 0;
       display: flex;
-      position: absolute;
-      left: calc(50% - 64px);
+      font: inherit;
+      font-weight: 600;
+      gap: 8px;
+      height: 48px;
       justify-content: center;
-      font-size: 30px;
-      height: 128px;
-      width: 128px;
-      background: $light3;
+      margin: 0;
+      padding: 0 20px;
+    }
+
+    .copy {
+      background-color: $dark2;
+      color: $light4;
+
+      &:hover {
+        background-color: $grey1;
+        box-shadow: none;
+      }
+    }
+
+    .open {
+      background-color: $light4;
+      color: $dark2;
+
+      &:hover {
+        background-color: #fff;
+        color: $dark2;
+      }
+
+      @include media-min($breakpoint) {
+        border-left: 0;
+      }
+    }
+  }
+
+  .hidden-title {
+    font-size: 1rem;
+    line-height: 1.8;
+    text-wrap: pretty;
+
+    .caviarded-toggle {
+      font-family: monospace;
+    }
+
+    .hint {
+      color: $light1;
+      font-size: 0.88rem;
+    }
+  }
+
+  .created-game .note {
+    font-size: 0.95rem;
+  }
+
+  .link-button {
+    align-items: center;
+    background: none;
+    color: $lightBlue;
+    display: flex;
+    font: inherit;
+    font-weight: 600;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+
+    &:hover {
+      box-shadow: none;
+      color: #4fb0ff;
     }
   }
 }
 
 // about
 #about {
-  .left-container {
-    color: var(--color-text);
+  .caviarded-lede {
+    font-family: monospace;
+    font-size: 1.3rem;
+    line-height: 2rem;
+    max-width: 46ch;
+    text-wrap: pretty;
+  }
+
+  .page-header h1 {
+    margin-bottom: 18px;
+  }
+
+  .page-sections {
+    margin-top: 56px;
+  }
+
+  .contact .page-section-body {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
     a {
-      color: $lightBlue;
+      background-color: $dark1;
+      border: 1px solid $grey1;
+      color: $light2;
+      display: flex;
+      flex-flow: column;
+      gap: 8px;
+      padding: 18px 20px;
+      transition: border-color 0.2s ease-in-out;
+
+      &:hover {
+        border-color: $light3;
+      }
+    }
+
+    .contact-label {
+      color: $light1;
+      font-size: 0.95rem;
+    }
+
+    .contact-value {
+      align-items: center;
+      color: $light4;
+      display: flex;
+      font-size: 1.05rem;
+      font-weight: 600;
+      gap: 10px;
+
+      .external {
+        color: $light1;
+        font-size: 0.75rem;
+      }
     }
   }
 }
 
-// footer
-footer {
-  height: $footerHeight;
+// settings
+#settings {
+  .options {
+    display: flex;
+    flex-flow: column;
+  }
+
+  .toggle {
+    align-items: center;
+    border-bottom: 1px solid $grey1;
+    cursor: pointer;
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    padding: 14px 0;
+    position: relative;
+
+    input {
+      cursor: pointer;
+      height: 100%;
+      left: 0;
+      margin: 0;
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+
+    .track {
+      background-color: $grey1;
+      border-radius: 20px;
+      flex-shrink: 0;
+      height: 24px;
+      position: relative;
+      transition: background-color 0.2s ease-in-out;
+      width: 44px;
+
+      &::after {
+        background-color: $light4;
+        border-radius: 50%;
+        content: "";
+        height: 18px;
+        left: 3px;
+        position: absolute;
+        top: 3px;
+        transition: left 0.2s ease-in-out;
+        width: 18px;
+      }
+    }
+
+    input:checked + .track {
+      background-color: $lightBlue;
+
+      &::after {
+        left: 23px;
+      }
+    }
+
+    input:focus-visible + .track {
+      outline: 2px solid $lightBlue;
+      outline-offset: 2px;
+    }
+  }
+
+  .page-section-body > .note {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .sync-link {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .qr-code {
+    border: 1px solid $light1;
+    flex-shrink: 0;
+    height: 128px;
+    width: 128px;
+
+    svg {
+      display: block;
+      height: 100%;
+      width: 100%;
+    }
+
+    .mask {
+      align-items: center;
+      background-color: $light3;
+      border-radius: 0;
+      color: $dark2;
+      display: flex;
+      flex-flow: column;
+      font-family: monospace;
+      font-size: 0.75rem;
+      font-weight: normal;
+      gap: 6px;
+      height: 100%;
+      justify-content: center;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+
+      svg {
+        height: 1.6rem;
+        width: 1.6rem;
+      }
+    }
+  }
+
+  .button-input {
+    align-items: center;
+    display: flex;
+    flex: 1 1 220px;
+    margin: 0;
+    min-width: 0;
+
+    button {
+      align-items: center;
+      background-color: $dark2;
+      border: 1px solid $light3;
+      border-radius: 0;
+      border-right: 0;
+      display: flex;
+      height: 44px;
+      justify-content: center;
+      margin: 0;
+      padding: 0 15px;
+      width: 44px;
+    }
+
+    input {
+      background-color: $light4;
+      border: 0;
+      color: $dark2;
+      flex: 1;
+      font-family: monospace;
+      height: 44px;
+      margin: 0;
+      min-width: 0;
+      padding: 0 10px;
+    }
+  }
+
+  .warning {
+    align-items: baseline;
+    display: flex;
+    font-size: 0.95rem;
+    gap: 10px;
+
+    svg {
+      color: gold;
+      flex-shrink: 0;
+    }
+  }
+
+  .account-reset {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: space-between;
+
+    > p {
+      flex: 1 1 260px;
+    }
+
+    > button {
+      margin: 0;
+    }
+  }
 }

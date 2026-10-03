@@ -14,23 +14,36 @@ class TestDeviceSync:
 
         await expect(page).to_have_url(re.compile(r"/archives"), timeout=10000)
 
-    async def test_sync_modal_shows_qr_code(
+    async def test_settings_page_shows_qr_code(
         self, skip_tutorial_page: Page, login, user1
     ):
         page = skip_tutorial_page
         await login(user1)
-        await page.goto("/archives")
+        await page.goto("/parametres")
 
-        await page.get_by_text("Synchroniser un appareil").click()
+        section = page.locator(".page-section").filter(
+            has=page.get_by_role("heading", name="Synchronisation entre appareils")
+        )
+        await expect(section).to_be_visible()
 
-        modal = page.locator(".sync-modal")
-        await expect(modal).to_be_visible()
-        await expect(modal.locator("h1")).to_have_text(
-            "Synchronisation entre appareils"
+        await section.locator(".qr-code .mask").click()
+        await expect(section.locator(".qr-code svg")).to_be_visible()
+        await expect(section.locator("input")).to_have_value(
+            re.compile(rf"/login\?user={user1.id}$")
         )
 
-        await modal.locator(".qr-code .mask").click()
-        await expect(modal.locator(".qr-code svg")).to_be_visible()
+    async def test_sync_section_hidden_when_not_logged_in(
+        self, skip_tutorial_page: Page
+    ):
+        page = skip_tutorial_page
+        await page.goto("/parametres")
+
+        await expect(
+            page.get_by_role("heading", name="Options", exact=True)
+        ).to_be_visible()
+        await expect(
+            page.get_by_role("heading", name="Synchronisation entre appareils")
+        ).not_to_be_visible()
 
     async def test_login_as_same_user_preserves_stats(
         self, skip_tutorial_page: Page, login, context, user1, past_articles
@@ -48,9 +61,9 @@ class TestDeviceSync:
         user_cookie = next(c for c in cookies if c["name"] == "userId")
         assert user_cookie["value"] == str(user1.id)
 
-        score_section = page.locator(".right-container")
+        score_section = page.locator(".user-stats")
         await expect(score_section).to_contain_text("Parties terminées")
-        await expect(score_section).to_contain_text("1/")
+        await expect(score_section.locator(".finished .stat-value")).to_have_text("1")
 
         items = page.locator(".archive-grid .archive-item")
         completed = items.filter(
@@ -77,9 +90,9 @@ class TestDeviceSync:
         user_cookie = next(c for c in cookies if c["name"] == "userId")
         assert user_cookie["value"] == str(user1.id)
 
-        score_section = page.locator(".right-container")
+        score_section = page.locator(".user-stats")
         await expect(score_section).to_contain_text("Parties terminées")
-        await expect(score_section).to_contain_text("1/")
+        await expect(score_section.locator(".finished .stat-value")).to_have_text("1")
 
         items = page.locator(".archive-grid .archive-item")
         completed = items.filter(

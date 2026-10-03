@@ -8,10 +8,10 @@ class TestCustomGameCreation:
         await page.goto("/custom/nouveau")
 
         await expect(page.locator("main h1").first).to_contain_text(
-            "Créer une partie personnalisée"
+            "Caviardez l'article de votre choix"
         )
         await expect(page.locator('input[placeholder="Jeu"]')).to_be_visible()
-        await expect(page.locator('input[value="Créer"]')).to_be_visible()
+        await expect(page.get_by_role("button", name="Créer")).to_be_visible()
 
     @pytest.mark.network
     async def test_error_message_for_invalid_article(self, skip_tutorial_page: Page):
@@ -22,7 +22,7 @@ class TestCustomGameCreation:
         input_el = page.locator('input[placeholder="Jeu"]')
         await input_el.fill("xyznonexistentarticle12345")
 
-        await page.locator('input[value="Créer"]').click()
+        await page.get_by_role("button", name="Créer").click()
 
         await expect(
             page.get_by_text("Impossible de créer une partie personnalisée")
@@ -39,10 +39,10 @@ class TestCustomGameCreation:
         input_el = page.locator('input[placeholder="Jeu"]')
         await input_el.fill("France")
 
-        await page.locator('input[value="Créer"]').click()
+        await page.get_by_role("button", name="Créer").click()
 
-        await expect(page.get_by_text("Voici le lien de votre partie")).to_be_visible(
+        await expect(page.get_by_text("Votre partie est prête")).to_be_visible(
             timeout=30000
         )
-        await expect(page.locator('input[value="Copier"]')).to_be_visible()
-        await expect(page.locator('input[value="Ouvrir"]')).to_be_visible()
+        await expect(page.get_by_role("button", name="Copier")).to_be_visible()
+        await expect(page.get_by_role("link", name="Ouvrir")).to_be_visible()

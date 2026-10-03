@@ -1,83 +1,83 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React, { useCallback, useState } from "react";
-import { FaGithub } from "react-icons/fa";
+import { FaCog } from "react-icons/fa";
 
 import IntroductionModal from "@caviardeul/components/modals/introductionModal";
-import SettingsModal from "@caviardeul/components/modals/settingsModal";
-import ExternalLink from "@caviardeul/components/utils/externalLink";
+
+const links = [
+  { href: "/archives", label: "Archives" },
+  { href: "/custom/nouveau", label: "Partie personnalisée" },
+  { href: "/a-propos", label: "À propos" },
+];
+
+const isActive = (pathname: string | null, href: string) =>
+  !!pathname && (pathname === href || pathname.startsWith(`${href}/`));
 
 const Navbar = () => {
   const [active, setActive] = useState<boolean>(false);
-  const [showSettingsModal, setShowSettingsModal] = useState<boolean>(false);
+  const pathname = usePathname();
 
-  const handleClick = useCallback(() => {
-    setActive(!active);
-  }, [active]);
+  const handleToggle = useCallback(() => {
+    setActive((value) => !value);
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setActive(false);
+  }, []);
 
   return (
     <>
       <nav>
         <button
           className={"hamburger" + (active ? " active" : "")}
-          onClick={handleClick}
+          onClick={handleToggle}
+          title="Menu"
+          aria-label="Menu"
         >
           <span className="line" />
           <span className="line" />
           <span className="line" />
         </button>
         <h1>
-          <Link href="/" prefetch={false} onClick={handleClick}>
+          <Link href="/" prefetch={false} onClick={handleClose}>
             Caviardeul
           </Link>
         </h1>
 
         <div className={"nav-links" + (active ? " active" : "")}>
-          <div className="nav-link-background" onClick={handleClick} />
+          <div className="nav-link-background" onClick={handleClose} />
           <ul>
-            <li className="left">
-              <Link href="/archives/" prefetch={false} onClick={handleClick}>
-                Archives
-              </Link>
-            </li>
-            <li className="left">
-              <Link
-                href="/custom/nouveau"
-                prefetch={false}
-                onClick={handleClick}
+            {links.map(({ href, label }) => (
+              <li
+                key={href}
+                className={isActive(pathname, href) ? "active" : undefined}
               >
-                Partie personnalisée
-              </Link>
-            </li>
-            <li className="left">
-              <Link href="/a-propos" prefetch={false} onClick={handleClick}>
-                À propos
-              </Link>
-            </li>
-            <li
-              className="left"
-              onClick={() => {
-                setShowSettingsModal(true);
-                handleClick();
-              }}
-            >
-              Options
-            </li>
-            <li className="divider" />
-            <li>
-              <ExternalLink href="https://github.com/julienc91/caviardeul">
-                <FaGithub />
-              </ExternalLink>
-            </li>
+                <Link href={href} prefetch={false} onClick={handleClose}>
+                  {label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
+
+        <Link
+          href="/parametres"
+          prefetch={false}
+          onClick={handleClose}
+          className={
+            "settings-link" +
+            (isActive(pathname, "/parametres") ? " active" : "")
+          }
+          title="Paramètres"
+          aria-label="Paramètres"
+        >
+          <FaCog />
+        </Link>
       </nav>
       <IntroductionModal />
-      <SettingsModal
-        open={showSettingsModal}
-        onClose={() => setShowSettingsModal(false)}
-      />
     </>
   );
 };

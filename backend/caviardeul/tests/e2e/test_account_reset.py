@@ -7,11 +7,11 @@ class TestAccountReset:
     ):
         page = skip_tutorial_page
         await login(user1)
-        await page.goto("/archives")
+        await page.goto("/parametres")
 
-        await page.get_by_text("Réinitialiser").click()
+        await page.get_by_role("button", name="Réinitialiser", exact=True).click()
 
-        modal = page.locator(".modal").filter(has_text="Confirmation")
+        modal = page.locator(".modal").filter(has_text="Réinitialiser")
         await expect(modal).to_be_visible()
         await expect(modal).to_contain_text("irréversible")
         await expect(modal.get_by_text("Confirmer")).to_be_visible()
@@ -25,15 +25,19 @@ class TestAccountReset:
             f"Expected userId cookie to be deleted, found: {user_cookies}"
         )
 
-        await expect(page.get_by_text("Réinitialiser")).not_to_be_visible()
+        await expect(
+            page.get_by_role("button", name="Réinitialiser", exact=True)
+        ).not_to_be_visible()
 
     async def test_reset_button_not_visible_when_not_logged_in(
         self, skip_tutorial_page: Page
     ):
         page = skip_tutorial_page
-        await page.goto("/archives")
+        await page.goto("/parametres")
 
-        await expect(page.get_by_text("Réinitialiser")).not_to_be_visible()
+        await expect(
+            page.get_by_role("button", name="Réinitialiser", exact=True)
+        ).not_to_be_visible()
 
     async def test_reset_button_visible_with_invalid_user_cookie(
         self, skip_tutorial_page: Page, context
@@ -50,13 +54,17 @@ class TestAccountReset:
         )
 
         page = skip_tutorial_page
-        await page.goto("/archives")
+        await page.goto("/parametres")
 
-        await expect(page.get_by_text("Réinitialiser")).to_be_visible()
+        await expect(
+            page.get_by_role("button", name="Réinitialiser", exact=True)
+        ).to_be_visible()
 
-        await page.get_by_text("Réinitialiser").click()
-        modal = page.locator(".modal").filter(has_text="Confirmation")
+        await page.get_by_role("button", name="Réinitialiser", exact=True).click()
+        modal = page.locator(".modal").filter(has_text="Réinitialiser")
         await modal.get_by_text("Confirmer").click()
 
         await page.wait_for_load_state("networkidle")
-        await expect(page.get_by_text("Réinitialiser")).not_to_be_visible()
+        await expect(
+            page.get_by_role("button", name="Réinitialiser", exact=True)
+        ).not_to_be_visible()

@@ -1,29 +1,27 @@
+import re
+
 import pytest
 from playwright.async_api import Page, expect
 
 
 @pytest.mark.usefixtures("daily_article")
 class TestSettings:
-    async def test_opens_settings_modal_from_navbar(self, skip_tutorial_page: Page):
+    async def test_opens_settings_page_from_navbar(self, skip_tutorial_page: Page):
         page = skip_tutorial_page
         await page.goto("/")
 
-        await page.locator("nav").get_by_text("Options").click()
+        await page.locator("nav").get_by_role("link", name="Paramètres").click()
 
-        modal = page.locator(".settings-modal")
-        await expect(modal).to_be_visible()
-        await expect(modal.locator("h1")).to_have_text("Options")
+        await expect(page).to_have_url(re.compile(r"/parametres$"))
+        await expect(page.locator("main h1")).to_have_text("Options et compte")
 
     async def test_toggle_dark_mode(self, skip_tutorial_page: Page):
         page = skip_tutorial_page
-        await page.goto("/")
-
-        await page.locator("nav").get_by_text("Options").click()
-        modal = page.locator(".settings-modal")
-        await expect(modal).to_be_visible()
+        await page.goto("/parametres")
+        settings_page = page.locator("#settings")
 
         # Dark mode is ON by default (checked={!lightMode}, lightMode defaults to false)
-        dark_mode_checkbox = modal.get_by_label("Activer le mode sombre")
+        dark_mode_checkbox = settings_page.get_by_label("Activer le mode sombre")
         await expect(dark_mode_checkbox).to_be_checked()
 
         await dark_mode_checkbox.uncheck()
@@ -34,13 +32,10 @@ class TestSettings:
 
     async def test_toggle_auto_scroll(self, skip_tutorial_page: Page):
         page = skip_tutorial_page
-        await page.goto("/")
+        await page.goto("/parametres")
+        settings_page = page.locator("#settings")
 
-        await page.locator("nav").get_by_text("Options").click()
-        modal = page.locator(".settings-modal")
-        await expect(modal).to_be_visible()
-
-        auto_scroll_checkbox = modal.get_by_label(
+        auto_scroll_checkbox = settings_page.get_by_label(
             "Défilement automatique vers le mot sélectionné"
         )
         await expect(auto_scroll_checkbox).to_be_checked()
@@ -53,26 +48,20 @@ class TestSettings:
 
     async def test_settings_persist_on_reload(self, skip_tutorial_page: Page):
         page = skip_tutorial_page
-        await page.goto("/")
+        await page.goto("/parametres")
 
         # Toggle dark mode off (it's ON by default)
-        await page.locator("nav").get_by_text("Options").click()
-        modal = page.locator(".settings-modal")
-        await expect(modal).to_be_visible()
+        settings_page = page.locator("#settings")
 
-        dark_mode_checkbox = modal.get_by_label("Activer le mode sombre")
+        dark_mode_checkbox = settings_page.get_by_label("Activer le mode sombre")
         await expect(dark_mode_checkbox).to_be_checked()
         await dark_mode_checkbox.uncheck()
         await expect(dark_mode_checkbox).not_to_be_checked()
 
-        # Close modal and reload
-        await modal.locator("button").first.click()
         await page.reload()
 
-        # Re-open settings and verify the setting persisted
-        await page.locator("nav").get_by_text("Options").click()
-        modal = page.locator(".settings-modal")
-        await expect(modal).to_be_visible()
+        # Verify the setting persisted
+        settings_page = page.locator("#settings")
 
-        dark_mode_checkbox = modal.get_by_label("Activer le mode sombre")
+        dark_mode_checkbox = settings_page.get_by_label("Activer le mode sombre")
         await expect(dark_mode_checkbox).not_to_be_checked()
