@@ -45,7 +45,11 @@ const Synchronization: React.FC<{ userId: string }> = ({ userId }) => {
           >
             {reveal ? <FaEyeSlash /> : <FaEye />}
           </button>
-          <input value={url} type={reveal ? "text" : "password"} readOnly />
+          <input
+            value={reveal ? url : "•".repeat(url.length)}
+            type="text"
+            readOnly
+          />
         </div>
       </div>
       <p className="warning">
