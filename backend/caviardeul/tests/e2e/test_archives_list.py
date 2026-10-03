@@ -6,7 +6,7 @@ from caviardeul.tests.factories import DailyArticleScoreFactory
 
 def _difficulty_title(median: int) -> str:
     labels = ["Très facile", "Facile", "Moyen", "Difficile", "Très difficile"]
-    thresholds = [20, 40, 80, 100]
+    thresholds = [30, 50, 80, 110]
     category = next(
         (i for i, threshold in enumerate(thresholds) if median < threshold),
         len(thresholds),
