@@ -52,6 +52,22 @@ describe("ConfirmModal", () => {
     expect(confirmButton).not.toHaveClass("danger");
   });
 
+  it("uses custom title and cancel label", async () => {
+    const onCancel = vi.fn();
+    render(
+      <ConfirmModal
+        {...defaultProps}
+        title="Réinitialiser ?"
+        cancelLabel="Annuler"
+        onCancel={onCancel}
+      />,
+    );
+    expect(screen.getByText("Réinitialiser ?")).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("button", { name: "Annuler" }));
+    expect(onCancel).toHaveBeenCalledTimes(1);
+  });
+
   it("renders nothing when open is false", () => {
     const { container } = render(
       <ConfirmModal {...defaultProps} open={false} />,

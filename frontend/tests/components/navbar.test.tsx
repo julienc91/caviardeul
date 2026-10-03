@@ -1,10 +1,15 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { usePathname } from "next/navigation";
 import { describe, expect, it, vi } from "vitest";
 
 import Navbar from "@caviardeul/components/navbar";
 
 import { renderWithProviders } from "../helpers/renderWithProviders";
+
+vi.mock("next/navigation", () => ({
+  usePathname: vi.fn().mockReturnValue("/"),
+}));
 
 vi.mock("@caviardeul/utils/save", () => ({
   default: {
@@ -28,18 +33,21 @@ describe("Navbar", () => {
     expect(screen.getByText("À propos")).toBeInTheDocument();
   });
 
-  it("renders Options menu item", () => {
+  it("renders a link to the settings page", () => {
     renderWithProviders(<Navbar />);
-    expect(screen.getByText("Options")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Paramètres" })).toHaveAttribute(
+      "href",
+      "/parametres",
+    );
   });
 
-  it("toggles settings modal when Options is clicked", async () => {
+  it("marks the current page link as active", () => {
+    vi.mocked(usePathname).mockReturnValue("/archives/12");
     renderWithProviders(<Navbar />);
-
-    await userEvent.click(screen.getByText("Options"));
-
-    // Settings modal should now be visible
-    expect(screen.getByText("Activer le mode sombre")).toBeInTheDocument();
+    expect(screen.getByText("Archives").closest("li")).toHaveClass("active");
+    expect(screen.getByText("À propos").closest("li")).not.toHaveClass(
+      "active",
+    );
   });
 
   it("toggles hamburger menu", async () => {

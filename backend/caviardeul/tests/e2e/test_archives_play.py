@@ -64,10 +64,10 @@ class TestArchivesPlay:
             has=page.locator("h3", has_text=completed_article.page_name)
         )
         await expect(completed_item).to_be_visible()
-        heading_text = await completed_item.locator("h3").text_content()
-        # Extract article ID from "N°{id} - Python (langage)"
-        match = re.search(r"N°(\d+)", heading_text)
-        assert match, f"Could not extract article ID from: {heading_text}"
+        id_text = await completed_item.locator(".article-id").text_content()
+        # Extract article ID from "N°{id}"
+        match = re.search(r"N°(\d+)", id_text)
+        assert match, f"Could not extract article ID from: {id_text}"
         article_id = match.group(1)
 
         # Navigate directly to the completed article's URL

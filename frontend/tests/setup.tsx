@@ -98,9 +98,16 @@ vi.mock("next/link", () => ({
   default: ({
     children,
     href,
-  }: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    prefetch: _prefetch,
+    ...props
+  }: React.AnchorHTMLAttributes<HTMLAnchorElement> & {
     children: React.ReactNode;
     href: string;
     prefetch?: boolean;
-  }) => <a href={href}>{children}</a>,
+  }) => (
+    <a href={href} {...props}>
+      {children}
+    </a>
+  ),
 }));

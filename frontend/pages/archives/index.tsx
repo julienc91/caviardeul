@@ -1,40 +1,42 @@
-import { deleteCookie, getCookie } from "cookies-next/client";
 import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { QRCodeSVG } from "qrcode.react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import {
-  FaEye,
-  FaEyeSlash,
-  FaSortAmountDown,
-  FaSortAmountUp,
-} from "react-icons/fa";
+import { FaSortAmountDown, FaSortAmountUp } from "react-icons/fa";
 
-import ConfirmModal from "@caviardeul/components/modals/confirmModal";
-import Modal from "@caviardeul/components/modals/modal";
 import Loader from "@caviardeul/components/utils/loader";
+import { PageHeader } from "@caviardeul/components/utils/page";
 import { getUserDailyArticleStats } from "@caviardeul/lib/queries";
 import {
   ArticleInfo,
   ArticleInfoStats,
   DailyArticleStats,
+  StatsCategory,
 } from "@caviardeul/types";
-import { API_URL, BASE_URL } from "@caviardeul/utils/config";
-import SaveManagement from "@caviardeul/utils/save";
+import { API_URL } from "@caviardeul/utils/config";
+
+const difficultyLabels: Record<StatsCategory, string> = {
+  0: "Très facile",
+  1: "Facile",
+  2: "Moyen",
+  3: "Difficile",
+  4: "Très difficile",
+};
 
 const Difficulty: React.FC<{ stats: ArticleInfoStats }> = ({ stats }) => {
-  const { category, median } = stats;
-  const display = median >= 10 ? `${median}` : "Moins de 10";
+  const { category } = stats;
+  const label = difficultyLabels[category];
   return (
-    <div className="article-difficulty" title={`${display} coups en moyenne`}>
+    <div
+      className={`article-difficulty level-${category}`}
+      title={label}
+      aria-label={`Difficulté\u00a0: ${label}`}
+      role="img"
+    >
       {[0, 1, 2, 3, 4].map((level) => (
         <span
           key={level}
-          className={
-            `difficulty level-${level}` + (category >= level ? " active" : "")
-          }
+          className={"difficulty" + (category >= level ? " active" : "")}
         />
       ))}
     </div>
@@ -42,151 +44,158 @@ const Difficulty: React.FC<{ stats: ArticleInfoStats }> = ({ stats }) => {
 };
 
 type SortType = "date" | "difficulty" | "score";
+type FilterType = "finished" | "not_finished" | "";
+
+const SegmentedControl = <T extends string>({
+  label,
+  options,
+  value,
+  onChange,
+  className,
+}: {
+  label: string;
+  options: [T, string][];
+  value: T;
+  onChange: (_value: T) => void;
+  className?: string;
+}) => {
+  return (
+    <div
+      className={"segmented-control" + (className ? ` ${className}` : "")}
+      role="group"
+      aria-label={label}
+    >
+      {options.map(([optionValue, optionLabel]) => (
+        <button
+          key={optionValue}
+          className={optionValue === value ? "active" : undefined}
+          aria-pressed={optionValue === value}
+          onClick={() => onChange(optionValue)}
+        >
+          {optionLabel}
+        </button>
+      ))}
+    </div>
+  );
+};
 
 const SortSelection: React.FC<{
   sortBy: SortType;
   sortOrder: boolean;
   onChange: (_value: SortType) => void;
 }> = ({ sortBy, sortOrder, onChange }) => {
+  const orderLabel = sortOrder ? "Ordre croissant" : "Ordre décroissant";
   return (
-    <>
-      <label>
-        Trier
-        <select
-          value={sortBy}
-          onChange={({ target: { value } }) => {
-            onChange(value as SortType);
-          }}
-        >
-          <option value="date">Date</option>
-          <option value="difficulty">Difficulté</option>
-          <option value="score">Mon score</option>
-        </select>
-      </label>
-      <button onClick={() => onChange(sortBy)}>
+    <div className="sort-selection">
+      <span className="label">Trier par</span>
+      <SegmentedControl<SortType>
+        label="Trier par"
+        options={[
+          ["date", "Date"],
+          ["difficulty", "Difficulté"],
+          ["score", "Mon score"],
+        ]}
+        value={sortBy}
+        onChange={onChange}
+      />
+      <button
+        className="sort-order"
+        onClick={() => onChange(sortBy)}
+        title={orderLabel}
+        aria-label={orderLabel}
+      >
         {sortOrder ? <FaSortAmountUp /> : <FaSortAmountDown />}
       </button>
-    </>
+    </div>
   );
 };
-
-type FilterType = "finished" | "not_finished" | "";
 
 const FilterSelection: React.FC<{
   filterBy: FilterType;
   onChange: (_value: FilterType) => void;
 }> = ({ filterBy, onChange }) => {
   return (
-    <div className="filter-selection">
-      <label>
-        Fitrer
-        <select
-          value={filterBy}
-          onChange={({ target: { value } }) => {
-            onChange(value as FilterType);
-          }}
-        >
-          <option value="">Tous</option>
-          <option value="not_finished">À faire</option>
-          <option value="finished">Terminés</option>
-        </select>
-      </label>
-    </div>
+    <SegmentedControl<FilterType>
+      label="Filtrer"
+      className="filter-selection"
+      options={[
+        ["", "Tous"],
+        ["not_finished", "À faire"],
+        ["finished", "Terminés"],
+      ]}
+      value={filterBy}
+      onChange={onChange}
+    />
   );
 };
 
-const SynchronizationModal: React.FC<{
-  open: boolean;
-  onClose: () => void;
-}> = ({ open, onClose }) => {
-  const [reveal, setReveal] = useState<boolean>(false);
-  const userId = getCookie("userId");
-  const url = `${BASE_URL}/login?user=${userId}`;
-  return (
-    <Modal className="sync-modal" open={open} onClose={onClose}>
-      <h1>Synchronisation entre appareils</h1>
-
-      <p>
-        Si vous jouez à Caviardeul sur plusieurs appareils à la fois, vous
-        pouvez les synchroniser pour retrouver vos scores et votre progression
-        sur chacun d&apos;entre eux.
-      </p>
-
-      <p>
-        Notez tout de même que l&apos;historique de vos essais n&apos;est pas
-        synchronisé, vous ne pourrez donc pas commencer une partie sur un
-        appareil puis la reprendre où vous l&apos;aviez laissée sur un second.
-      </p>
-
-      <p>
-        Pour commencer la synchronisation, utilisez le lien suivant depuis votre
-        second appareil&nbsp;:
-      </p>
-      <div className="button-input">
-        <button onClick={() => setReveal(!reveal)}>
-          {reveal ? <FaEyeSlash /> : <FaEye />}
-        </button>
-        <input value={url} type={reveal ? "text" : "password"} readOnly />
-      </div>
-      <p>Ou scannez ce QR Code&nbsp;:</p>
-      <div className="qr-code">
-        {!reveal && (
-          <div className="mask" onClick={() => setReveal(true)}>
-            <FaEye />
-          </div>
-        )}
-        <QRCodeSVG value={url} />
-      </div>
-
-      <p>
-        <strong>Attention&nbsp;:</strong> Ce lien et ce code sont spécifiques à
-        votre compte, ne les partagez pas&nbsp;!
-      </p>
-    </Modal>
-  );
-};
+const caviardedRadiuses = [
+  "255px 15px 225px 15px/15px 225px 15px 255px",
+  "225px 30px 255px 30px/30px 255px 30px 225px",
+  "200px 30px 255px 20px/20px 215px 30px 250px",
+  "220px 50px 215px 30px/40px 240px 20px 210px",
+  "30px 255px 30px 225px/30px 225px 30px 250px",
+];
 
 const ArticleCard: React.FC<{ articleInfo: ArticleInfo }> = ({
   articleInfo,
 }) => {
-  const isOver = !!articleInfo.userScore;
+  const { articleId, pageName, userScore, stats } = articleInfo;
+  const isOver = !!userScore;
+  const median = stats.median >= 10 ? `${stats.median}` : "Moins de 10";
 
-  let container = (
-    <div
-      className={"archive-item" + (isOver ? " completed" : "")}
-      key={articleInfo.articleId}
-    >
-      <div className="archive-info">
-        <h3>
-          N°{articleInfo.articleId} - {isOver ? articleInfo.pageName : "?"}
-        </h3>
-        {isOver && !!articleInfo.userScore ? (
+  const container = (
+    <div className={"archive-item" + (isOver ? " completed" : "")}>
+      <div className="archive-item-header">
+        <span className="article-id">N°{articleId}</span>
+        <Difficulty stats={stats} />
+      </div>
+      <h3>
+        {isOver ? (
+          pageName
+        ) : (
+          <span
+            className="caviarded-title"
+            style={{
+              borderRadius:
+                caviardedRadiuses[articleId % caviardedRadiuses.length],
+            }}
+          >
+            ?
+          </span>
+        )}
+      </h3>
+      <div className="archive-item-median">
+        <span className="value">{median}</span> coups en moyenne
+      </div>
+      <div className="archive-item-footer">
+        {userScore ? (
           <>
-            <span>Essais&nbsp;: {articleInfo.userScore.nbAttempts}</span>
             <span>
-              Précision&nbsp;:{" "}
-              {Math.floor(
-                (articleInfo.userScore.nbCorrect * 100) /
-                  Math.max(articleInfo.userScore.nbAttempts, 1),
-              )}
-              %
+              Vous&nbsp;: <span className="value">{userScore.nbAttempts}</span>{" "}
+              essais
+            </span>
+            <span>
+              <span className="value">
+                {Math.floor(
+                  (userScore.nbCorrect * 100) /
+                    Math.max(userScore.nbAttempts, 1),
+                )}
+                &nbsp;%
+              </span>{" "}
+              précision
             </span>
           </>
         ) : (
-          <span>► Jouer</span>
+          <span className="play">► Jouer</span>
         )}
       </div>
-      {<Difficulty stats={articleInfo.stats} />}
     </div>
   );
 
   if (!isOver) {
-    container = (
-      <Link
-        href={`/archives/${articleInfo.articleId}`}
-        key={articleInfo.articleId}
-        prefetch={false}
-      >
+    return (
+      <Link href={`/archives/${articleId}`} prefetch={false}>
         {container}
       </Link>
     );
@@ -347,7 +356,7 @@ const ArticleList: React.FC = () => {
           onChange={handleSortByChanged}
         />
       </div>
-      {articleList.length === 0 && !loading ? (
+      {articleList.length === 0 && !loading && filterBy !== "" ? (
         <div className="empty-state">
           {filterBy === "finished" && (
             <div>
@@ -376,19 +385,13 @@ const ArticleList: React.FC = () => {
 const Archives: React.FC<{ userStats: DailyArticleStats }> = ({
   userStats,
 }) => {
-  const [showSynchronizationModal, setShowSynchronizationModal] =
-    useState<boolean>(false);
-  const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return !!getCookie("userId");
-  });
-  const router = useRouter();
-
   const title = "Caviardeul - Archives";
 
   const nbGames = userStats.total;
   const nbFinishedGames = userStats.totalFinished;
+  const percentFinished = Math.floor(
+    (nbFinishedGames * 100) / Math.max(nbGames, 1),
+  );
 
   const avgTrials = userStats.averageNbAttempts;
   const avgAccuracy = Math.round(
@@ -396,14 +399,7 @@ const Archives: React.FC<{ userStats: DailyArticleStats }> = ({
       Math.max(userStats.averageNbAttempts, 1),
   );
 
-  const handleReset = useCallback(() => {
-    SaveManagement.clearProgress(true, true, true);
-    setIsLoggedIn(false);
-    setShowConfirmModal(false);
-    setShowSynchronizationModal(false);
-    deleteCookie("userId");
-    router.reload();
-  }, [router]);
+  const formatNumber = (value: number) => value.toLocaleString("fr-FR");
 
   return (
     <>
@@ -411,66 +407,43 @@ const Archives: React.FC<{ userStats: DailyArticleStats }> = ({
         <title>{title}</title>
         <meta key="og:title" property="og:title" content={title} />
       </Head>
-      <main id="archives">
-        <div className="left-container">
-          <h1>Archives</h1>
+      <main id="archives" className="page">
+        <div className="page-content wide">
+          <PageHeader eyebrow="Archives" title="Tous les Caviardeuls">
+            <p className="lede">
+              {formatNumber(nbGames)} articles déchiffrés jour après jour depuis
+              le premier Caviardeul. Rattrapez ceux qui vous ont échappé.
+            </p>
+          </PageHeader>
+
+          <div className="user-stats">
+            <div className="stat finished">
+              <div className="stat-label">Parties terminées</div>
+              <div className="stat-values">
+                <span className="stat-value">
+                  {formatNumber(nbFinishedGames)}
+                </span>
+                <span className="stat-total">/ {formatNumber(nbGames)}</span>
+                <span className="stat-percent">{percentFinished}&nbsp;%</span>
+              </div>
+              <div className="progress">
+                <div style={{ width: `${percentFinished}%` }} />
+              </div>
+            </div>
+            <div className="stat">
+              <div className="stat-label">Essais en moyenne</div>
+              <div className="stat-value">{avgTrials}</div>
+            </div>
+            <div className="stat">
+              <div className="stat-label">Précision moyenne</div>
+              <div className="stat-value">
+                {avgAccuracy}
+                <span className="stat-unit">&nbsp;%</span>
+              </div>
+            </div>
+          </div>
 
           <ArticleList />
-        </div>
-        <div className="right-container">
-          <h1>Score</h1>
-
-          <ul>
-            <li>
-              Parties terminées&nbsp;: {nbFinishedGames}/{nbGames} (
-              {Math.floor((nbFinishedGames * 100) / Math.max(nbGames, 1))}%)
-            </li>
-            <li>Nombre d&apos;essais moyen&nbsp;: {avgTrials}</li>
-            <li>Précision moyenne&nbsp;: {avgAccuracy}%</li>
-          </ul>
-
-          {isLoggedIn && (
-            <>
-              <div>
-                <h3>Vous jouez sur plusieurs appareils&nbsp;?</h3>
-                <button
-                  className="action"
-                  onClick={() => setShowSynchronizationModal(true)}
-                >
-                  Synchroniser un appareil
-                </button>
-                <SynchronizationModal
-                  open={showSynchronizationModal}
-                  onClose={() => setShowSynchronizationModal(false)}
-                />
-              </div>
-
-              <div className="separator" />
-              <div className="reset-account">
-                <button
-                  className="danger"
-                  onClick={() => setShowConfirmModal(true)}
-                >
-                  Réinitialiser
-                </button>
-                <ConfirmModal
-                  message={
-                    <>
-                      Cette action réinitialisera vos scores et votre
-                      progression de manière irréversible.
-                      <br />
-                      Voulez-vous continuer&nbsp;?
-                    </>
-                  }
-                  open={showConfirmModal}
-                  danger={true}
-                  confirmLabel="Confirmer"
-                  onConfirm={handleReset}
-                  onCancel={() => setShowConfirmModal(false)}
-                />
-              </div>
-            </>
-          )}
         </div>
       </main>
     </>

@@ -15,7 +15,18 @@ describe("IntroductionModal", () => {
   it("renders intro text when tutorial not skipped", () => {
     render(<IntroductionModal />);
     expect(screen.getByText("Caviardeul")).toBeInTheDocument();
-    expect(screen.getByText(/est un jeu de réflexion/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Retrouvez l'article Wikipédia caché/),
+    ).toBeInTheDocument();
+  });
+
+  it("reveals the caviarded word when clicked", async () => {
+    render(<IntroductionModal />);
+    const word = screen.getByRole("button", { name: "caviardés" });
+    expect(word).not.toHaveClass("revealed");
+
+    await userEvent.click(word);
+    expect(word).toHaveClass("revealed");
   });
 
   it("renders 'Commencer' button", () => {

@@ -11,7 +11,7 @@ class TestNavigation:
         modal = page.locator(".modal")
         await expect(modal).to_be_visible()
         await expect(modal.locator("h1")).to_have_text("Caviardeul")
-        await expect(modal).to_contain_text("jeu de réflexion")
+        await expect(modal).to_contain_text("Retrouvez l'article Wikipédia caché")
 
         await modal.get_by_text("Commencer").click()
         await expect(modal).not_to_be_visible()
@@ -27,15 +27,22 @@ class TestNavigation:
         await expect(page).to_have_url(re.compile(r"/$"))
         await expect(page.locator("#game")).to_be_visible()
 
-    async def test_options_link_opens_settings_modal(self, skip_tutorial_page: Page):
+    async def test_settings_link_navigates_to_settings_page(
+        self, skip_tutorial_page: Page
+    ):
         page = skip_tutorial_page
         await page.goto("/")
 
-        await page.locator("nav").get_by_text("Options").click()
+        await page.locator("nav").get_by_role("link", name="Paramètres").click()
+        await expect(page).to_have_url(re.compile(r"/parametres$"))
 
-        modal = page.locator(".settings-modal")
-        await expect(modal).to_be_visible()
-        await expect(modal.locator("h1")).to_have_text("Options")
+    async def test_current_page_is_highlighted_in_navbar(
+        self, skip_tutorial_page: Page
+    ):
+        page = skip_tutorial_page
+        await page.goto("/archives")
+
+        await expect(page.locator("nav li.active")).to_have_text("Archives")
 
     async def test_navbar_links_navigate_correctly(self, skip_tutorial_page: Page):
         page = skip_tutorial_page

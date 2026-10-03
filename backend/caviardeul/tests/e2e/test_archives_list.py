@@ -5,9 +5,19 @@ from caviardeul.tests.factories import DailyArticleScoreFactory
 
 
 def _difficulty_title(median: int) -> str:
+    labels = ["Très facile", "Facile", "Moyen", "Difficile", "Très difficile"]
+    thresholds = [20, 40, 80, 100]
+    category = next(
+        (i for i, threshold in enumerate(thresholds) if median < threshold),
+        len(thresholds),
+    )
+    return labels[category]
+
+
+def _median_display(median: int) -> str:
     if median >= 10:
-        return f"{median} coups en moyenne"
-    return "Moins de 10 coups en moyenne"
+        return str(median)
+    return "Moins de 10"
 
 
 async def _get_difficulty_titles(page: Page) -> list[str]:
@@ -18,6 +28,12 @@ async def _get_difficulty_titles(page: Page) -> list[str]:
         title = await items.nth(i).locator(".article-difficulty").get_attribute("title")
         titles.append(title)
     return titles
+
+
+async def _get_medians(page: Page) -> list[str]:
+    return await page.locator(
+        ".archive-grid .archive-item .archive-item-median .value"
+    ).all_text_contents()
 
 
 @pytest.fixture()
@@ -32,7 +48,7 @@ class TestArchivesList:
         page = skip_tutorial_page
         await page.goto("/archives")
 
-        await expect(page.locator("main h1").first).to_have_text("Archives")
+        await expect(page.locator("main h1").first).to_have_text("Tous les Caviardeuls")
 
         archive_grid = page.locator(".archive-grid")
         await expect(archive_grid).to_be_visible()
@@ -43,6 +59,8 @@ class TestArchivesList:
         assert titles == [
             _difficulty_title(article.median) for article in past_articles
         ]
+        medians = await _get_medians(page)
+        assert medians == [_median_display(article.median) for article in past_articles]
 
     async def test_shows_user_stats_when_authenticated(
         self, skip_tutorial_page: Page, login, user1, past_articles, completed_article
@@ -51,10 +69,10 @@ class TestArchivesList:
         await login(user1)
         await page.goto("/archives")
 
-        score_section = page.locator(".right-container")
-        await expect(score_section.locator("h1")).to_have_text("Score")
+        score_section = page.locator(".user-stats")
         await expect(score_section).to_contain_text("Parties terminées")
-        await expect(score_section).to_contain_text("Nombre d'essais moyen")
+        await expect(score_section.locator(".finished .stat-value")).to_have_text("1")
+        await expect(score_section).to_contain_text("Essais en moyenne")
         await expect(score_section).to_contain_text("Précision moyenne")
 
         items = page.locator(".archive-grid .archive-item")
@@ -72,30 +90,28 @@ class TestArchivesList:
         await login(user1)
         await page.goto("/archives")
 
-        filter_select = page.locator(".filter-selection select")
-        await filter_select.select_option("finished")
+        filters = page.locator(".filter-selection")
+        await filters.get_by_role("button", name="Terminés").click()
         await page.wait_for_timeout(500)
 
-        titles = await _get_difficulty_titles(page)
-        assert titles == [_difficulty_title(completed_article.median)]
+        medians = await _get_medians(page)
+        assert medians == [_median_display(completed_article.median)]
 
-        await filter_select.select_option("not_finished")
+        await filters.get_by_role("button", name="À faire").click()
         await page.wait_for_timeout(500)
 
-        titles = await _get_difficulty_titles(page)
-        assert titles == [
-            _difficulty_title(article.median)
+        medians = await _get_medians(page)
+        assert medians == [
+            _median_display(article.median)
             for article in sorted(past_articles, key=lambda obj: obj.date, reverse=True)
             if article != completed_article
         ]
 
-        await filter_select.select_option("")
+        await filters.get_by_role("button", name="Tous").click()
         await page.wait_for_timeout(500)
 
-        titles = await _get_difficulty_titles(page)
-        assert titles == [
-            _difficulty_title(article.median) for article in past_articles
-        ]
+        medians = await _get_medians(page)
+        assert medians == [_median_display(article.median) for article in past_articles]
 
     async def test_completed_article_shows_user_score_details(
         self, skip_tutorial_page: Page, login, user1, past_articles, completed_article
@@ -108,8 +124,8 @@ class TestArchivesList:
             has=page.locator("h3", has_text=completed_article.page_name)
         )
         await expect(completed_item).to_be_visible()
-        await expect(completed_item).to_contain_text("Essais")
-        await expect(completed_item).to_contain_text("Précision")
+        await expect(completed_item).to_contain_text("essais")
+        await expect(completed_item).to_contain_text("précision")
         await expect(completed_item).not_to_contain_text("Jouer")
 
     async def test_completed_article_is_not_a_link(
@@ -136,8 +152,8 @@ class TestArchivesList:
         await login(user1)
         await page.goto("/archives")
 
-        filter_select = page.locator(".filter-selection select")
-        await filter_select.select_option("finished")
+        filters = page.locator(".filter-selection")
+        await filters.get_by_role("button", name="Terminés").click()
         await page.wait_for_timeout(500)
 
         await expect(page.locator(".empty-state")).to_be_visible()
@@ -151,30 +167,28 @@ class TestArchivesList:
         page = skip_tutorial_page
         await page.goto("/archives")
 
-        sort_select = page.locator("select").last
-        await expect(sort_select).to_have_value("date")
+        sorts = page.locator(".sort-selection")
+        await expect(sorts.get_by_role("button", name="Date")).to_have_attribute(
+            "aria-pressed", "true"
+        )
 
         await expect(page.locator(".archive-grid .archive-item").first).to_be_visible()
-        titles = await _get_difficulty_titles(page)
-        assert titles == [
-            _difficulty_title(article.median) for article in past_articles
-        ]
+        medians = await _get_medians(page)
+        assert medians == [_median_display(article.median) for article in past_articles]
 
-        await sort_select.select_option("difficulty")
+        await sorts.get_by_role("button", name="Difficulté").click()
         await page.wait_for_timeout(500)
 
-        titles = await _get_difficulty_titles(page)
-        assert titles == [
-            _difficulty_title(article.median)
+        medians = await _get_medians(page)
+        assert medians == [
+            _median_display(article.median)
             for article in sorted(
                 past_articles, key=lambda obj: obj.median, reverse=True
             )
         ]
 
-        await sort_select.select_option("date")
+        await sorts.get_by_role("button", name="Date").click()
         await page.wait_for_timeout(500)
 
-        titles = await _get_difficulty_titles(page)
-        assert titles == [
-            _difficulty_title(article.median) for article in past_articles
-        ]
+        medians = await _get_medians(page)
+        assert medians == [_median_display(article.median) for article in past_articles]

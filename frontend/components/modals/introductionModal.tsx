@@ -1,9 +1,10 @@
 import React, { useCallback } from "react";
 
 import Modal from "@caviardeul/components/modals/modal";
+import CaviardedWord from "@caviardeul/components/utils/caviardedWord";
 import SaveManagement from "@caviardeul/utils/save";
 
-const IntroductionfoModal: React.FC = () => {
+const IntroductionModal: React.FC = () => {
   const [open, setOpen] = React.useState(() => {
     if (typeof window === "undefined") return false;
     const skipTutorial = SaveManagement.getIsTutorialSkipped();
@@ -20,31 +21,21 @@ const IntroductionfoModal: React.FC = () => {
   }
 
   return (
-    <Modal open={open} onClose={handleClose} closeLabel="Commencer">
+    <Modal
+      open={open}
+      onClose={handleClose}
+      closeLabel="Commencer"
+      className="introduction-modal"
+    >
       <h1>Caviardeul</h1>
       <p>
-        Caviardeul est un jeu de réflexion. Le but est de trouver l&apos;article
-        Wikipédia qui se cache derrière les mots caviardés. Proposez des mots
-        dans la zone de texte, puis validez pour dévoiler les endroits où
-        celui-ci est utilisé. Pour vous aider, certains des mots les plus
-        courants sont déjà révélés.
-      </p>
-      <p>
-        Le jeu s&apos;arrête lorsque tous les mots du titre de l&apos;article
-        sont découverts. Vous pouvez faire autant de propositions que vous le
-        souhaitez, mais essayez d&apos;être efficace en terminant la partie au
-        plus vite&nbsp;!
-      </p>
-      <p>
-        Ni la casse, ni les caractères spéciaux ou les accents ne sont pris en
-        compte.
-      </p>
-      <p>
-        Chaque jour, une nouvelle partie démarre avec un nouvel article à
-        déchiffrer&nbsp;!
+        Retrouvez l&apos;article Wikipédia caché derrière les mots{" "}
+        <CaviardedWord variant={1}>caviardés</CaviardedWord>. Proposez des mots
+        pour les dévoiler&nbsp;: la partie s&apos;arrête quand tous les mots du
+        titre sont découverts.
       </p>
     </Modal>
   );
 };
 
-export default IntroductionfoModal;
+export default IntroductionModal;
