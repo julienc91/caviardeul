@@ -45,6 +45,8 @@ class DailyArticleListSchema(BaseModel):
     articleId: int
     archive: bool
     pageName: str | None
+    encryptedPageName: str | None
+    key: str | None
     userScore: UserScoreSchema | None
     stats: ArticleStatsSchema
 
@@ -220,8 +222,14 @@ class TestListArchivedArticles:
             if not expected_score:
                 assert item["userScore"] is None
                 assert item["pageName"] is None
+                assert (
+                    decrypt_data(item["encryptedPageName"], item["key"])
+                    == expected_article.page_name
+                )
             else:
                 assert item["pageName"] == expected_article.page_name
+                assert item["encryptedPageName"] is None
+                assert item["key"] is None
                 assert item["userScore"] == {
                     "nbAttempts": expected_score.nb_attempts,
                     "nbCorrect": expected_score.nb_correct,

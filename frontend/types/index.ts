@@ -38,6 +38,8 @@ export type ArticleInfoStats = {
 export type ArticleInfo = {
   articleId: number;
   pageName?: string;
+  encryptedPageName?: string | null;
+  key?: string | null;
   userScore?: UserScore;
   stats: ArticleInfoStats;
 };
