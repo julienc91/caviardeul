@@ -23,7 +23,7 @@ class DailyArticleStatsSchema(Schema):
 
     @computed_field
     def category(self) -> int:
-        thresholds = [20, 40, 80, 100]
+        thresholds = [30, 50, 80, 110]
         for category, threshold in enumerate(thresholds):
             if self.median < threshold:
                 return category
