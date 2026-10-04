@@ -1,4 +1,6 @@
+import random
 import time
+import zlib
 from datetime import timedelta
 from typing import Literal
 
@@ -13,6 +15,9 @@ from caviardeul.services import metrics
 from caviardeul.services.encryption import encrypt_data, generate_encryption_key
 from caviardeul.services.logging import logger
 from caviardeul.services.parsing import strip_html_article
+
+CACHE_TIMEOUT = timedelta(days=7)
+CACHE_TIMEOUT_JITTER = timedelta(days=1)
 
 
 async def get_article_content(article: Article) -> str:
@@ -44,22 +49,29 @@ async def set_article_last_checked_at(article: Article) -> None:
         await article.asave(update_fields=["last_checked_at"])
 
 
+def _get_cache_key(page_id: str) -> str:
+    return f"article::{page_id}"
+
+
 async def _get_article_content_from_cache(page_id: str) -> str | None:
-    return await cache.aget(f"wikipedia::{page_id}")
+    data = await cache.aget(_get_cache_key(page_id))
+    if data is None:
+        return None
+    return zlib.decompress(data).decode()
 
 
 async def burst_cache_for_article(page_ids: list[str]) -> None:
-    keys = [f"wikipedia::{page_id}" for page_id in page_ids]
+    keys = [_get_cache_key(page_id) for page_id in page_ids]
     await cache.adelete_many(keys)
 
 
 async def _set_article_to_cache(page_id: str, content: str) -> None:
-    now = timezone.now()
-    tomorrow = (now + timedelta(days=1)).replace(
-        hour=0, minute=0, second=0, microsecond=0
+    cache_timeout = CACHE_TIMEOUT + random.random() * CACHE_TIMEOUT_JITTER
+    await cache.aset(
+        _get_cache_key(page_id),
+        zlib.compress(content.encode()),
+        timeout=int(cache_timeout.total_seconds()),
     )
-    cache_timeout = int((tomorrow - now).total_seconds())
-    await cache.aset(f"wikipedia::{page_id}", content, timeout=cache_timeout)
 
 
 async def get_article_html_from_wikipedia(page_id: str) -> tuple[str, str]:

@@ -1,8 +1,13 @@
+import random
+import zlib
+
 import pytest
 from django.core.cache import cache
 
 from caviardeul.exceptions import ArticleFetchError
 from caviardeul.services.articles import (
+    _get_article_content_from_cache,
+    _set_article_to_cache,
     fetch_article,
     get_article_content,
     get_article_html_from_wikipedia,
@@ -58,7 +63,7 @@ class TestFetchArticle:
 
         assert title == "Guido van Rossum"
         assert content == "<p>content</p>"
-        assert await cache.aget("wikipedia::guido") == content
+        assert await _get_article_content_from_cache("guido") == content
 
 
 class TestGetArticleContent:
@@ -80,3 +85,20 @@ class TestGetArticleContent:
             await get_article_content(custom_article)
             == "<h1>Pâris (mythologie)</h1><p>content</p>"
         )
+
+
+class TestArticleCache:
+    @pytest.mark.parametrize(("random_value", "expected_days"), [(0, 7), (1, 8)])
+    async def test_set_article_to_cache(self, monkeypatch, random_value, expected_days):
+        monkeypatch.setattr(random, "random", lambda: random_value)
+
+        await _set_article_to_cache("guido", "<p>content</p>")
+
+        key = cache.make_and_validate_key("article::guido")
+        ttl = cache._cache.get_client(key).ttl(key)
+        assert expected_days * 86400 - 1 <= ttl <= expected_days * 86400
+        assert zlib.decompress(await cache.aget("article::guido")) == b"<p>content</p>"
+        assert await _get_article_content_from_cache("guido") == "<p>content</p>"
+
+    async def test_get_missing_article_from_cache(self):
+        assert await _get_article_content_from_cache("guido") is None
