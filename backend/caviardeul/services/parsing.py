@@ -1,4 +1,4 @@
-from bs4 import BeautifulSoup, Comment, NavigableString
+from selectolax.lexbor import LexborHTMLParser
 
 elements_to_remove = [
     "audio",
@@ -67,40 +67,39 @@ elements_to_flatten = [
 
 
 def strip_html_article(html_content: str) -> str:
-    soup = BeautifulSoup(html_content, "html.parser")
-    for comment in soup.find_all(string=lambda text: isinstance(text, Comment)):
-        comment.extract()
+    tree = LexborHTMLParser(html_content)
+    for node in list(tree.body.traverse()):
+        if node.is_comment_node:
+            node.decompose()
 
     for selector in elements_to_remove:
-        for element in soup.select(selector):
-            element.decompose()
+        for node in tree.css(selector):
+            node.decompose()
 
     for selector in elements_to_strip_after:
-        if not (element := soup.select_one(selector)):
+        if not (node := tree.css_first(selector)):
             continue
 
-        element = element.parent
-        for sibling in list(element.next_siblings):
-            if isinstance(sibling, NavigableString):
-                sibling.extract()
-            else:
-                sibling.decompose()
-        element.decompose()
+        node = node.parent
+        sibling = node.next
+        while sibling is not None:
+            next_sibling = sibling.next
+            sibling.decompose()
+            sibling = next_sibling
+        node.decompose()
 
     for selector in elements_to_flatten:
-        for element in soup.select(selector):
-            value = element.get_text()
-            element.replace_with(value)
+        for node in tree.css(selector):
+            node.replace_with(node.text())
 
     for selector in elements_to_replace_with_children:
-        for element in soup.select(selector):
-            element.replace_with_children()
+        for node in tree.css(selector):
+            node.unwrap()
 
-    element = soup.select_one("#Voir_aussi")
-    if element:
-        try:
-            element.closest("h2").decompose()
-        except TypeError:
-            element.decompose()
+    if node := tree.css_first("#Voir_aussi"):
+        heading = node
+        while heading is not None and heading.tag != "h2":
+            heading = heading.parent
+        (heading or node).decompose()
 
-    return str(soup).replace("\\n", "\n").strip()
+    return tree.body.inner_html.replace("\\n", "\n").replace("&nbsp;", "\xa0").strip()

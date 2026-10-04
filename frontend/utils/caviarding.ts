@@ -67,7 +67,7 @@ const separatorRegex = new RegExp(`([${punctuationList}]+)`, "gim");
 
 export const stripHtmlTags = (text: string): string => {
   const htmlContent = parse(text);
-  return htmlContent.innerText;
+  return htmlContent.textContent;
 };
 
 export const splitWords = (text: string): string[] => {
