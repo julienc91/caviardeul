@@ -76,9 +76,7 @@ async def _seed_article_cache(
             '<h2 id="Section">Section</h2>'
             f"<p>Contenu de test pour {page_name}.</p>"
         )
-    await cache.aset(
-        f"wikipedia::{page_id}", f"<h1>{page_name}</h1>{html_body}", timeout=86400
-    )
+    await cache.aset(f"wikipedia::{page_id}", html_body, timeout=86400)
 
 
 @pytest.fixture

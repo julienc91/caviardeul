@@ -22,17 +22,20 @@ async def get_article_content(article: Article) -> str:
     )
     if content is not None:
         logger.debug("retrieved article from cache", extra={"page_id": article.page_id})
-        return content
+    else:
+        _, content = await fetch_article(article.page_id)
+        await set_article_last_checked_at(article)
+        logger.info(
+            "retrieved article from wikipedia", extra={"page_id": article.page_id}
+        )
+    return prepare_article_content(article.page_name, content)
 
-    _, html_content = await get_article_html_from_wikipedia(article.page_id)
-    await set_article_last_checked_at(article)
-    logger.info("retrieved article from wikipedia", extra={"page_id": article.page_id})
 
-    article_content = _prepare_article_content_from_html(
-        article.page_name, html_content
-    )
-    await _set_article_to_cache(article.page_id, article_content)
-    return article_content
+async def fetch_article(page_id: str) -> tuple[str, str]:
+    title, html_content = await get_article_html_from_wikipedia(page_id)
+    content = strip_html_article(html_content)
+    await _set_article_to_cache(page_id, content)
+    return title, content
 
 
 async def set_article_last_checked_at(article: Article) -> None:
@@ -110,8 +113,8 @@ async def _fetch_article_html_from_wikipedia(page_id: str) -> tuple[str, str]:
     return data["title"], html_content
 
 
-def _prepare_article_content_from_html(page_title: str, html_content: str) -> str:
-    return f"<h1>{page_title}</h1>" + strip_html_article(html_content)
+def prepare_article_content(page_title: str, content: str) -> str:
+    return f"<h1>{page_title}</h1>{content}"
 
 
 def prepare_encrypted_article(article: Article, content: str) -> None:

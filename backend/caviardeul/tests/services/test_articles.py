@@ -1,11 +1,13 @@
 import pytest
+from django.core.cache import cache
 
 from caviardeul.exceptions import ArticleFetchError
 from caviardeul.services.articles import (
+    fetch_article,
     get_article_content,
     get_article_html_from_wikipedia,
 )
-from caviardeul.tests.factories import DailyArticleFactory
+from caviardeul.tests.factories import CustomArticleFactory, DailyArticleFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -46,3 +48,35 @@ class TestGetArticleContentMetrics:
             ("count", "article.cache", 1, None, {"result": "miss"}),
             ("count", "article.cache", 1, None, {"result": "hit"}),
         ]
+
+
+class TestFetchArticle:
+    async def test_fetch_article(self, mock_wiki_api):
+        mock_wiki_api("guido", "Guido van Rossum", "<p>content</p>")
+
+        title, content = await fetch_article("guido")
+
+        assert title == "Guido van Rossum"
+        assert content == "<p>content</p>"
+        assert await cache.aget("wikipedia::guido") == content
+
+
+class TestGetArticleContent:
+    async def test_shared_page_id_keeps_each_title(self, mock_wiki_api):
+        daily_article = await DailyArticleFactory.acreate(
+            trait_current=True, page_id="Pâris_(mythologie)", page_name="Pâris"
+        )
+        custom_article = await CustomArticleFactory.acreate(
+            page_id="Pâris_(mythologie)", page_name="Pâris (mythologie)"
+        )
+        mock_wiki_api("Pâris_(mythologie)", "Pâris (mythologie)", "<p>content</p>")
+
+        await fetch_article("Pâris_(mythologie)")
+
+        assert (
+            await get_article_content(daily_article) == "<h1>Pâris</h1><p>content</p>"
+        )
+        assert (
+            await get_article_content(custom_article)
+            == "<h1>Pâris (mythologie)</h1><p>content</p>"
+        )
