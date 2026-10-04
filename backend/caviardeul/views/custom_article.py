@@ -11,8 +11,9 @@ from caviardeul.serializers.custom_article import (
 )
 from caviardeul.services import metrics
 from caviardeul.services.articles import (
+    fetch_article,
     get_article_content,
-    get_article_html_from_wikipedia,
+    prepare_article_content,
 )
 from caviardeul.services.authentication import optional_api_authentication
 from caviardeul.services.custom_article import generate_public_id
@@ -43,7 +44,7 @@ async def create_custom_article(
     request: HttpRequest, payload: CustomArticleCreateSchema, response: HttpResponse
 ) -> CustomArticle:
     try:
-        page_title, _ = await get_article_html_from_wikipedia(payload.page_id)
+        page_title, content = await fetch_article(payload.page_id)
     except ArticleFetchError:
         raise HttpError(400, "L'article n'a pas été trouvé")
 
@@ -70,5 +71,5 @@ async def create_custom_article(
             attributes={"user": "new" if is_new_user else "existing"},
         )
 
-    article.content = await get_article_content(article)
+    article.content = prepare_article_content(article.page_name, content)
     return article
