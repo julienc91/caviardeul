@@ -6,6 +6,7 @@ from django.core.cache import cache
 from django.utils import timezone
 from playwright.async_api import Page
 
+from caviardeul.services.articles import _set_article_to_cache
 from caviardeul.tests.e2e.server import backend_server, frontend_server
 from caviardeul.tests.factories import DailyArticleFactory, UserFactory
 
@@ -76,7 +77,7 @@ async def _seed_article_cache(
             '<h2 id="Section">Section</h2>'
             f"<p>Contenu de test pour {page_name}.</p>"
         )
-    await cache.aset(f"wikipedia::{page_id}", html_body, timeout=86400)
+    await _set_article_to_cache(page_id, html_body)
 
 
 @pytest.fixture

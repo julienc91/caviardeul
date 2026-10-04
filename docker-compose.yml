@@ -136,7 +136,7 @@ services:
       - db_network
     expose:
       - 6379
-    command: /bin/sh -c "redis-server --requirepass $$REDIS_PASSWORD"
+    command: /bin/sh -c "redis-server --requirepass $$REDIS_PASSWORD --maxmemory 128mb --maxmemory-policy volatile-lru"
     healthcheck:
       test: REDISCLI_AUTH="$$REDIS_PASSWORD" redis-cli ping | grep -q PONG
       interval: 30s
