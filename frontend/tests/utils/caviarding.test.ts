@@ -164,4 +164,8 @@ describe("stripHtmlTags", () => {
   it("returns plain text unchanged", () => {
     expect(stripHtmlTags("plain text")).toBe("plain text");
   });
+
+  it("decodes HTML entities", () => {
+    expect(stripHtmlTags("<p>A&nbsp;&amp;&nbsp;B</p>")).toBe("A\u00a0&\u00a0B");
+  });
 });
