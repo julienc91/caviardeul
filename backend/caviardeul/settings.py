@@ -91,6 +91,7 @@ DATABASES = {
         "PASSWORD": os.environ["POSTGRES_PASSWORD"],
         "HOST": os.environ["POSTGRES_HOST"],
         "PORT": os.environ.get("POSTGRES_PORT", "5432"),
+        "OPTIONS": {"pool": True},
     }
 }
 
