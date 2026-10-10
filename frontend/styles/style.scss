@@ -1566,13 +1566,16 @@ main.page {
 
   .toggle {
     align-items: center;
-    border-bottom: 1px solid $line;
     cursor: pointer;
     display: flex;
     gap: 20px;
     justify-content: space-between;
     padding: 14px 0;
     position: relative;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid $line;
+    }
 
     input {
       cursor: pointer;

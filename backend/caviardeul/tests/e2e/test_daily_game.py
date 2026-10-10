@@ -261,3 +261,24 @@ class TestDailyGame:
         await expect(page.locator(".game-information")).to_contain_text(
             "le Caviardeul du jour"
         )
+
+    async def test_pin_toggles_auto_scroll(self, skip_tutorial_page: Page):
+        page = skip_tutorial_page
+        await page.goto("/")
+
+        pin = page.get_by_role("button", name="Bloquer le défilement auto")
+        await pin.click()
+        await expect(
+            page.get_by_role("button", name="Activer le défilement auto")
+        ).to_be_visible()
+
+        settings = await page.evaluate("localStorage.getItem('settings')")
+        assert '"autoScroll":false' in settings
+
+        await page.locator('input[placeholder="Un mot ?"]').press("Control+Enter")
+        await expect(
+            page.get_by_role("button", name="Bloquer le défilement auto")
+        ).to_be_visible()
+
+        settings = await page.evaluate("localStorage.getItem('settings')")
+        assert '"autoScroll":true' in settings

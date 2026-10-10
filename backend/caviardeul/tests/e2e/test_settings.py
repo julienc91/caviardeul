@@ -30,22 +30,6 @@ class TestSettings:
         settings = await page.evaluate("localStorage.getItem('settings')")
         assert '"lightMode":true' in settings
 
-    async def test_toggle_auto_scroll(self, skip_tutorial_page: Page):
-        page = skip_tutorial_page
-        await page.goto("/parametres")
-        settings_page = page.locator("#settings")
-
-        auto_scroll_checkbox = settings_page.get_by_label(
-            "Défilement automatique vers le mot sélectionné"
-        )
-        await expect(auto_scroll_checkbox).to_be_checked()
-
-        await auto_scroll_checkbox.uncheck()
-        await expect(auto_scroll_checkbox).not_to_be_checked()
-
-        settings = await page.evaluate("localStorage.getItem('settings')")
-        assert '"autoScroll":false' in settings
-
     async def test_settings_persist_on_reload(self, skip_tutorial_page: Page):
         page = skip_tutorial_page
         await page.goto("/parametres")

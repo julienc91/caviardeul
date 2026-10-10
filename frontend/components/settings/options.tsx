@@ -25,7 +25,7 @@ const Toggle: React.FC<{
 
 const Options: React.FC = () => {
   const { settings, onChangeSettings } = useContext(SettingsContext);
-  const { lightMode, autoScroll } = settings;
+  const { lightMode } = settings;
 
   return (
     <div className="options">
@@ -33,11 +33,6 @@ const Options: React.FC = () => {
         label="Activer le mode sombre"
         checked={!lightMode}
         onChange={() => onChangeSettings({ lightMode: !lightMode })}
-      />
-      <Toggle
-        label="Défilement automatique vers le mot sélectionné"
-        checked={autoScroll}
-        onChange={() => onChangeSettings({ autoScroll: !autoScroll })}
       />
     </div>
   );
