@@ -34,7 +34,7 @@ FROM runtime AS prod
 WORKDIR /app
 
 ENV NODE_ENV=production
-RUN apk add --no-cache libstdc++ \
+RUN apk add --no-cache libatomic libstdc++ \
     && addgroup -g 65332 -S nextjs \
     && adduser -S nextjs -u 65332
 COPY --from=base /usr/local/bin/node /usr/local/bin/node
