@@ -56,7 +56,9 @@ const AttemptHistory = () => {
                   ref={isSelectedWord ? selectedRow : null}
                 >
                   <td>{i + 1}</td>
-                  <td>{word}</td>
+                  <td className="word" title={word}>
+                    {word}
+                  </td>
                   <td>{count}</td>
                 </tr>
               );

@@ -696,6 +696,14 @@ main {
       th {
         padding: 10px;
       }
+
+      td.word {
+        max-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 100%;
+      }
     }
   }
 

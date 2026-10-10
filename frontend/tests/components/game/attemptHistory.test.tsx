@@ -23,6 +23,13 @@ describe("AttemptHistory", () => {
     expect(screen.getByText("eiffel")).toBeInTheDocument();
   });
 
+  it("shows the full word on hover, as it may be truncated", () => {
+    renderWithProviders(<AttemptHistory />, {
+      gameContext: { history, isOver: false },
+    });
+    expect(screen.getByText("eiffel")).toHaveAttribute("title", "eiffel");
+  });
+
   it("displays occurrence counts", () => {
     renderWithProviders(<AttemptHistory />, {
       gameContext: { history, isOver: false },
