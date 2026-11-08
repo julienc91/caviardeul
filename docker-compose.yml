@@ -130,15 +130,17 @@ services:
   redis:
     image: redis:8-alpine
     pull_policy: always
-    env_file:
-      - redis/.env
     networks:
       - db_network
     expose:
       - 6379
-    command: /bin/sh -c "redis-server --requirepass $$REDIS_PASSWORD --maxmemory 128mb --maxmemory-policy volatile-lru"
+    volumes:
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    secrets:
+      - redis_auth
+    command: redis-server /usr/local/etc/redis/redis.conf
     healthcheck:
-      test: REDISCLI_AUTH="$$REDIS_PASSWORD" redis-cli ping | grep -q PONG
+      test: REDISCLI_AUTH="$$(sed -n 's/^requirepass //p' /run/secrets/redis_auth)" redis-cli ping | grep -q PONG
       interval: 30s
       timeout: 5s
       retries: 3
@@ -153,3 +155,7 @@ networks:
 volumes:
   dbdata:
   staticdata:
+
+secrets:
+  redis_auth:
+    file: redis/auth.conf

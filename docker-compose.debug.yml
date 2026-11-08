@@ -77,3 +77,7 @@ networks:
 volumes:
   dbdata:
   staticdata:
+
+secrets:
+  redis_auth:
+    file: redis/auth.conf
