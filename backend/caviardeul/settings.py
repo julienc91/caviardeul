@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
+from psycopg_pool import ConnectionPool
+
 import caviardeul.sentry  # noqa F401
 
 DEBUG = str(os.environ.get("DEBUG", "").lower()) in {"1", "true"}
@@ -91,7 +93,9 @@ DATABASES = {
         "PASSWORD": os.environ["POSTGRES_PASSWORD"],
         "HOST": os.environ["POSTGRES_HOST"],
         "PORT": os.environ.get("POSTGRES_PORT", "5432"),
-        "OPTIONS": {"pool": True},
+        "OPTIONS": {
+            "pool": {"check": ConnectionPool.check_connection, "timeout": 5},
+        },
     }
 }
 
