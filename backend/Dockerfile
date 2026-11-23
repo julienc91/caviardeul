@@ -1,7 +1,7 @@
 # Dev dependencies include playwright, which has no wheels for Alpine (musl)
-FROM python:3.14-slim AS base_dev
+FROM python:3.15-slim AS base_dev
 
-FROM python:3.14-alpine AS base
+FROM python:3.15-alpine AS base
 
 # The app runs from the uv virtualenv, pip is only dead weight (and CVEs)
 RUN pip uninstall -y pip
